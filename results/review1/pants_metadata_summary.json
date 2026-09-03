@@ -1,0 +1,30 @@
+{
+ "source": "BodyMaps/PanTSMini metadata.xlsx",
+ "total_cases": 9901,
+ "tumor_cases": 1077,
+ "tumor_cases_with_measured_lesion": 314,
+ "measurement_coverage_pct": 29.2,
+ "measured_tumor_lesions": 379,
+ "measured_benign_lesions": 821,
+ "sub2cm_tumor_lesions": 143,
+ "sub2cm_pct_of_measured_tumors": 37.7,
+ "median_tumor_long_axis_cm": 2.4,
+ "sub2cm_and_isoattenuating": 29,
+ "n_sites": 20,
+ "phases": {
+  "Non-contrast": 4485,
+  "Venous": 2897,
+  "Arterial": 2450,
+  "Delay": 68,
+  "nan": 1
+ },
+ "tumor_location_counts": {
+  "pancreas head": 217,
+  "pancreas tail": 41,
+  "pancreas body": 34,
+  "pancreas body/tail": 25,
+  "pancreas head/body": 19,
+  "pancreas head/body/tail": 1
+ },
+ "caveat": "metadata.xlsx has no tumor-size column; sizes are parsed from the free-text structured reports. Only tumor-flagged cases whose report contains a lesion block can be measured, so quote measurement_coverage_pct alongside the sub-2 cm percentage."
+}

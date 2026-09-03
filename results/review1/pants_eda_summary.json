@@ -1,0 +1,46 @@
+{
+ "source": "C:\\dev\\capstone\\data\\PanTS\\metadata.xlsx",
+ "cohort": {
+  "total_cases": 9901,
+  "tumor_cases": 1077,
+  "tumor_cases_with_measured_lesion": 314,
+  "measured_tumor_lesions": 379,
+  "measurement_coverage_pct": 29.2,
+  "benign_cases_with_measured_lesion": 699,
+  "measured_benign_lesions": 821
+ },
+ "tumor_size": {
+  "population": "tumor-flagged cases",
+  "threshold_cm": 2.0,
+  "measured": 379,
+  "sub_threshold": 143,
+  "sub_threshold_pct": 37.7,
+  "median_long_axis_cm": 2.4,
+  "min_long_axis_cm": 0.4,
+  "max_long_axis_cm": 14.6,
+  "isoattenuating": 68,
+  "sub_threshold_and_isoattenuating": 29
+ },
+ "phases": {
+  "Non-contrast": 4485,
+  "Venous": 2897,
+  "Arterial": 2450,
+  "Delay": 68,
+  "nan": 1
+ },
+ "n_sites": 20,
+ "age_median": 60.0,
+ "sub2cm_all_lesions_including_benign": {
+  "population": "all measured lesions",
+  "threshold_cm": 2.0,
+  "measured": 1200,
+  "sub_threshold": 445,
+  "sub_threshold_pct": 37.1,
+  "median_long_axis_cm": 2.4,
+  "min_long_axis_cm": 0.3,
+  "max_long_axis_cm": 22.1,
+  "isoattenuating": 211,
+  "sub_threshold_and_isoattenuating": 85
+ },
+ "note": "Lesion sizes are parsed from the free-text structured reports; metadata.xlsx has no tumor-size column. Two denominators matter: (a) only tumor-flagged cases with a lesion block can be measured (see measurement_coverage_pct), and (b) most measured lesions belong to cases flagged tumor?=0 and are benign, so tumor_size counts tumor-flagged cases only."
+}

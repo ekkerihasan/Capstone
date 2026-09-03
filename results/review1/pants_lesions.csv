@@ -1,0 +1,1201 @@
+PanTS ID,tumor,lesion,long_axis_cm,short_axis_cm,location,enhancement
+PanTS_00000003,1,1,2.4,1.4,pancreas head,isoattenuating
+PanTS_00000026,1,1,4.6,2.9,pancreas body/tail,hyperattenuating
+PanTS_00000029,1,1,2.0,1.8,pancreas body,isoattenuating
+PanTS_00000031,1,1,1.6,1.1,pancreas tail,hypoattenuating
+PanTS_00000031,1,2,1.6,1.0,pancreas head,hyperattenuating
+PanTS_00000035,1,1,2.4,1.3,pancreas tail,hyperattenuating
+PanTS_00000036,1,1,1.0,0.5,pancreas tail,hypoattenuating
+PanTS_00000040,1,1,2.6,1.2,,hypoattenuating
+PanTS_00000042,1,1,2.5,1.9,pancreas head,hyperattenuating
+PanTS_00000047,1,1,4.2,2.6,pancreas head,hyperattenuating
+PanTS_00000047,1,2,0.9,0.4,,isoattenuating
+PanTS_00000049,1,1,3.6,2.4,pancreas body,hypoattenuating
+PanTS_00000050,1,1,3.4,2.5,pancreas head,isoattenuating
+PanTS_00000050,1,2,2.3,1.9,pancreas head,hyperattenuating
+PanTS_00000074,1,1,1.3,1.1,pancreas head,hyperattenuating
+PanTS_00000084,1,1,2.4,1.8,pancreas head,hypoattenuating
+PanTS_00000086,1,1,2.7,1.8,pancreas head,isoattenuating
+PanTS_00000091,1,1,2.2,1.3,pancreas body,hypoattenuating
+PanTS_00000091,1,2,1.8,0.2,pancreas tail,hypoattenuating
+PanTS_00000099,1,1,2.6,1.2,,hypoattenuating
+PanTS_00000099,1,2,0.6,0.4,,hypoattenuating
+PanTS_00000100,1,1,9.2,1.4,pancreas head,hypoattenuating
+PanTS_00000113,1,1,1.2,0.9,,hypoattenuating
+PanTS_00000117,1,1,3.2,2.7,pancreas head,hypoattenuating
+PanTS_00000128,1,1,5.1,4.3,pancreas head,hyperattenuating
+PanTS_00000133,1,1,1.6,0.9,pancreas head/body,hypoattenuating
+PanTS_00000145,1,1,1.5,1.1,pancreas body/tail,isoattenuating
+PanTS_00000162,1,1,2.2,1.4,pancreas head,hyperattenuating
+PanTS_00000164,1,1,2.5,1.4,pancreas head,hypoattenuating
+PanTS_00000167,1,1,1.7,1.4,pancreas head,isoattenuating
+PanTS_00000199,1,1,1.8,1.3,pancreas head,hyperattenuating
+PanTS_00000220,1,1,2.9,1.3,,hypoattenuating
+PanTS_00000224,1,1,1.4,0.9,pancreas head,hypoattenuating
+PanTS_00000231,1,1,2.0,1.6,pancreas head,hyperattenuating
+PanTS_00000246,1,1,9.8,7.6,,hypoattenuating
+PanTS_00000251,1,1,2.3,0.8,pancreas body/tail,isoattenuating
+PanTS_00000252,1,1,2.9,1.9,pancreas head,isoattenuating
+PanTS_00000252,1,2,1.1,0.8,pancreas head,hypoattenuating
+PanTS_00000259,1,1,3.3,1.8,pancreas body,hypoattenuating
+PanTS_00000259,1,2,1.3,0.8,pancreas head,hypoattenuating
+PanTS_00000270,1,1,3.8,2.5,pancreas head/body,hyperattenuating
+PanTS_00000290,1,1,2.5,1.7,pancreas head,hyperattenuating
+PanTS_00000352,1,1,3.1,2.4,pancreas head,hyperattenuating
+PanTS_00000363,1,1,3.1,2.6,pancreas head,hypoattenuating
+PanTS_00000368,1,1,3.3,1.3,,hypoattenuating
+PanTS_00000371,1,1,1.2,0.6,pancreas tail,hyperattenuating
+PanTS_00000416,1,1,2.0,1.6,pancreas head,hypoattenuating
+PanTS_00000423,1,1,2.1,1.5,pancreas head,isoattenuating
+PanTS_00000449,1,1,5.6,4.6,pancreas head,hyperattenuating
+PanTS_00000451,1,1,1.3,0.8,pancreas head,hyperattenuating
+PanTS_00000465,1,1,9.5,4.4,pancreas body/tail,hypoattenuating
+PanTS_00000465,1,2,4.8,3.1,pancreas head/body,isoattenuating
+PanTS_00000482,1,1,1.0,0.6,pancreas head,isoattenuating
+PanTS_00000485,1,1,1.9,1.3,pancreas head,hyperattenuating
+PanTS_00000488,1,1,1.8,0.8,pancreas tail,isoattenuating
+PanTS_00000554,1,1,4.7,2.4,pancreas head,hypoattenuating
+PanTS_00000557,1,1,1.2,0.4,,hypoattenuating
+PanTS_00000564,1,1,1.4,1.2,pancreas body/tail,hypoattenuating
+PanTS_00000574,1,1,2.9,1.8,pancreas head,isoattenuating
+PanTS_00000592,1,1,1.0,0.9,pancreas body,isoattenuating
+PanTS_00000605,1,1,2.4,1.4,pancreas head,hypoattenuating
+PanTS_00000623,1,1,2.3,0.8,pancreas head,hypoattenuating
+PanTS_00000626,1,1,2.2,1.8,pancreas head,isoattenuating
+PanTS_00000654,1,1,2.1,1.1,pancreas head,hyperattenuating
+PanTS_00000656,1,1,2.8,2.4,pancreas head,hypoattenuating
+PanTS_00000674,1,1,0.9,0.7,pancreas body,hyperattenuating
+PanTS_00000675,1,1,2.1,1.9,pancreas head,isoattenuating
+PanTS_00000693,1,1,3.2,2.2,pancreas head,isoattenuating
+PanTS_00000696,1,1,4.6,2.7,pancreas head,hypoattenuating
+PanTS_00000715,1,1,1.6,1.0,pancreas body,hyperattenuating
+PanTS_00000723,1,1,1.6,1.3,pancreas head,hypoattenuating
+PanTS_00000727,1,1,5.2,3.2,pancreas body/tail,hypoattenuating
+PanTS_00000730,1,1,2.4,1.6,pancreas tail,hypoattenuating
+PanTS_00000750,1,1,1.7,1.2,pancreas head/body,hyperattenuating
+PanTS_00000761,1,1,1.8,0.8,pancreas head,hypoattenuating
+PanTS_00000766,1,1,1.8,1.0,pancreas head,hyperattenuating
+PanTS_00000766,1,2,1.4,0.7,pancreas tail,hyperattenuating
+PanTS_00000771,1,1,3.6,1.7,pancreas head,hypoattenuating
+PanTS_00000797,1,1,1.7,1.3,pancreas tail,hypoattenuating
+PanTS_00000806,1,1,2.4,1.4,pancreas body,hyperattenuating
+PanTS_00000811,1,1,3.0,2.1,pancreas head,hyperattenuating
+PanTS_00000814,1,1,5.2,2.7,pancreas body/tail,hypoattenuating
+PanTS_00000814,1,2,1.2,0.9,pancreas tail,hypoattenuating
+PanTS_00000836,1,1,2.7,2.2,pancreas head,hyperattenuating
+PanTS_00000839,1,1,1.8,1.0,pancreas tail,hypoattenuating
+PanTS_00000849,1,1,1.8,0.8,pancreas head/body,hyperattenuating
+PanTS_00000855,1,1,1.7,1.0,pancreas head,hyperattenuating
+PanTS_00000855,1,2,1.2,0.6,pancreas body,hyperattenuating
+PanTS_00000860,1,1,3.6,3.2,pancreas head,isoattenuating
+PanTS_00000862,1,1,2.0,1.6,pancreas head,hyperattenuating
+PanTS_00000871,1,1,3.4,3.2,pancreas head,isoattenuating
+PanTS_00000871,1,2,1.0,0.6,pancreas head,hyperattenuating
+PanTS_00000871,1,3,0.8,0.3,pancreas head,hyperattenuating
+PanTS_00000878,1,1,3.0,1.9,pancreas head/body,isoattenuating
+PanTS_00000881,1,1,2.4,2.2,,hypoattenuating
+PanTS_00000911,1,1,3.6,1.7,pancreas head,hypoattenuating
+PanTS_00000927,1,1,2.9,2.5,pancreas head/body,hyperattenuating
+PanTS_00000930,1,1,4.2,2.2,pancreas body/tail,hypoattenuating
+PanTS_00000930,1,2,3.7,2.0,pancreas body/tail,isoattenuating
+PanTS_00000945,1,1,2.7,2.4,pancreas head,hyperattenuating
+PanTS_00000966,1,1,1.7,1.1,pancreas head,hypoattenuating
+PanTS_00001012,1,1,1.3,0.9,pancreas head,hypoattenuating
+PanTS_00001016,1,1,4.3,3.4,pancreas body/tail,hypoattenuating
+PanTS_00001021,1,1,1.7,0.8,,hypoattenuating
+PanTS_00001030,1,1,2.9,2.1,pancreas head,hypoattenuating
+PanTS_00001048,1,1,1.7,1.6,pancreas head,hypoattenuating
+PanTS_00001053,1,1,1.8,1.6,pancreas tail,isoattenuating
+PanTS_00001055,1,1,3.5,3.1,pancreas head,hyperattenuating
+PanTS_00001070,1,1,2.2,1.9,pancreas head,hypoattenuating
+PanTS_00001077,1,1,2.9,1.8,pancreas head,hyperattenuating
+PanTS_00001079,1,1,1.3,1.0,pancreas head,hyperattenuating
+PanTS_00001081,1,1,3.2,2.5,pancreas head,hypoattenuating
+PanTS_00001082,1,1,3.2,1.7,pancreas head,hyperattenuating
+PanTS_00001085,1,1,2.4,2.0,pancreas head,hypoattenuating
+PanTS_00001086,1,1,2.1,1.9,pancreas head,hyperattenuating
+PanTS_00001091,1,1,2.0,1.3,pancreas head,hyperattenuating
+PanTS_00001111,1,1,1.3,1.0,pancreas head,hypoattenuating
+PanTS_00001121,1,1,2.0,1.5,pancreas head,hyperattenuating
+PanTS_00001145,1,1,1.8,1.5,pancreas head,hypoattenuating
+PanTS_00001154,1,1,2.9,1.5,pancreas head,hyperattenuating
+PanTS_00001168,1,1,1.8,1.0,pancreas tail,hypoattenuating
+PanTS_00001182,1,1,6.8,5.4,pancreas tail,hypoattenuating
+PanTS_00001183,1,1,7.5,6.1,pancreas body/tail,hyperattenuating
+PanTS_00001186,1,1,4.2,3.1,pancreas head,hypoattenuating
+PanTS_00001193,1,1,2.9,2.5,pancreas tail,hyperattenuating
+PanTS_00001193,1,2,3.1,1.7,pancreas head,hyperattenuating
+PanTS_00001197,1,1,2.4,1.1,,isoattenuating
+PanTS_00001215,1,1,1.1,0.8,pancreas head,isoattenuating
+PanTS_00001254,1,1,1.8,1.1,pancreas head,hyperattenuating
+PanTS_00001258,1,1,1.7,1.5,pancreas head,hypoattenuating
+PanTS_00001261,1,1,0.8,0.6,pancreas body,hyperattenuating
+PanTS_00001268,1,1,2.8,2.1,pancreas head,hyperattenuating
+PanTS_00001275,1,1,2.0,1.5,pancreas head,hyperattenuating
+PanTS_00001275,1,2,1.0,0.6,pancreas tail,hypoattenuating
+PanTS_00001277,1,1,1.9,1.4,pancreas head,hypoattenuating
+PanTS_00001297,1,1,2.7,1.9,pancreas head,hyperattenuating
+PanTS_00001321,1,1,3.4,2.1,pancreas head/body,isoattenuating
+PanTS_00001326,1,1,2.8,1.9,pancreas body,hypoattenuating
+PanTS_00001327,1,1,2.5,1.2,pancreas head,hypoattenuating
+PanTS_00001327,1,2,0.4,0.3,,hypoattenuating
+PanTS_00001331,1,1,2.4,2.0,pancreas head,hypoattenuating
+PanTS_00001347,1,1,3.7,1.5,pancreas head,isoattenuating
+PanTS_00001351,1,1,2.8,1.8,pancreas head,hypoattenuating
+PanTS_00001352,1,1,3.1,2.1,pancreas head,isoattenuating
+PanTS_00001352,1,2,0.5,0.4,,hypoattenuating
+PanTS_00001359,1,1,2.6,1.8,pancreas head,hyperattenuating
+PanTS_00001361,1,1,2.5,1.5,pancreas body/tail,isoattenuating
+PanTS_00001387,1,1,2.3,1.5,pancreas head,hypoattenuating
+PanTS_00001392,1,1,1.9,0.5,pancreas tail,hypoattenuating
+PanTS_00001392,1,2,1.3,0.4,pancreas body/tail,hypoattenuating
+PanTS_00001423,1,1,2.5,1.3,pancreas head,hypoattenuating
+PanTS_00001436,1,1,3.9,2.6,pancreas head,hypoattenuating
+PanTS_00001436,1,2,2.2,1.3,,hypoattenuating
+PanTS_00001438,1,1,5.7,3.7,pancreas body,hypoattenuating
+PanTS_00001438,1,2,3.7,1.6,pancreas body,hypoattenuating
+PanTS_00001438,1,3,3.3,1.6,pancreas head,hyperattenuating
+PanTS_00001438,1,4,1.3,1.3,pancreas tail,hypoattenuating
+PanTS_00001450,1,1,1.4,1.0,pancreas head,isoattenuating
+PanTS_00001471,1,1,2.9,1.9,pancreas head,hypoattenuating
+PanTS_00001471,1,2,1.8,0.9,,hypoattenuating
+PanTS_00001472,1,1,2.2,1.7,,hyperattenuating
+PanTS_00001477,1,1,3.2,1.8,pancreas head,hyperattenuating
+PanTS_00001488,1,1,2.1,1.7,pancreas head,hypoattenuating
+PanTS_00001500,1,1,1.8,1.2,pancreas head,hypoattenuating
+PanTS_00001502,1,1,1.4,0.6,pancreas head,hypoattenuating
+PanTS_00001515,1,1,2.0,1.5,pancreas head,hypoattenuating
+PanTS_00001517,1,1,1.3,0.7,pancreas head,hyperattenuating
+PanTS_00001519,1,1,1.3,0.6,pancreas head,isoattenuating
+PanTS_00001536,1,1,2.1,0.8,pancreas head,isoattenuating
+PanTS_00001541,1,1,3.1,2.4,pancreas tail,hypoattenuating
+PanTS_00001542,1,1,3.9,3.2,pancreas head,hyperattenuating
+PanTS_00001568,1,1,4.2,4.0,pancreas head,isoattenuating
+PanTS_00001582,1,1,3.7,3.0,pancreas head,hyperattenuating
+PanTS_00001583,1,1,3.7,2.9,pancreas tail,hyperattenuating
+PanTS_00001583,1,2,2.0,1.3,pancreas body,hyperattenuating
+PanTS_00001583,1,3,1.4,0.9,pancreas body,hyperattenuating
+PanTS_00001592,1,1,2.3,2.0,pancreas head,hypoattenuating
+PanTS_00001601,1,1,3.1,2.3,pancreas head,hyperattenuating
+PanTS_00001612,1,1,2.7,1.1,pancreas body,hypoattenuating
+PanTS_00001618,1,1,2.3,1.8,pancreas head,hyperattenuating
+PanTS_00001645,1,1,4.4,2.5,pancreas head,hypoattenuating
+PanTS_00001649,1,1,2.1,1.5,pancreas head,hypoattenuating
+PanTS_00001650,1,1,4.2,2.8,pancreas tail,hypoattenuating
+PanTS_00001650,1,2,0.9,0.5,pancreas body,hypoattenuating
+PanTS_00001655,1,1,6.5,4.6,pancreas body/tail,isoattenuating
+PanTS_00001669,1,1,1.3,1.1,pancreas head,hyperattenuating
+PanTS_00001670,1,1,0.9,0.8,pancreas head,hyperattenuating
+PanTS_00001672,1,1,4.1,2.0,pancreas head,isoattenuating
+PanTS_00001678,1,1,1.4,0.8,pancreas tail,hypoattenuating
+PanTS_00001683,1,1,2.2,1.7,pancreas head,hypoattenuating
+PanTS_00001727,1,1,3.9,3.0,pancreas head,isoattenuating
+PanTS_00001727,1,2,1.6,1.2,pancreas head/body,isoattenuating
+PanTS_00001732,1,1,4.9,4.2,pancreas head,hypoattenuating
+PanTS_00001736,1,1,2.5,2.0,pancreas head,hypoattenuating
+PanTS_00001749,1,1,3.2,2.1,pancreas head,hyperattenuating
+PanTS_00001749,1,2,0.8,0.6,,hypoattenuating
+PanTS_00001751,1,1,1.3,0.8,pancreas head,hypoattenuating
+PanTS_00001751,1,2,1.8,1.4,pancreas tail,hyperattenuating
+PanTS_00001771,1,1,1.3,0.8,pancreas head,hyperattenuating
+PanTS_00001787,1,1,1.7,0.9,pancreas head,hyperattenuating
+PanTS_00001802,1,1,1.7,1.3,pancreas body,hyperattenuating
+PanTS_00001816,1,1,5.6,3.4,pancreas head/body,hypoattenuating
+PanTS_00001823,1,1,1.0,0.8,pancreas head,hypoattenuating
+PanTS_00001826,1,1,6.3,2.5,pancreas body/tail,hypoattenuating
+PanTS_00001829,1,1,1.0,0.9,pancreas body,isoattenuating
+PanTS_00001840,1,1,13.6,3.0,pancreas head,hypoattenuating
+PanTS_00001850,1,1,3.4,2.9,pancreas head,hyperattenuating
+PanTS_00001856,1,1,1.8,1.3,pancreas head,hyperattenuating
+PanTS_00001870,1,1,2.1,1.3,pancreas head,hyperattenuating
+PanTS_00001873,1,1,3.4,2.5,pancreas tail,hyperattenuating
+PanTS_00001874,1,1,1.1,0.7,pancreas head,isoattenuating
+PanTS_00001876,1,1,4.0,1.9,pancreas head,isoattenuating
+PanTS_00001876,1,2,0.8,0.3,,hypoattenuating
+PanTS_00001878,1,1,5.2,4.8,pancreas head,hyperattenuating
+PanTS_00001878,1,2,2.7,1.3,pancreas tail,hyperattenuating
+PanTS_00001913,1,1,4.0,1.9,pancreas tail,hyperattenuating
+PanTS_00001922,1,1,1.4,1.1,pancreas head,hyperattenuating
+PanTS_00001923,1,1,4.5,3.7,pancreas tail,hypoattenuating
+PanTS_00001941,1,1,1.8,1.6,pancreas head,hyperattenuating
+PanTS_00001946,1,1,5.9,4.8,pancreas head,hypoattenuating
+PanTS_00001964,1,1,2.3,1.4,pancreas head,hyperattenuating
+PanTS_00001968,1,1,1.7,0.6,pancreas head,hypoattenuating
+PanTS_00001973,1,1,4.1,3.6,pancreas body/tail,hypoattenuating
+PanTS_00001996,1,1,2.1,1.3,,hyperattenuating
+PanTS_00001996,1,2,1.7,0.6,pancreas head,hyperattenuating
+PanTS_00001996,1,3,0.8,0.3,pancreas tail,isoattenuating
+PanTS_00002012,1,1,2.6,2.1,pancreas head,hyperattenuating
+PanTS_00002014,1,1,3.7,2.7,pancreas head,hyperattenuating
+PanTS_00002028,1,1,2.4,1.9,pancreas body/tail,hypoattenuating
+PanTS_00002071,1,1,3.9,2.3,pancreas head,hypoattenuating
+PanTS_00002081,1,1,3.5,2.3,pancreas head,hyperattenuating
+PanTS_00002091,1,1,4.0,2.8,pancreas head,isoattenuating
+PanTS_00002094,1,1,3.0,2.0,pancreas head,hypoattenuating
+PanTS_00002095,1,1,2.7,1.3,pancreas head,hyperattenuating
+PanTS_00002098,1,1,1.7,1.2,pancreas body/tail,hypoattenuating
+PanTS_00002102,1,1,2.7,0.8,pancreas head,hypoattenuating
+PanTS_00002102,1,2,2.3,1.3,pancreas head,hypoattenuating
+PanTS_00002107,1,1,1.4,0.6,pancreas head,hypoattenuating
+PanTS_00002123,1,1,1.9,1.0,pancreas head,isoattenuating
+PanTS_00002123,1,2,1.8,0.6,pancreas head,isoattenuating
+PanTS_00002126,1,1,1.4,0.7,pancreas head,hypoattenuating
+PanTS_00002142,1,1,2.2,1.7,pancreas head,hypoattenuating
+PanTS_00002142,1,2,2.6,1.1,pancreas head,hyperattenuating
+PanTS_00002177,1,1,2.2,1.4,pancreas head,hyperattenuating
+PanTS_00002186,1,1,1.0,0.7,pancreas head,isoattenuating
+PanTS_00002187,1,1,3.5,2.7,pancreas head,hyperattenuating
+PanTS_00002187,1,2,0.5,0.4,pancreas head,hyperattenuating
+PanTS_00002196,1,1,1.7,1.3,pancreas body,isoattenuating
+PanTS_00002196,1,2,1.4,1.0,pancreas body,hypoattenuating
+PanTS_00002205,1,1,3.1,1.3,,hypoattenuating
+PanTS_00002205,1,2,1.4,0.8,,hypoattenuating
+PanTS_00002211,1,1,3.2,2.3,pancreas head,hyperattenuating
+PanTS_00002213,1,1,2.9,1.5,pancreas head,hypoattenuating
+PanTS_00002213,1,2,1.3,0.8,pancreas body,isoattenuating
+PanTS_00002232,1,1,2.6,2.2,pancreas body,hypoattenuating
+PanTS_00002235,1,1,2.8,1.8,,hyperattenuating
+PanTS_00002235,1,2,1.7,1.3,pancreas body/tail,hyperattenuating
+PanTS_00002235,1,3,1.4,0.8,pancreas head,hypoattenuating
+PanTS_00002243,1,1,3.8,1.2,pancreas tail,hypoattenuating
+PanTS_00002249,1,1,7.8,4.0,pancreas body/tail,hyperattenuating
+PanTS_00002262,1,1,1.9,0.9,pancreas head,hyperattenuating
+PanTS_00002269,1,1,3.6,1.8,pancreas head,hypoattenuating
+PanTS_00002275,1,1,2.6,2.4,pancreas head,hypoattenuating
+PanTS_00002276,1,1,1.8,1.4,pancreas body/tail,hyperattenuating
+PanTS_00002279,1,1,2.5,2.0,pancreas head,isoattenuating
+PanTS_00002287,1,1,2.1,0.9,pancreas head,hyperattenuating
+PanTS_00002303,0,1,3.1,2.2,pancreas head,hypoattenuating
+PanTS_00002322,0,1,1.7,1.2,pancreas body,hypoattenuating
+PanTS_00002328,0,1,2.7,2.4,pancreas tail,hyperattenuating
+PanTS_00002339,0,1,1.2,1.0,pancreas tail,hyperattenuating
+PanTS_00002344,0,1,2.5,1.8,pancreas head,hyperattenuating
+PanTS_00002352,0,1,3.0,2.0,pancreas head,hypoattenuating
+PanTS_00002361,0,1,2.2,1.4,pancreas head,hypoattenuating
+PanTS_00002361,0,2,1.2,0.6,,hypoattenuating
+PanTS_00002387,0,1,5.8,3.6,pancreas head,hypoattenuating
+PanTS_00002395,0,1,2.4,1.4,pancreas tail,hyperattenuating
+PanTS_00002416,0,1,1.8,0.9,pancreas tail,hypoattenuating
+PanTS_00002416,0,2,1.5,0.6,,hyperattenuating
+PanTS_00002434,0,1,3.4,1.8,pancreas head,hypoattenuating
+PanTS_00002444,0,1,3.1,1.3,pancreas head,hyperattenuating
+PanTS_00002450,0,1,16.6,1.6,pancreas head,hyperattenuating
+PanTS_00002455,0,1,1.1,0.6,pancreas head/body,isoattenuating
+PanTS_00002463,0,1,3.2,1.8,pancreas head,hyperattenuating
+PanTS_00002463,0,2,1.9,1.0,pancreas tail,isoattenuating
+PanTS_00002465,0,1,4.4,2.5,pancreas head,hypoattenuating
+PanTS_00002467,0,1,2.0,1.7,pancreas head,hypoattenuating
+PanTS_00002478,0,1,1.9,0.9,pancreas head,isoattenuating
+PanTS_00002478,0,2,0.8,0.6,,isoattenuating
+PanTS_00002478,0,3,0.5,0.3,,isoattenuating
+PanTS_00002482,0,1,1.4,1.2,pancreas head,isoattenuating
+PanTS_00002494,0,1,3.0,2.4,pancreas body,hypoattenuating
+PanTS_00002496,0,1,1.8,1.1,pancreas head,isoattenuating
+PanTS_00002496,0,2,1.6,1.2,pancreas body/tail,hyperattenuating
+PanTS_00002497,1,1,2.4,1.3,pancreas head,hypoattenuating
+PanTS_00002513,0,1,2.6,2.5,pancreas head,hyperattenuating
+PanTS_00002540,0,1,2.1,2.0,pancreas body,hyperattenuating
+PanTS_00002566,0,1,2.6,1.9,pancreas head,hyperattenuating
+PanTS_00002571,0,1,2.3,1.1,pancreas tail,hyperattenuating
+PanTS_00002584,0,1,3.4,2.5,pancreas head,hypoattenuating
+PanTS_00002591,0,1,1.6,1.0,pancreas head,hyperattenuating
+PanTS_00002592,1,1,2.3,1.8,pancreas head,hypoattenuating
+PanTS_00002596,0,1,3.0,2.2,pancreas head,hyperattenuating
+PanTS_00002608,0,1,2.8,1.9,pancreas head,hyperattenuating
+PanTS_00002615,0,1,2.3,1.7,pancreas head,hyperattenuating
+PanTS_00002627,0,1,3.0,2.4,pancreas head,isoattenuating
+PanTS_00002642,0,1,1.2,0.7,pancreas head,hypoattenuating
+PanTS_00002651,0,1,3.4,2.8,pancreas head,hypoattenuating
+PanTS_00002651,0,2,2.0,1.0,pancreas head,hyperattenuating
+PanTS_00002676,0,1,1.4,1.2,pancreas head,hypoattenuating
+PanTS_00002685,0,1,2.2,1.7,pancreas body/tail,hypoattenuating
+PanTS_00002685,0,2,1.3,1.1,pancreas tail,hypoattenuating
+PanTS_00002719,0,1,13.4,11.6,pancreas tail,hyperattenuating
+PanTS_00002728,0,1,3.8,3.3,pancreas head/body,hyperattenuating
+PanTS_00002728,0,2,3.5,2.5,pancreas tail,hyperattenuating
+PanTS_00002733,0,1,5.4,3.3,pancreas body/tail,hypoattenuating
+PanTS_00002740,0,1,3.3,2.7,pancreas head,hypoattenuating
+PanTS_00002749,0,1,2.7,0.9,pancreas head,hypoattenuating
+PanTS_00002749,0,2,1.7,0.7,pancreas body,hypoattenuating
+PanTS_00002758,0,1,6.2,5.6,pancreas body,isoattenuating
+PanTS_00002778,0,1,4.0,2.8,pancreas head,isoattenuating
+PanTS_00002828,0,1,1.7,1.2,pancreas head,hypoattenuating
+PanTS_00002848,0,1,3.9,2.6,pancreas head,hyperattenuating
+PanTS_00002854,0,1,2.4,2.1,pancreas head,hyperattenuating
+PanTS_00002858,0,1,0.9,0.6,pancreas head,hypoattenuating
+PanTS_00002865,0,1,1.6,0.5,pancreas head,hypoattenuating
+PanTS_00002874,0,1,5.8,4.4,pancreas head/body,isoattenuating
+PanTS_00002887,0,1,4.1,1.2,pancreas head/body,hypoattenuating
+PanTS_00002888,1,1,1.4,0.8,pancreas head,isoattenuating
+PanTS_00002888,1,2,1.3,0.7,pancreas head,isoattenuating
+PanTS_00002892,0,1,2.3,1.6,pancreas head/body,hyperattenuating
+PanTS_00002897,0,1,2.2,1.8,pancreas head,isoattenuating
+PanTS_00002897,0,2,1.3,0.3,,hypoattenuating
+PanTS_00002904,0,1,1.5,0.7,pancreas tail,hypoattenuating
+PanTS_00002905,1,1,1.0,0.6,pancreas head,hypoattenuating
+PanTS_00002912,0,1,1.9,1.4,pancreas head,hyperattenuating
+PanTS_00002914,0,1,2.8,0.9,,hypoattenuating
+PanTS_00002915,1,1,0.6,0.4,,isoattenuating
+PanTS_00002926,0,1,2.9,2.6,pancreas head/body,hypoattenuating
+PanTS_00002929,0,1,1.3,1.1,pancreas head,isoattenuating
+PanTS_00002934,0,1,3.7,3.5,pancreas head,hypoattenuating
+PanTS_00002934,0,2,1.5,0.7,pancreas body,hypoattenuating
+PanTS_00002935,1,1,6.5,3.3,pancreas head/body,hypoattenuating
+PanTS_00002959,0,1,1.5,1.3,pancreas head,hyperattenuating
+PanTS_00002962,0,1,1.7,0.5,pancreas head,isoattenuating
+PanTS_00002962,0,2,1.2,1.0,,hypoattenuating
+PanTS_00002972,0,1,1.2,0.9,pancreas head,hypoattenuating
+PanTS_00002992,0,1,3.1,2.5,pancreas head,hypoattenuating
+PanTS_00003011,0,1,21.7,3.0,,isoattenuating
+PanTS_00003011,0,2,22.1,1.6,,isoattenuating
+PanTS_00003011,0,3,8.6,1.3,,hypoattenuating
+PanTS_00003023,0,1,1.8,0.3,,hypoattenuating
+PanTS_00003023,0,2,0.5,0.3,pancreas head,hypoattenuating
+PanTS_00003028,0,1,0.8,0.6,pancreas head,hypoattenuating
+PanTS_00003032,0,1,1.6,1.0,pancreas head,hyperattenuating
+PanTS_00003037,0,1,2.1,1.7,pancreas head/body,hyperattenuating
+PanTS_00003050,0,1,2.3,1.8,pancreas head,isoattenuating
+PanTS_00003071,0,1,1.0,0.6,pancreas head,hypoattenuating
+PanTS_00003071,0,2,1.0,0.3,,hypoattenuating
+PanTS_00003078,0,1,4.4,3.1,pancreas tail,isoattenuating
+PanTS_00003081,0,1,3.1,2.0,pancreas tail,hypoattenuating
+PanTS_00003083,0,1,1.6,1.0,pancreas head,hyperattenuating
+PanTS_00003112,0,1,2.9,2.3,pancreas head,hypoattenuating
+PanTS_00003126,0,1,2.2,2.0,pancreas body/tail,isoattenuating
+PanTS_00003126,0,2,1.2,0.9,pancreas tail,isoattenuating
+PanTS_00003127,1,1,5.5,3.5,pancreas tail,hypoattenuating
+PanTS_00003129,0,1,2.8,2.3,pancreas head,hypoattenuating
+PanTS_00003129,0,2,3.1,2.3,pancreas tail,hypoattenuating
+PanTS_00003146,0,1,2.3,2.1,pancreas head,hypoattenuating
+PanTS_00003147,1,1,1.3,0.6,pancreas head,hyperattenuating
+PanTS_00003150,0,1,6.5,2.8,pancreas tail,hypoattenuating
+PanTS_00003152,0,1,1.9,1.8,,hypoattenuating
+PanTS_00003152,0,2,1.7,0.8,,hypoattenuating
+PanTS_00003152,0,3,1.3,0.8,pancreas body,hypoattenuating
+PanTS_00003159,0,1,2.5,0.9,pancreas head,hyperattenuating
+PanTS_00003160,1,1,4.7,3.5,pancreas head,hypoattenuating
+PanTS_00003160,1,2,0.8,0.1,pancreas head,isoattenuating
+PanTS_00003161,1,1,1.9,0.7,pancreas body/tail,isoattenuating
+PanTS_00003186,0,1,2.7,1.0,pancreas head,isoattenuating
+PanTS_00003186,0,2,1.5,1.0,,hypoattenuating
+PanTS_00003187,1,1,4.5,2.2,pancreas tail,hypoattenuating
+PanTS_00003191,0,1,3.5,2.3,pancreas head,hyperattenuating
+PanTS_00003201,0,1,2.9,1.6,pancreas tail,hyperattenuating
+PanTS_00003204,0,1,2.7,2.2,pancreas head,hyperattenuating
+PanTS_00003228,0,1,3.2,2.4,pancreas head/body,hyperattenuating
+PanTS_00003245,0,1,3.5,2.5,pancreas head,isoattenuating
+PanTS_00003257,0,1,6.5,0.7,,hypoattenuating
+PanTS_00003259,0,1,1.4,0.4,pancreas head,hypoattenuating
+PanTS_00003264,0,1,0.8,0.5,pancreas head,hyperattenuating
+PanTS_00003269,0,1,2.6,1.6,pancreas head,hyperattenuating
+PanTS_00003275,0,1,3.2,1.4,pancreas head,isoattenuating
+PanTS_00003279,0,1,3.3,1.2,pancreas body/tail,hypoattenuating
+PanTS_00003286,0,1,2.1,1.7,pancreas head,hyperattenuating
+PanTS_00003291,0,1,3.2,2.3,pancreas tail,hypoattenuating
+PanTS_00003299,0,1,1.6,1.1,pancreas head,isoattenuating
+PanTS_00003302,0,1,4.1,3.1,pancreas head,hyperattenuating
+PanTS_00003317,0,1,3.3,1.9,pancreas head,hypoattenuating
+PanTS_00003338,0,1,2.9,2.2,pancreas head,isoattenuating
+PanTS_00003342,0,1,2.8,1.6,pancreas head,hyperattenuating
+PanTS_00003354,0,1,3.2,2.4,pancreas head/body,isoattenuating
+PanTS_00003355,1,1,1.8,1.5,pancreas body,hypoattenuating
+PanTS_00003359,0,1,4.2,2.1,pancreas body/tail,hyperattenuating
+PanTS_00003369,0,1,1.0,0.5,pancreas head,hypoattenuating
+PanTS_00003390,0,1,2.8,0.9,pancreas head/body,hypoattenuating
+PanTS_00003390,0,2,1.6,0.9,,hypoattenuating
+PanTS_00003397,0,1,1.4,1.0,pancreas head,hyperattenuating
+PanTS_00003404,0,1,2.3,1.9,pancreas head/body,hyperattenuating
+PanTS_00003415,0,1,4.3,3.2,,hypoattenuating
+PanTS_00003415,0,2,1.3,0.4,,hypoattenuating
+PanTS_00003415,0,3,1.1,0.8,,isoattenuating
+PanTS_00003430,0,1,3.0,1.9,pancreas head,hyperattenuating
+PanTS_00003433,0,1,3.6,2.6,pancreas head,hyperattenuating
+PanTS_00003436,0,1,2.8,2.3,pancreas head,isoattenuating
+PanTS_00003440,0,1,3.8,2.9,pancreas head,hypoattenuating
+PanTS_00003456,0,1,2.2,1.1,pancreas tail,hypoattenuating
+PanTS_00003472,0,1,2.2,1.4,pancreas body,hypoattenuating
+PanTS_00003472,0,2,2.1,1.2,pancreas head,hypoattenuating
+PanTS_00003484,0,1,1.0,0.8,pancreas head,hyperattenuating
+PanTS_00003492,0,1,3.7,1.9,pancreas head,hypoattenuating
+PanTS_00003492,0,2,0.9,0.5,pancreas body/tail,hypoattenuating
+PanTS_00003492,0,3,0.5,0.3,pancreas tail,hypoattenuating
+PanTS_00003494,0,1,2.2,1.4,,hyperattenuating
+PanTS_00003495,1,1,2.9,1.9,pancreas head,isoattenuating
+PanTS_00003512,0,1,0.9,0.3,,hypoattenuating
+PanTS_00003520,0,1,1.5,0.9,pancreas head,hypoattenuating
+PanTS_00003526,0,1,2.5,1.3,pancreas tail,hypoattenuating
+PanTS_00003557,0,1,6.1,2.4,pancreas head,isoattenuating
+PanTS_00003569,0,1,0.7,0.4,,hypoattenuating
+PanTS_00003577,0,1,1.5,0.8,pancreas tail,hypoattenuating
+PanTS_00003585,0,1,4.2,2.6,pancreas head/body,hyperattenuating
+PanTS_00003586,1,1,2.6,1.2,pancreas head,hypoattenuating
+PanTS_00003587,1,1,2.5,1.7,pancreas head/body,hypoattenuating
+PanTS_00003594,0,1,4.0,3.0,pancreas tail,hyperattenuating
+PanTS_00003594,0,2,3.7,2.7,pancreas body,hyperattenuating
+PanTS_00003601,0,1,2.0,1.4,pancreas head,hyperattenuating
+PanTS_00003614,0,1,5.0,3.7,pancreas head,hypoattenuating
+PanTS_00003623,0,1,2.4,1.5,pancreas head,hyperattenuating
+PanTS_00003630,0,1,1.9,1.3,pancreas head,hypoattenuating
+PanTS_00003638,0,1,5.2,3.5,pancreas head/body,hypoattenuating
+PanTS_00003641,0,1,3.5,2.9,pancreas head,isoattenuating
+PanTS_00003653,0,1,8.6,5.1,pancreas body/tail,hypoattenuating
+PanTS_00003671,0,1,0.9,0.7,pancreas head,hypoattenuating
+PanTS_00003678,0,1,3.6,2.8,pancreas head,isoattenuating
+PanTS_00003683,0,1,1.7,1.2,pancreas head,hyperattenuating
+PanTS_00003699,0,1,2.6,1.3,pancreas head,hypoattenuating
+PanTS_00003705,0,1,1.7,1.2,pancreas head,hypoattenuating
+PanTS_00003710,0,1,3.9,2.7,pancreas head,hyperattenuating
+PanTS_00003729,0,1,3.4,1.9,pancreas head,hyperattenuating
+PanTS_00003735,0,1,1.9,1.7,pancreas body,isoattenuating
+PanTS_00003745,0,1,1.7,1.0,pancreas head,isoattenuating
+PanTS_00003745,0,2,1.4,1.0,pancreas head,hypoattenuating
+PanTS_00003749,0,1,2.1,1.2,pancreas head,hypoattenuating
+PanTS_00003749,0,2,1.0,0.7,pancreas head,hypoattenuating
+PanTS_00003767,0,1,3.6,2.7,pancreas tail,hypoattenuating
+PanTS_00003775,0,1,1.5,0.8,pancreas head,hypoattenuating
+PanTS_00003776,1,1,1.1,1.0,pancreas body/tail,hypoattenuating
+PanTS_00003781,0,1,3.5,2.4,pancreas head,isoattenuating
+PanTS_00003783,0,1,1.5,0.8,pancreas tail,isoattenuating
+PanTS_00003811,0,1,2.8,2.2,pancreas head,hyperattenuating
+PanTS_00003823,0,1,1.2,1.1,pancreas head/body,isoattenuating
+PanTS_00003823,0,2,1.2,1.1,,hypoattenuating
+PanTS_00003840,0,1,2.8,2.4,pancreas head,hypoattenuating
+PanTS_00003840,0,2,0.8,0.5,pancreas head,hypoattenuating
+PanTS_00003848,0,1,1.5,1.4,pancreas head,hyperattenuating
+PanTS_00003888,0,1,9.3,3.0,pancreas head,hypoattenuating
+PanTS_00003893,0,1,2.6,2.0,pancreas head,hyperattenuating
+PanTS_00003899,0,1,2.2,0.5,,hypoattenuating
+PanTS_00003899,0,2,2.1,0.8,,hypoattenuating
+PanTS_00003899,0,3,1.5,0.7,,hypoattenuating
+PanTS_00003915,0,1,1.1,0.9,,hypoattenuating
+PanTS_00003917,0,1,3.0,1.5,pancreas head/body,hypoattenuating
+PanTS_00003918,1,1,2.6,2.3,pancreas head,hypoattenuating
+PanTS_00003920,0,1,1.8,1.5,pancreas head,hypoattenuating
+PanTS_00003922,0,1,2.6,1.6,pancreas head,hyperattenuating
+PanTS_00003936,0,1,3.1,2.5,pancreas head,hyperattenuating
+PanTS_00003941,0,1,1.0,0.9,pancreas head,isoattenuating
+PanTS_00003949,0,1,19.7,5.5,pancreas head,hypoattenuating
+PanTS_00003949,0,2,3.6,2.7,pancreas body,isoattenuating
+PanTS_00003952,0,1,8.0,2.3,pancreas head/body/tail,hypoattenuating
+PanTS_00003967,0,1,2.1,1.7,pancreas head,hypoattenuating
+PanTS_00003967,0,2,2.6,1.1,pancreas head,isoattenuating
+PanTS_00003968,1,1,2.9,2.2,pancreas head,hypoattenuating
+PanTS_00003973,0,1,2.5,1.9,pancreas head,hypoattenuating
+PanTS_00003977,0,1,1.8,1.0,,hypoattenuating
+PanTS_00003977,0,2,1.3,0.5,pancreas tail,isoattenuating
+PanTS_00004028,0,1,4.4,3.6,pancreas head,hyperattenuating
+PanTS_00004032,0,1,3.2,2.2,pancreas head,hyperattenuating
+PanTS_00004045,0,1,2.1,1.0,pancreas body,hypoattenuating
+PanTS_00004054,0,1,2.1,1.8,pancreas head,hyperattenuating
+PanTS_00004054,0,2,1.7,1.3,pancreas head,hyperattenuating
+PanTS_00004057,0,1,3.6,3.4,pancreas head,hyperattenuating
+PanTS_00004063,0,1,2.3,1.6,pancreas head,hyperattenuating
+PanTS_00004068,0,1,3.7,1.9,pancreas head,hypoattenuating
+PanTS_00004068,0,2,0.9,0.5,pancreas body/tail,hypoattenuating
+PanTS_00004068,0,3,0.5,0.3,pancreas tail,hypoattenuating
+PanTS_00004077,0,1,4.1,1.2,pancreas head,isoattenuating
+PanTS_00004084,0,1,1.3,1.0,pancreas head,hyperattenuating
+PanTS_00004116,0,1,2.6,1.6,pancreas head,hyperattenuating
+PanTS_00004120,0,1,2.4,1.0,pancreas tail,hypoattenuating
+PanTS_00004121,1,1,2.3,1.8,pancreas head,hyperattenuating
+PanTS_00004122,1,1,2.3,2.0,pancreas head,hyperattenuating
+PanTS_00004123,1,1,0.9,0.6,pancreas head,hypoattenuating
+PanTS_00004154,0,1,5.3,3.6,pancreas body/tail,hypoattenuating
+PanTS_00004154,0,2,0.9,0.6,,hypoattenuating
+PanTS_00004156,0,1,2.8,2.7,pancreas tail,hyperattenuating
+PanTS_00004189,0,1,3.2,2.1,pancreas head,hyperattenuating
+PanTS_00004207,0,1,2.5,1.5,pancreas head,isoattenuating
+PanTS_00004224,0,1,3.6,1.9,,hypoattenuating
+PanTS_00004224,0,2,2.9,1.5,pancreas body/tail,hypoattenuating
+PanTS_00004224,0,3,2.0,1.8,pancreas head,hyperattenuating
+PanTS_00004225,1,1,1.1,0.5,pancreas head,hypoattenuating
+PanTS_00004225,1,2,0.8,0.6,pancreas head,hypoattenuating
+PanTS_00004230,0,1,3.4,2.6,pancreas head/body,hypoattenuating
+PanTS_00004242,0,1,4.4,2.4,pancreas head/body,isoattenuating
+PanTS_00004261,0,1,2.2,1.7,pancreas head,isoattenuating
+PanTS_00004266,0,1,1.3,0.9,pancreas body,hyperattenuating
+PanTS_00004266,0,2,1.0,0.6,pancreas head,hyperattenuating
+PanTS_00004267,1,1,2.8,1.9,pancreas head,hypoattenuating
+PanTS_00004300,0,1,6.1,3.6,pancreas body/tail,hyperattenuating
+PanTS_00004312,0,1,2.0,1.5,pancreas head,isoattenuating
+PanTS_00004322,0,1,2.5,1.6,pancreas body/tail,hypoattenuating
+PanTS_00004328,0,1,2.8,1.7,pancreas head,hyperattenuating
+PanTS_00004328,0,2,1.2,1.0,,hypoattenuating
+PanTS_00004342,0,1,3.1,1.7,,hypoattenuating
+PanTS_00004359,0,1,8.3,5.8,pancreas head,hypoattenuating
+PanTS_00004359,0,2,2.3,1.0,pancreas head,hypoattenuating
+PanTS_00004365,0,1,1.2,0.6,,hypoattenuating
+PanTS_00004407,0,1,2.2,1.5,pancreas head,hypoattenuating
+PanTS_00004419,0,1,3.4,2.0,pancreas head,hypoattenuating
+PanTS_00004425,0,1,1.5,0.9,pancreas head,hyperattenuating
+PanTS_00004437,0,1,2.0,1.4,,hypoattenuating
+PanTS_00004444,0,1,1.2,0.2,pancreas head,hyperattenuating
+PanTS_00004447,0,1,3.2,2.5,pancreas head,hyperattenuating
+PanTS_00004448,1,1,1.5,1.4,pancreas head,hyperattenuating
+PanTS_00004453,0,1,1.4,0.9,pancreas body,hypoattenuating
+PanTS_00004453,0,2,1.0,0.6,,hypoattenuating
+PanTS_00004453,0,3,1.4,0.4,,hypoattenuating
+PanTS_00004453,0,4,1.2,0.4,pancreas head,hypoattenuating
+PanTS_00004466,0,1,0.5,0.4,pancreas head,hyperattenuating
+PanTS_00004474,0,1,3.8,1.3,pancreas tail,hypoattenuating
+PanTS_00004482,0,1,3.0,2.3,pancreas head,isoattenuating
+PanTS_00004496,0,1,3.0,2.5,pancreas head,hyperattenuating
+PanTS_00004502,0,1,3.6,1.5,pancreas head,hypoattenuating
+PanTS_00004505,0,1,1.5,0.9,pancreas tail,hyperattenuating
+PanTS_00004512,0,1,2.4,1.6,pancreas head/body,hyperattenuating
+PanTS_00004516,0,1,3.7,3.4,pancreas head,isoattenuating
+PanTS_00004520,0,1,3.3,1.3,pancreas tail,hypoattenuating
+PanTS_00004522,0,1,3.5,2.3,pancreas head,hypoattenuating
+PanTS_00004537,0,1,2.4,0.9,pancreas head,hyperattenuating
+PanTS_00004538,1,1,3.5,2.1,pancreas tail,hyperattenuating
+PanTS_00004539,1,1,14.6,2.9,pancreas head,isoattenuating
+PanTS_00004541,0,1,2.3,2.0,pancreas body,hypoattenuating
+PanTS_00004570,0,1,3.1,2.3,pancreas head,hyperattenuating
+PanTS_00004596,0,1,2.7,1.5,pancreas head,hyperattenuating
+PanTS_00004601,0,1,1.9,1.4,pancreas head,hypoattenuating
+PanTS_00004655,0,1,1.8,1.1,pancreas tail,hyperattenuating
+PanTS_00004668,0,1,4.1,3.2,,hypoattenuating
+PanTS_00004668,0,2,2.1,1.2,,hypoattenuating
+PanTS_00004668,0,3,1.6,0.7,,hypoattenuating
+PanTS_00004670,0,1,2.9,1.7,pancreas head/body,hypoattenuating
+PanTS_00004670,0,2,1.4,0.7,,hypoattenuating
+PanTS_00004672,0,1,2.3,1.6,pancreas head,hyperattenuating
+PanTS_00004676,0,1,3.8,2.5,pancreas head,hypoattenuating
+PanTS_00004680,0,1,0.7,0.4,pancreas head,hyperattenuating
+PanTS_00004702,0,1,2.0,1.1,pancreas head,hypoattenuating
+PanTS_00004706,0,1,3.9,3.4,pancreas tail,hypoattenuating
+PanTS_00004723,0,1,2.4,1.1,,isoattenuating
+PanTS_00004734,0,1,1.6,1.4,pancreas body/tail,hyperattenuating
+PanTS_00004747,0,1,1.5,0.7,pancreas tail,hypoattenuating
+PanTS_00004752,0,1,2.7,2.0,pancreas head,hypoattenuating
+PanTS_00004768,0,1,3.3,2.6,pancreas head,hypoattenuating
+PanTS_00004787,0,1,2.2,1.7,,hyperattenuating
+PanTS_00004795,0,1,1.4,0.7,pancreas head,hypoattenuating
+PanTS_00004799,0,1,1.7,0.8,,hypoattenuating
+PanTS_00004824,0,1,2.5,1.8,pancreas head,isoattenuating
+PanTS_00004827,0,1,2.6,2.2,pancreas head,hypoattenuating
+PanTS_00004841,0,1,2.0,1.2,pancreas head,hyperattenuating
+PanTS_00004855,0,1,0.7,0.6,pancreas head,hypoattenuating
+PanTS_00004856,1,1,6.1,4.8,pancreas head,hyperattenuating
+PanTS_00004936,0,1,1.8,1.5,pancreas head,hyperattenuating
+PanTS_00004962,0,1,4.1,2.9,pancreas tail,hypoattenuating
+PanTS_00004963,1,1,1.9,1.3,pancreas head,hyperattenuating
+PanTS_00005010,0,1,1.7,1.4,pancreas head,isoattenuating
+PanTS_00005016,0,1,3.3,2.2,pancreas head,isoattenuating
+PanTS_00005026,0,1,2.2,1.5,pancreas head,hypoattenuating
+PanTS_00005040,0,1,2.9,1.9,pancreas head,isoattenuating
+PanTS_00005040,0,2,1.1,0.8,pancreas head,hypoattenuating
+PanTS_00005053,0,1,2.1,1.4,pancreas tail,hyperattenuating
+PanTS_00005055,0,1,4.8,4.0,pancreas head,hyperattenuating
+PanTS_00005061,0,1,3.6,2.6,pancreas head,isoattenuating
+PanTS_00005084,0,1,1.4,0.7,pancreas body,hypoattenuating
+PanTS_00005094,0,1,3.4,2.7,pancreas head,hyperattenuating
+PanTS_00005113,0,1,1.5,1.3,pancreas head/body,hyperattenuating
+PanTS_00005136,0,1,4.2,3.5,pancreas head/body,isoattenuating
+PanTS_00005136,0,2,2.1,1.4,pancreas tail,isoattenuating
+PanTS_00005161,0,1,3.1,1.8,,hypoattenuating
+PanTS_00005161,0,2,1.1,0.3,,hypoattenuating
+PanTS_00005171,0,1,3.7,2.5,pancreas head,hyperattenuating
+PanTS_00005179,0,1,2.5,1.8,pancreas tail,hypoattenuating
+PanTS_00005185,0,1,3.6,2.5,pancreas head,hyperattenuating
+PanTS_00005187,0,1,5.7,3.6,pancreas body/tail,isoattenuating
+PanTS_00005206,0,1,5.2,3.3,pancreas head,hypoattenuating
+PanTS_00005209,0,1,4.1,3.6,pancreas head,hyperattenuating
+PanTS_00005220,0,1,2.8,1.3,pancreas head/body,hyperattenuating
+PanTS_00005220,0,2,2.0,1.1,pancreas head,hyperattenuating
+PanTS_00005229,0,1,1.6,1.1,pancreas head,hypoattenuating
+PanTS_00005241,0,1,2.2,1.6,pancreas head,hypoattenuating
+PanTS_00005249,0,1,1.7,1.4,pancreas body,isoattenuating
+PanTS_00005256,0,1,2.5,1.2,pancreas body,hyperattenuating
+PanTS_00005265,0,1,2.9,1.0,,hypoattenuating
+PanTS_00005267,0,1,4.5,2.7,pancreas head,hyperattenuating
+PanTS_00005274,0,1,2.6,2.1,pancreas head,hypoattenuating
+PanTS_00005289,0,1,2.6,1.7,pancreas head,isoattenuating
+PanTS_00005294,0,1,1.0,0.7,pancreas head,hypoattenuating
+PanTS_00005308,0,1,4.5,2.6,pancreas head,hypoattenuating
+PanTS_00005315,0,1,1.8,1.0,pancreas tail,hypoattenuating
+PanTS_00005361,0,1,2.3,1.9,pancreas tail,hypoattenuating
+PanTS_00005369,0,1,1.6,1.4,pancreas head/body,hyperattenuating
+PanTS_00005389,0,1,2.2,1.9,pancreas head,isoattenuating
+PanTS_00005389,0,2,1.3,0.3,,hypoattenuating
+PanTS_00005390,1,1,1.3,0.9,pancreas body,hypoattenuating
+PanTS_00005391,1,1,6.0,3.2,pancreas head,hyperattenuating
+PanTS_00005391,1,2,1.6,1.2,,hypoattenuating
+PanTS_00005419,0,1,10.3,5.6,pancreas head,hypoattenuating
+PanTS_00005421,0,1,0.9,0.8,pancreas head,hyperattenuating
+PanTS_00005421,0,2,0.7,0.4,pancreas head,isoattenuating
+PanTS_00005427,0,1,1.9,1.4,pancreas head,hyperattenuating
+PanTS_00005436,0,1,2.8,2.1,pancreas head,isoattenuating
+PanTS_00005465,0,1,2.4,1.9,pancreas head,isoattenuating
+PanTS_00005513,0,1,1.0,0.6,pancreas head,hypoattenuating
+PanTS_00005513,0,2,1.2,0.4,pancreas head,hyperattenuating
+PanTS_00005524,0,1,3.0,2.7,pancreas head,hypoattenuating
+PanTS_00005537,0,1,1.9,1.5,pancreas head,hyperattenuating
+PanTS_00005557,0,1,1.6,0.7,pancreas head,hypoattenuating
+PanTS_00005557,0,2,1.6,0.6,pancreas head,hypoattenuating
+PanTS_00005570,0,1,2.8,2.1,pancreas head,hyperattenuating
+PanTS_00005582,0,1,4.0,1.9,pancreas head,hypoattenuating
+PanTS_00005622,0,1,2.6,0.7,,isoattenuating
+PanTS_00005640,0,1,3.1,2.2,pancreas head,hypoattenuating
+PanTS_00005642,0,1,1.0,0.8,pancreas head,hyperattenuating
+PanTS_00005660,0,1,2.5,1.6,pancreas head,hyperattenuating
+PanTS_00005664,0,1,0.8,0.5,pancreas head,isoattenuating
+PanTS_00005676,0,1,1.0,0.7,pancreas head,hypoattenuating
+PanTS_00005730,0,1,1.9,0.5,,hyperattenuating
+PanTS_00005731,1,1,2.8,2.0,pancreas head,hypoattenuating
+PanTS_00005738,0,1,2.7,1.8,pancreas head,hyperattenuating
+PanTS_00005741,0,1,1.9,1.2,pancreas head,hyperattenuating
+PanTS_00005756,0,1,2.8,2.4,pancreas head,hypoattenuating
+PanTS_00005758,0,1,2.5,1.6,pancreas body,isoattenuating
+PanTS_00005765,0,1,3.0,2.2,pancreas head/body,hyperattenuating
+PanTS_00005773,0,1,3.2,1.3,pancreas body,hypoattenuating
+PanTS_00005779,0,1,3.1,2.3,pancreas body,hyperattenuating
+PanTS_00005781,0,1,0.7,0.5,pancreas tail,hypoattenuating
+PanTS_00005784,0,1,1.4,0.7,pancreas head,isoattenuating
+PanTS_00005802,0,1,2.0,1.2,pancreas body,hyperattenuating
+PanTS_00005805,0,1,4.1,3.3,pancreas head,hypoattenuating
+PanTS_00005820,0,1,3.0,1.9,pancreas head,hyperattenuating
+PanTS_00005831,0,1,1.1,0.4,pancreas head,isoattenuating
+PanTS_00005838,0,1,2.6,1.7,pancreas tail,hypoattenuating
+PanTS_00005854,1,1,3.9,2.4,pancreas head,hyperattenuating
+PanTS_00005863,0,1,1.5,0.7,pancreas head,hypoattenuating
+PanTS_00005875,0,1,2.9,2.5,pancreas head/body,hypoattenuating
+PanTS_00005880,0,1,2.8,2.4,pancreas head/body,hyperattenuating
+PanTS_00005904,0,1,4.7,1.4,pancreas body/tail,hypoattenuating
+PanTS_00005920,0,1,2.8,2.0,pancreas head,hypoattenuating
+PanTS_00005923,0,1,2.6,2.4,pancreas head,hypoattenuating
+PanTS_00005930,0,1,2.1,1.9,pancreas head,hypoattenuating
+PanTS_00005959,0,1,2.4,1.7,pancreas head,hypoattenuating
+PanTS_00005984,0,1,2.9,1.0,,hypoattenuating
+PanTS_00005991,0,1,3.0,1.9,pancreas head,isoattenuating
+PanTS_00005993,0,1,1.5,1.0,pancreas head,isoattenuating
+PanTS_00005994,1,1,2.5,1.3,,isoattenuating
+PanTS_00005999,0,1,3.9,2.5,pancreas head,hypoattenuating
+PanTS_00006010,0,1,1.9,1.4,pancreas head,hyperattenuating
+PanTS_00006038,0,1,1.7,1.2,pancreas head,hyperattenuating
+PanTS_00006038,0,2,1.7,0.8,,hypoattenuating
+PanTS_00006053,0,1,4.6,1.6,,hypoattenuating
+PanTS_00006055,0,1,1.8,0.7,,hypoattenuating
+PanTS_00006055,0,2,1.4,0.5,,hypoattenuating
+PanTS_00006063,0,1,1.8,1.3,pancreas head,hypoattenuating
+PanTS_00006078,0,1,2.5,1.9,pancreas head,isoattenuating
+PanTS_00006134,0,1,1.7,1.2,,hypoattenuating
+PanTS_00006141,0,1,2.0,1.0,pancreas head,hyperattenuating
+PanTS_00006156,0,1,4.9,3.1,pancreas head,hyperattenuating
+PanTS_00006177,0,1,1.9,1.2,pancreas head,hyperattenuating
+PanTS_00006182,0,1,2.4,1.7,pancreas head/body,hypoattenuating
+PanTS_00006192,0,1,1.7,1.3,pancreas body,hyperattenuating
+PanTS_00006200,0,1,2.7,2.4,pancreas head,hyperattenuating
+PanTS_00006217,0,1,1.8,1.7,pancreas head,hypoattenuating
+PanTS_00006221,0,1,4.1,1.9,pancreas head,isoattenuating
+PanTS_00006237,0,1,3.3,1.2,pancreas head,hypoattenuating
+PanTS_00006255,0,1,2.4,2.2,pancreas tail,hypoattenuating
+PanTS_00006256,1,1,1.0,0.8,,isoattenuating
+PanTS_00006256,1,2,0.6,0.4,,hypoattenuating
+PanTS_00006262,0,1,3.5,2.5,pancreas head,hyperattenuating
+PanTS_00006267,0,1,3.7,2.3,pancreas head,hypoattenuating
+PanTS_00006271,0,1,2.8,2.0,pancreas head,isoattenuating
+PanTS_00006274,0,1,2.5,1.4,pancreas head/body,hypoattenuating
+PanTS_00006274,0,2,1.7,1.4,,hypoattenuating
+PanTS_00006274,0,3,3.6,2.0,pancreas head,hypoattenuating
+PanTS_00006274,0,4,1.3,1.0,,hypoattenuating
+PanTS_00006274,0,5,1.3,0.3,,hypoattenuating
+PanTS_00006281,0,1,1.2,0.9,pancreas head,hypoattenuating
+PanTS_00006286,0,1,5.3,3.3,pancreas tail,hypoattenuating
+PanTS_00006286,0,2,2.1,1.2,pancreas head,isoattenuating
+PanTS_00006299,0,1,6.5,2.9,,hypoattenuating
+PanTS_00006299,0,2,2.4,1.7,,hypoattenuating
+PanTS_00006299,0,3,2.8,1.4,pancreas head,hypoattenuating
+PanTS_00006299,0,4,1.2,0.6,,hypoattenuating
+PanTS_00006303,0,1,1.9,1.3,pancreas head,isoattenuating
+PanTS_00006310,0,1,1.2,0.5,pancreas head,hyperattenuating
+PanTS_00006314,0,1,3.5,1.8,pancreas head,hyperattenuating
+PanTS_00006318,0,1,4.2,2.6,pancreas head/body,hypoattenuating
+PanTS_00006330,0,1,6.8,1.7,pancreas body/tail,hypoattenuating
+PanTS_00006330,0,2,2.8,1.8,,hypoattenuating
+PanTS_00006330,0,3,0.9,0.7,pancreas tail,hypoattenuating
+PanTS_00006332,0,1,3.5,2.6,pancreas head,hyperattenuating
+PanTS_00006339,0,1,1.4,1.0,pancreas head,hypoattenuating
+PanTS_00006349,0,1,4.1,3.2,pancreas head,isoattenuating
+PanTS_00006350,1,1,2.9,2.0,pancreas head,isoattenuating
+PanTS_00006352,0,1,3.8,3.1,pancreas head/body,isoattenuating
+PanTS_00006352,0,2,1.4,0.9,pancreas body,isoattenuating
+PanTS_00006383,1,1,2.8,2.2,pancreas head/body,hypoattenuating
+PanTS_00006393,0,1,1.4,1.2,pancreas head,hypoattenuating
+PanTS_00006412,0,1,1.6,1.4,pancreas body,hypoattenuating
+PanTS_00006421,0,1,2.2,1.8,pancreas head/body,hyperattenuating
+PanTS_00006429,0,1,4.5,3.2,pancreas head,hyperattenuating
+PanTS_00006431,0,1,3.5,2.4,pancreas head,hypoattenuating
+PanTS_00006446,0,1,3.2,2.6,pancreas head,isoattenuating
+PanTS_00006465,0,1,2.6,2.2,pancreas head,hyperattenuating
+PanTS_00006466,1,1,2.3,1.9,pancreas head,hyperattenuating
+PanTS_00006482,0,1,5.4,3.6,pancreas head/body,isoattenuating
+PanTS_00006512,0,1,3.7,2.3,pancreas head,hypoattenuating
+PanTS_00006515,0,1,2.5,1.4,,isoattenuating
+PanTS_00006518,0,1,4.7,4.2,pancreas head,hyperattenuating
+PanTS_00006522,0,1,1.0,0.8,pancreas head,hypoattenuating
+PanTS_00006524,0,1,6.0,4.2,pancreas body/tail,hypoattenuating
+PanTS_00006535,0,1,1.3,0.7,pancreas tail,hypoattenuating
+PanTS_00006535,0,2,2.3,0.6,,hypoattenuating
+PanTS_00006558,0,1,1.5,1.0,pancreas head,hyperattenuating
+PanTS_00006575,0,1,2.9,1.9,pancreas head,isoattenuating
+PanTS_00006575,0,2,1.1,0.8,pancreas head,hypoattenuating
+PanTS_00006615,0,1,2.4,1.7,pancreas head,hyperattenuating
+PanTS_00006649,0,1,3.4,2.0,pancreas body/tail,hypoattenuating
+PanTS_00006653,0,1,10.0,3.6,pancreas body/tail,hypoattenuating
+PanTS_00006660,0,1,1.9,1.7,pancreas head/body,isoattenuating
+PanTS_00006664,0,1,3.5,2.8,pancreas head/body,hyperattenuating
+PanTS_00006706,0,1,2.4,1.4,pancreas head,hypoattenuating
+PanTS_00006709,0,1,2.3,1.7,pancreas head,hypoattenuating
+PanTS_00006733,0,1,1.4,0.8,pancreas head,hyperattenuating
+PanTS_00006740,0,1,2.3,0.9,pancreas body/tail,hypoattenuating
+PanTS_00006745,0,1,3.9,3.4,pancreas head,hypoattenuating
+PanTS_00006753,0,1,2.5,2.2,pancreas tail,hypoattenuating
+PanTS_00006754,1,1,1.4,0.8,pancreas head,hypoattenuating
+PanTS_00006754,1,2,1.3,0.7,pancreas head,isoattenuating
+PanTS_00006771,0,1,8.6,5.1,pancreas body/tail,hypoattenuating
+PanTS_00006785,0,1,4.5,3.2,pancreas head,hypoattenuating
+PanTS_00006794,0,1,7.3,2.6,pancreas head,hypoattenuating
+PanTS_00006801,0,1,1.6,1.1,pancreas head,hypoattenuating
+PanTS_00006815,0,1,2.3,2.0,pancreas head,hypoattenuating
+PanTS_00006836,0,1,4.0,3.2,pancreas head,hypoattenuating
+PanTS_00006878,0,1,2.8,2.6,pancreas head,isoattenuating
+PanTS_00006902,0,1,2.9,2.2,pancreas head,hypoattenuating
+PanTS_00006916,0,1,3.4,3.2,pancreas head,isoattenuating
+PanTS_00006916,0,2,1.0,0.6,pancreas head,hyperattenuating
+PanTS_00006916,0,3,0.7,0.4,pancreas head,hyperattenuating
+PanTS_00006920,0,1,4.0,3.3,pancreas head,hypoattenuating
+PanTS_00006926,0,1,1.2,0.2,,hyperattenuating
+PanTS_00006944,0,1,2.8,2.4,pancreas head,hypoattenuating
+PanTS_00006958,0,1,1.9,1.6,pancreas head,hyperattenuating
+PanTS_00006959,1,1,3.3,2.6,pancreas head,hyperattenuating
+PanTS_00006974,0,1,2.4,2.2,pancreas head,hyperattenuating
+PanTS_00006981,0,1,6.5,4.4,pancreas head/body,hypoattenuating
+PanTS_00006986,0,1,2.6,2.1,pancreas head/body,hyperattenuating
+PanTS_00006986,0,2,2.0,1.7,pancreas tail,hyperattenuating
+PanTS_00006997,0,1,3.5,2.0,pancreas head,hypoattenuating
+PanTS_00007000,0,1,1.9,1.2,pancreas head,isoattenuating
+PanTS_00007000,0,2,1.7,0.8,pancreas head,hypoattenuating
+PanTS_00007001,1,1,1.3,0.7,pancreas head,isoattenuating
+PanTS_00007013,0,1,3.2,1.6,pancreas body/tail,isoattenuating
+PanTS_00007043,0,1,2.2,1.9,pancreas head,isoattenuating
+PanTS_00007043,0,2,1.3,0.3,,hypoattenuating
+PanTS_00007047,0,1,1.6,1.1,pancreas head,hypoattenuating
+PanTS_00007052,0,1,3.9,1.9,pancreas head,hypoattenuating
+PanTS_00007053,1,1,3.2,1.4,,hypoattenuating
+PanTS_00007059,0,1,3.5,2.5,pancreas tail,hypoattenuating
+PanTS_00007064,0,1,3.3,2.8,pancreas head,hyperattenuating
+PanTS_00007066,0,1,3.2,1.7,pancreas head,hyperattenuating
+PanTS_00007070,0,1,3.4,2.0,pancreas head/body,hypoattenuating
+PanTS_00007092,0,1,1.0,0.6,pancreas body,hypoattenuating
+PanTS_00007093,1,1,3.5,1.0,pancreas head,hyperattenuating
+PanTS_00007094,1,1,4.6,2.2,pancreas head,hyperattenuating
+PanTS_00007098,0,1,3.5,2.3,pancreas head,isoattenuating
+PanTS_00007099,1,1,2.5,1.8,,hypoattenuating
+PanTS_00007099,1,2,2.5,1.2,,hyperattenuating
+PanTS_00007099,1,3,1.7,1.3,pancreas tail,hypoattenuating
+PanTS_00007099,1,4,1.9,1.3,pancreas head,hyperattenuating
+PanTS_00007101,0,1,1.6,1.0,pancreas tail,hypoattenuating
+PanTS_00007101,0,2,1.1,0.6,pancreas tail,hypoattenuating
+PanTS_00007104,0,1,2.3,2.0,pancreas head,hypoattenuating
+PanTS_00007113,0,1,3.3,2.5,pancreas head,hypoattenuating
+PanTS_00007114,1,1,3.0,2.3,pancreas head,hyperattenuating
+PanTS_00007121,0,1,5.7,3.7,pancreas head,hypoattenuating
+PanTS_00007123,0,1,0.8,0.7,pancreas head,hypoattenuating
+PanTS_00007129,0,1,5.0,3.7,pancreas head,hypoattenuating
+PanTS_00007134,0,1,1.4,1.0,pancreas head,hyperattenuating
+PanTS_00007146,0,1,1.8,1.2,pancreas head,isoattenuating
+PanTS_00007150,0,1,1.2,0.7,pancreas head,hyperattenuating
+PanTS_00007150,0,2,1.3,0.6,pancreas body/tail,hyperattenuating
+PanTS_00007151,1,1,2.5,2.3,pancreas head/body,hypoattenuating
+PanTS_00007156,0,1,2.8,2.0,pancreas tail,hypoattenuating
+PanTS_00007156,0,2,1.8,1.6,pancreas body,hypoattenuating
+PanTS_00007165,0,1,1.8,1.2,pancreas head,hypoattenuating
+PanTS_00007166,1,1,3.7,3.1,pancreas head,isoattenuating
+PanTS_00007183,0,1,1.8,1.6,pancreas head,hypoattenuating
+PanTS_00007189,0,1,3.1,2.3,pancreas head,hypoattenuating
+PanTS_00007193,0,1,5.4,1.5,pancreas head,hyperattenuating
+PanTS_00007200,0,1,1.0,0.4,,isoattenuating
+PanTS_00007210,0,1,5.1,2.6,pancreas body/tail,hypoattenuating
+PanTS_00007210,0,2,3.9,2.8,,hypoattenuating
+PanTS_00007210,0,3,2.3,1.8,pancreas head,hypoattenuating
+PanTS_00007210,0,4,1.8,1.2,pancreas head,hypoattenuating
+PanTS_00007210,0,5,1.7,1.2,,hypoattenuating
+PanTS_00007210,0,6,1.3,0.8,,hypoattenuating
+PanTS_00007216,0,1,9.7,1.9,pancreas head,isoattenuating
+PanTS_00007226,0,1,1.4,0.6,pancreas head,isoattenuating
+PanTS_00007227,1,1,2.8,1.9,pancreas tail,hyperattenuating
+PanTS_00007241,1,1,4.7,3.1,pancreas head,hypoattenuating
+PanTS_00007247,0,1,2.8,2.0,pancreas tail,hypoattenuating
+PanTS_00007259,0,1,16.0,2.7,pancreas head/body,hypoattenuating
+PanTS_00007277,0,1,2.1,1.9,pancreas head,isoattenuating
+PanTS_00007283,0,1,1.5,1.0,pancreas tail,isoattenuating
+PanTS_00007297,0,1,1.6,1.2,pancreas head,isoattenuating
+PanTS_00007298,1,1,4.0,3.0,pancreas head,isoattenuating
+PanTS_00007304,0,1,0.5,0.4,pancreas head,isoattenuating
+PanTS_00007307,0,1,4.0,1.8,pancreas head,hypoattenuating
+PanTS_00007308,1,1,2.6,1.9,pancreas head,hypoattenuating
+PanTS_00007314,0,1,2.6,1.9,pancreas head/body,hypoattenuating
+PanTS_00007318,0,1,1.7,1.5,pancreas body,hypoattenuating
+PanTS_00007328,0,1,3.3,2.2,pancreas head,isoattenuating
+PanTS_00007333,0,1,4.3,3.2,pancreas head,hyperattenuating
+PanTS_00007360,0,1,2.7,1.6,pancreas head,isoattenuating
+PanTS_00007363,0,1,1.0,0.8,pancreas head,isoattenuating
+PanTS_00007378,0,1,1.4,1.0,pancreas body,hypoattenuating
+PanTS_00007413,0,1,5.0,4.1,pancreas head/body,hypoattenuating
+PanTS_00007421,0,1,4.7,3.0,pancreas head,hypoattenuating
+PanTS_00007425,0,1,3.2,2.0,pancreas head,hyperattenuating
+PanTS_00007427,0,1,3.2,2.6,,hypoattenuating
+PanTS_00007427,0,2,2.3,0.6,,hyperattenuating
+PanTS_00007427,0,3,0.8,0.7,,hypoattenuating
+PanTS_00007434,0,1,2.2,1.6,pancreas head,hyperattenuating
+PanTS_00007436,0,1,1.8,1.5,pancreas head,hyperattenuating
+PanTS_00007450,0,1,3.2,1.7,pancreas head,hypoattenuating
+PanTS_00007462,0,1,1.9,1.5,pancreas head,hypoattenuating
+PanTS_00007467,0,1,2.4,1.4,pancreas head/body,hyperattenuating
+PanTS_00007471,0,1,1.0,0.8,pancreas head,hypoattenuating
+PanTS_00007484,0,1,3.1,2.1,pancreas head,hyperattenuating
+PanTS_00007493,0,1,3.2,1.6,pancreas head,hyperattenuating
+PanTS_00007500,0,1,1.6,0.8,pancreas tail,isoattenuating
+PanTS_00007510,0,1,1.4,0.8,,isoattenuating
+PanTS_00007510,0,2,1.2,0.7,pancreas head,hyperattenuating
+PanTS_00007515,0,1,4.4,3.6,pancreas head/body,hyperattenuating
+PanTS_00007524,0,1,3.8,3.0,pancreas head,hypoattenuating
+PanTS_00007531,0,1,3.3,1.3,,hypoattenuating
+PanTS_00007532,1,1,9.1,1.2,pancreas body,hypoattenuating
+PanTS_00007535,0,1,5.8,3.4,pancreas head,hypoattenuating
+PanTS_00007538,0,1,1.3,1.1,pancreas body,hypoattenuating
+PanTS_00007554,0,1,2.3,2.3,pancreas head,hyperattenuating
+PanTS_00007554,0,2,1.1,0.7,pancreas head/body,hyperattenuating
+PanTS_00007557,0,1,3.4,2.6,pancreas head/body,hypoattenuating
+PanTS_00007563,0,1,2.4,2.1,pancreas head,hyperattenuating
+PanTS_00007574,0,1,1.1,0.7,pancreas head,hyperattenuating
+PanTS_00007576,0,1,3.7,3.2,pancreas head,isoattenuating
+PanTS_00007577,1,1,1.9,1.2,pancreas tail,hyperattenuating
+PanTS_00007577,1,2,1.6,1.1,,hypoattenuating
+PanTS_00007577,1,3,0.9,0.5,,hypoattenuating
+PanTS_00007577,1,4,2.2,0.3,,hypoattenuating
+PanTS_00007577,1,5,1.3,0.4,,hypoattenuating
+PanTS_00007582,0,1,2.7,1.8,pancreas head,isoattenuating
+PanTS_00007587,0,1,3.2,2.6,pancreas head,hyperattenuating
+PanTS_00007593,0,1,4.2,3.8,pancreas head,hypoattenuating
+PanTS_00007601,0,1,1.3,0.6,pancreas head,hyperattenuating
+PanTS_00007609,0,1,1.3,1.1,pancreas head,hypoattenuating
+PanTS_00007609,0,2,1.2,0.7,pancreas head,hypoattenuating
+PanTS_00007614,0,1,1.1,0.7,pancreas head,hypoattenuating
+PanTS_00007621,0,1,3.2,2.1,pancreas head,hyperattenuating
+PanTS_00007626,0,1,1.8,0.5,pancreas head,isoattenuating
+PanTS_00007629,0,1,1.8,1.0,pancreas head,hypoattenuating
+PanTS_00007635,0,1,3.1,2.7,pancreas head/body,hyperattenuating
+PanTS_00007635,0,2,0.9,0.8,pancreas body,hyperattenuating
+PanTS_00007640,0,1,3.1,2.4,pancreas head,hypoattenuating
+PanTS_00007642,0,1,3.2,2.6,pancreas tail,hypoattenuating
+PanTS_00007650,0,1,2.6,2.2,pancreas head/body,hypoattenuating
+PanTS_00007659,0,1,5.7,3.3,pancreas head,hypoattenuating
+PanTS_00007660,1,1,6.0,4.6,,hypoattenuating
+PanTS_00007660,1,2,1.8,0.7,,hypoattenuating
+PanTS_00007660,1,3,1.3,0.9,pancreas head,hypoattenuating
+PanTS_00007667,0,1,3.0,2.1,pancreas head,hyperattenuating
+PanTS_00007689,0,1,1.3,0.9,pancreas head,hyperattenuating
+PanTS_00007690,1,1,3.4,2.4,pancreas head,hypoattenuating
+PanTS_00007690,1,2,3.1,2.6,pancreas head,hyperattenuating
+PanTS_00007690,1,3,1.2,0.9,,hyperattenuating
+PanTS_00007699,0,1,1.0,0.8,pancreas head,hyperattenuating
+PanTS_00007701,0,1,3.3,3.1,pancreas head,hyperattenuating
+PanTS_00007712,0,1,3.2,1.9,pancreas head,hyperattenuating
+PanTS_00007727,0,1,3.9,2.5,pancreas head,hyperattenuating
+PanTS_00007734,0,1,3.0,1.3,,isoattenuating
+PanTS_00007756,0,1,11.5,6.9,pancreas head,hypoattenuating
+PanTS_00007764,0,1,4.2,2.9,pancreas head,isoattenuating
+PanTS_00007778,0,1,2.1,1.0,pancreas head,hypoattenuating
+PanTS_00007785,0,1,2.7,2.6,pancreas head,hyperattenuating
+PanTS_00007791,0,1,2.1,2.0,pancreas head/body,isoattenuating
+PanTS_00007801,0,1,0.9,0.8,pancreas head,hyperattenuating
+PanTS_00007830,0,1,2.9,2.3,pancreas head,hypoattenuating
+PanTS_00007845,0,1,1.9,1.3,pancreas head,hypoattenuating
+PanTS_00007850,0,1,3.2,2.6,pancreas head,hyperattenuating
+PanTS_00007857,0,1,2.7,2.1,pancreas tail,hypoattenuating
+PanTS_00007861,0,1,2.8,2.2,pancreas head,isoattenuating
+PanTS_00007862,1,1,3.4,2.0,pancreas head,isoattenuating
+PanTS_00007867,0,1,1.8,0.5,pancreas head,isoattenuating
+PanTS_00007889,0,1,3.5,3.1,pancreas head,isoattenuating
+PanTS_00007904,0,1,2.6,1.9,pancreas head/body,hypoattenuating
+PanTS_00007920,0,1,7.8,2.6,pancreas head/body/tail,hypoattenuating
+PanTS_00007937,0,1,2.7,1.9,pancreas head,hypoattenuating
+PanTS_00007945,0,1,1.0,0.6,pancreas head,hyperattenuating
+PanTS_00007959,0,1,6.9,4.4,pancreas body/tail,hypoattenuating
+PanTS_00007988,0,1,1.6,0.9,pancreas head,hypoattenuating
+PanTS_00007994,0,1,2.0,1.9,pancreas head,hyperattenuating
+PanTS_00007996,0,1,3.2,1.8,pancreas tail,hypoattenuating
+PanTS_00007996,0,2,1.3,1.0,,hypoattenuating
+PanTS_00008000,0,1,16.0,3.0,pancreas head/body,hyperattenuating
+PanTS_00008009,0,1,4.6,3.6,pancreas head,hypoattenuating
+PanTS_00008044,0,1,1.1,0.6,pancreas head,isoattenuating
+PanTS_00008047,0,1,1.1,0.5,pancreas head,isoattenuating
+PanTS_00008058,0,1,4.4,3.0,pancreas head,hyperattenuating
+PanTS_00008062,0,1,1.8,1.3,pancreas body,hypoattenuating
+PanTS_00008071,0,1,3.7,1.7,,hypoattenuating
+PanTS_00008072,1,1,1.7,1.5,pancreas body,hyperattenuating
+PanTS_00008085,0,1,4.2,2.0,pancreas head,isoattenuating
+PanTS_00008090,0,1,1.6,0.8,pancreas head,isoattenuating
+PanTS_00008122,0,1,3.6,2.5,pancreas head,hyperattenuating
+PanTS_00008130,0,1,3.6,3.3,pancreas head,hyperattenuating
+PanTS_00008130,0,2,1.8,1.1,pancreas head,hypoattenuating
+PanTS_00008131,1,1,2.6,2.4,,hypoattenuating
+PanTS_00008131,1,2,2.4,0.8,,hyperattenuating
+PanTS_00008131,1,3,1.3,1.1,,hypoattenuating
+PanTS_00008131,1,4,0.5,0.2,,hypoattenuating
+PanTS_00008179,0,1,3.4,2.6,pancreas head,hypoattenuating
+PanTS_00008183,0,1,1.5,1.2,pancreas head,isoattenuating
+PanTS_00008204,0,1,2.3,1.1,pancreas tail,hypoattenuating
+PanTS_00008204,0,2,2.0,1.2,,hyperattenuating
+PanTS_00008204,0,3,2.0,0.7,pancreas body,hypoattenuating
+PanTS_00008230,0,1,3.1,1.3,pancreas head,isoattenuating
+PanTS_00008230,0,2,2.0,1.6,pancreas tail,isoattenuating
+PanTS_00008233,0,1,1.3,1.1,pancreas head,isoattenuating
+PanTS_00008233,0,2,1.4,0.6,,hypoattenuating
+PanTS_00008237,0,1,7.7,3.6,pancreas head/body/tail,hypoattenuating
+PanTS_00008241,0,1,3.9,2.2,pancreas body,isoattenuating
+PanTS_00008241,0,2,2.4,1.0,,hypoattenuating
+PanTS_00008265,0,1,2.0,1.3,pancreas tail,hypoattenuating
+PanTS_00008272,0,1,3.8,3.2,pancreas body/tail,hypoattenuating
+PanTS_00008291,0,1,9.3,5.3,pancreas head/body,hyperattenuating
+PanTS_00008297,0,1,3.4,2.9,pancreas head,hyperattenuating
+PanTS_00008300,0,1,7.6,4.4,pancreas head,hypoattenuating
+PanTS_00008301,1,1,3.6,2.6,pancreas head,hypoattenuating
+PanTS_00008302,1,1,2.7,2.3,pancreas head,hypoattenuating
+PanTS_00008316,0,1,2.5,1.3,pancreas head,isoattenuating
+PanTS_00008327,0,1,1.0,0.7,pancreas tail,hypoattenuating
+PanTS_00008329,0,1,3.1,2.9,pancreas body/tail,hypoattenuating
+PanTS_00008338,0,1,0.8,0.5,,hypoattenuating
+PanTS_00008353,0,1,5.3,4.4,pancreas head,hypoattenuating
+PanTS_00008383,0,1,2.1,1.5,pancreas body,hypoattenuating
+PanTS_00008383,0,2,1.3,0.7,,hypoattenuating
+PanTS_00008384,1,1,2.4,0.9,pancreas body,hypoattenuating
+PanTS_00008391,0,1,2.9,2.2,pancreas head,hypoattenuating
+PanTS_00008406,0,1,2.1,1.4,pancreas head,hyperattenuating
+PanTS_00008406,0,2,2.1,1.2,pancreas head,isoattenuating
+PanTS_00008407,1,1,3.3,0.9,pancreas tail,hypoattenuating
+PanTS_00008407,1,2,1.6,0.5,pancreas body,hypoattenuating
+PanTS_00008424,0,1,1.5,0.5,pancreas head,hypoattenuating
+PanTS_00008427,0,1,3.2,2.2,pancreas head,hyperattenuating
+PanTS_00008433,0,1,3.0,1.9,pancreas head,hyperattenuating
+PanTS_00008444,0,1,2.0,1.4,pancreas body,hypoattenuating
+PanTS_00008450,0,1,1.0,0.6,,hypoattenuating
+PanTS_00008450,0,2,1.7,0.6,pancreas body,hypoattenuating
+PanTS_00008472,0,1,3.7,2.7,pancreas head,hypoattenuating
+PanTS_00008474,0,1,1.8,1.2,pancreas body,hypoattenuating
+PanTS_00008475,1,1,2.0,1.7,pancreas head,hypoattenuating
+PanTS_00008479,0,1,1.8,1.6,pancreas head,isoattenuating
+PanTS_00008511,0,1,4.6,3.6,pancreas head,hyperattenuating
+PanTS_00008511,0,2,1.0,0.7,pancreas tail,hyperattenuating
+PanTS_00008539,0,1,2.5,1.4,pancreas head,hypoattenuating
+PanTS_00008545,0,1,4.3,2.7,pancreas head,hyperattenuating
+PanTS_00008573,0,1,2.9,2.0,pancreas head,isoattenuating
+PanTS_00008576,0,1,1.2,0.6,pancreas head,isoattenuating
+PanTS_00008580,0,1,1.6,1.1,pancreas head,hypoattenuating
+PanTS_00008600,0,1,2.5,1.8,pancreas tail,hypoattenuating
+PanTS_00008627,0,1,2.0,1.1,pancreas head,hypoattenuating
+PanTS_00008632,0,1,2.6,2.4,pancreas body,hypoattenuating
+PanTS_00008635,0,1,2.5,1.4,pancreas head,isoattenuating
+PanTS_00008635,0,2,1.4,0.9,pancreas body,hypoattenuating
+PanTS_00008635,0,3,1.0,0.6,,hypoattenuating
+PanTS_00008645,0,1,3.1,1.6,,hypoattenuating
+PanTS_00008649,0,1,3.5,2.8,pancreas head,hyperattenuating
+PanTS_00008657,0,1,4.6,2.0,pancreas head,hypoattenuating
+PanTS_00008657,0,2,1.0,0.3,pancreas head,hypoattenuating
+PanTS_00008661,0,1,3.3,2.2,pancreas body/tail,hypoattenuating
+PanTS_00008672,0,1,3.8,1.9,pancreas head,hyperattenuating
+PanTS_00008690,0,1,5.7,1.2,pancreas tail,isoattenuating
+PanTS_00008690,0,2,2.6,1.4,pancreas head,hypoattenuating
+PanTS_00008698,0,1,1.4,0.5,pancreas head,hypoattenuating
+PanTS_00008700,0,1,2.2,1.4,pancreas tail,hyperattenuating
+PanTS_00008710,0,1,3.2,2.3,pancreas head,hyperattenuating
+PanTS_00008720,0,1,1.8,1.0,pancreas head,hypoattenuating
+PanTS_00008721,1,1,2.0,1.3,pancreas tail,hypoattenuating
+PanTS_00008723,0,1,3.8,2.2,pancreas tail,hypoattenuating
+PanTS_00008725,0,1,2.2,1.3,pancreas head,hyperattenuating
+PanTS_00008726,1,1,3.7,3.1,pancreas head,hyperattenuating
+PanTS_00008742,0,1,2.8,1.7,pancreas body,hypoattenuating
+PanTS_00008762,0,1,2.9,2.4,pancreas head/body,isoattenuating
+PanTS_00008768,0,1,1.9,1.7,pancreas body,isoattenuating
+PanTS_00008788,0,1,1.5,1.1,pancreas head/body,hyperattenuating
+PanTS_00008810,0,1,1.5,1.3,pancreas head,hyperattenuating
+PanTS_00008817,0,1,4.1,2.2,pancreas head,hyperattenuating
+PanTS_00008836,0,1,1.1,0.6,pancreas head,isoattenuating
+PanTS_00008838,0,1,3.1,2.5,pancreas head,hyperattenuating
+PanTS_00008853,0,1,2.4,2.0,pancreas head,hypoattenuating
+PanTS_00008884,0,1,1.7,1.0,,hyperattenuating
+PanTS_00008884,0,2,1.9,1.8,pancreas body,hypoattenuating
+PanTS_00008891,0,1,11.2,4.2,pancreas body/tail,hypoattenuating
+PanTS_00008895,0,1,2.1,1.0,pancreas body/tail,hyperattenuating
+PanTS_00008912,0,1,1.9,1.1,pancreas body,hypoattenuating
+PanTS_00008921,0,1,3.5,1.0,,hyperattenuating
+PanTS_00008921,0,2,1.6,1.0,,isoattenuating
+PanTS_00008930,0,1,3.8,2.9,pancreas head,hypoattenuating
+PanTS_00008941,0,1,3.9,3.2,pancreas head,hyperattenuating
+PanTS_00008953,0,1,5.7,3.4,pancreas head,hyperattenuating
+PanTS_00008973,0,1,2.9,1.9,pancreas head,hyperattenuating
+PanTS_00008988,0,1,3.3,2.3,pancreas head/body,hyperattenuating
+PanTS_00008988,0,2,2.0,1.6,pancreas tail,hyperattenuating
+PanTS_00008993,0,1,1.8,0.9,pancreas head,hypoattenuating
+PanTS_00008993,0,2,1.3,1.1,pancreas head,hypoattenuating
+PanTS_00008998,0,1,5.2,2.1,pancreas head,hyperattenuating
+PanTS_00008998,0,2,2.4,1.7,pancreas body,hypoattenuating
+PanTS_00009000,0,1,3.4,2.2,pancreas tail,hypoattenuating
+PanTS_00009004,0,1,3.7,2.7,pancreas body,hypoattenuating
+PanTS_00009007,0,1,1.4,0.7,pancreas tail,hypoattenuating
+PanTS_00009008,1,1,5.5,3.7,pancreas head/body,hypoattenuating
+PanTS_00009009,1,1,1.3,1.2,pancreas head/body,hypoattenuating
+PanTS_00009019,0,1,4.0,3.1,pancreas head/body,hypoattenuating
+PanTS_00009026,0,1,0.8,0.7,pancreas tail,hyperattenuating
+PanTS_00009036,0,1,7.8,3.9,pancreas head,hyperattenuating
+PanTS_00009040,0,1,2.4,2.0,pancreas head/body,hypoattenuating
+PanTS_00009040,0,2,1.5,0.6,pancreas tail,hyperattenuating
+PanTS_00009040,0,3,1.1,0.7,,hyperattenuating
+PanTS_00009055,0,1,1.6,1.2,pancreas tail,hyperattenuating
+PanTS_00009055,0,2,1.9,0.9,pancreas head,hyperattenuating
+PanTS_00009060,0,1,2.0,1.5,pancreas body,hypoattenuating
+PanTS_00009066,0,1,1.9,1.7,pancreas head/body,hyperattenuating
+PanTS_00009074,0,1,5.5,4.1,pancreas tail,isoattenuating
+PanTS_00009078,0,1,2.1,1.1,pancreas tail,hypoattenuating
+PanTS_00009083,0,1,5.1,4.3,,hypoattenuating
+PanTS_00009086,0,1,3.9,2.7,,hypoattenuating
+PanTS_00009096,0,1,4.4,3.3,pancreas head,hyperattenuating
+PanTS_00009118,0,1,1.4,1.3,pancreas tail,hypoattenuating
+PanTS_00009120,0,1,4.6,4.2,pancreas head,hypoattenuating
+PanTS_00009126,0,1,0.8,0.7,pancreas body,hypoattenuating
+PanTS_00009134,0,1,3.1,1.8,pancreas body/tail,hypoattenuating
+PanTS_00009142,0,1,3.3,2.5,pancreas tail,hyperattenuating
+PanTS_00009150,0,1,1.8,1.1,pancreas body,hypoattenuating
+PanTS_00009151,1,1,3.4,2.5,pancreas head,hyperattenuating
+PanTS_00009156,0,1,1.3,0.9,pancreas tail,hypoattenuating
+PanTS_00009157,1,1,7.6,5.4,pancreas head/body/tail,hypoattenuating
+PanTS_00009160,0,1,1.9,1.7,pancreas body,hypoattenuating
+PanTS_00009167,0,1,6.2,4.3,pancreas head/body,hypoattenuating
+PanTS_00009168,1,1,0.8,0.5,pancreas tail,hypoattenuating
+PanTS_00009173,0,1,3.6,3.3,pancreas head,hyperattenuating
+PanTS_00009179,0,1,1.7,1.2,pancreas body,isoattenuating
+PanTS_00009180,1,1,1.0,0.6,pancreas body,hypoattenuating
+PanTS_00009181,1,1,2.0,1.7,pancreas head/body,hypoattenuating
+PanTS_00009187,0,1,1.4,1.0,pancreas head,hypoattenuating
+PanTS_00009187,0,2,0.9,0.7,pancreas head,hypoattenuating
+PanTS_00009190,0,1,1.8,1.4,pancreas tail,hypoattenuating
+PanTS_00009191,1,1,1.7,1.2,pancreas body,isoattenuating
+PanTS_00009198,0,1,2.0,1.0,pancreas body,hypoattenuating
+PanTS_00009198,0,2,1.3,0.8,pancreas head,hypoattenuating
+PanTS_00009221,0,1,1.7,1.1,pancreas head,hypoattenuating
+PanTS_00009226,0,1,1.9,1.4,pancreas head,hypoattenuating
+PanTS_00009236,0,1,3.3,1.4,pancreas head,hypoattenuating
+PanTS_00009257,0,1,4.4,3.5,pancreas tail,hypoattenuating
+PanTS_00009258,1,1,1.1,1.0,pancreas tail,hypoattenuating
+PanTS_00009264,0,1,3.5,2.4,pancreas head,hyperattenuating
+PanTS_00009280,0,1,2.6,2.3,pancreas head,hypoattenuating
+PanTS_00009285,0,1,1.5,1.2,pancreas head,hyperattenuating
+PanTS_00009286,1,1,0.7,0.5,pancreas head,isoattenuating
+PanTS_00009286,1,2,0.7,0.4,pancreas head,hypoattenuating
+PanTS_00009289,0,1,0.5,0.4,pancreas body/tail,hypoattenuating
+PanTS_00009291,0,1,1.8,1.3,pancreas tail,hypoattenuating
+PanTS_00009298,0,1,0.7,0.6,pancreas body,hypoattenuating
+PanTS_00009300,0,1,1.5,0.8,pancreas head,hyperattenuating
+PanTS_00009303,0,1,2.5,2.2,pancreas head/body,hypoattenuating
+PanTS_00009307,0,1,2.8,2.0,pancreas body,hypoattenuating
+PanTS_00009312,0,1,4.1,3.5,pancreas body/tail,hypoattenuating
+PanTS_00009316,0,1,3.0,2.3,pancreas head,hypoattenuating
+PanTS_00009318,0,1,4.4,2.8,pancreas body,hypoattenuating
+PanTS_00009320,0,1,0.9,0.7,pancreas tail,hypoattenuating
+PanTS_00009324,0,1,2.5,1.8,pancreas tail,hyperattenuating
+PanTS_00009328,0,1,2.0,1.5,pancreas head,hyperattenuating
+PanTS_00009337,0,1,4.0,2.9,pancreas body/tail,hyperattenuating
+PanTS_00009340,0,1,1.7,1.1,pancreas head,hyperattenuating
+PanTS_00009341,1,1,2.2,1.5,pancreas head,isoattenuating
+PanTS_00009346,0,1,1.9,1.3,pancreas head,hypoattenuating
+PanTS_00009365,0,1,4.1,3.1,pancreas head,hypoattenuating
+PanTS_00009366,1,1,10.3,6.0,pancreas head/body,hypoattenuating
+PanTS_00009370,1,1,2.5,0.9,pancreas head,hyperattenuating
+PanTS_00009372,0,1,6.5,5.4,pancreas head/body,hypoattenuating
+PanTS_00009374,0,1,3.0,2.6,pancreas head,hyperattenuating
+PanTS_00009381,0,1,2.6,2.3,pancreas head/body,hypoattenuating
+PanTS_00009382,1,1,3.2,2.8,pancreas head/body,hypoattenuating
+PanTS_00009384,0,1,2.0,1.5,pancreas head,hyperattenuating
+PanTS_00009385,1,1,3.0,2.2,pancreas head,hyperattenuating
+PanTS_00009406,0,1,4.3,2.9,pancreas head,hyperattenuating
+PanTS_00009407,1,1,4.4,3.8,pancreas body/tail,hypoattenuating
+PanTS_00009420,0,1,1.9,1.5,pancreas head,hypoattenuating
+PanTS_00009422,0,1,2.3,2.2,pancreas body/tail,isoattenuating
+PanTS_00009434,0,1,2.5,1.8,pancreas head,hypoattenuating
+PanTS_00009444,0,1,2.0,1.3,pancreas head,hypoattenuating
+PanTS_00009448,0,1,4.9,3.5,pancreas head/body,hypoattenuating
+PanTS_00009448,0,2,1.4,0.8,pancreas tail,hypoattenuating
+PanTS_00009456,0,1,3.8,3.3,pancreas head,hypoattenuating
+PanTS_00009458,0,1,2.4,2.1,pancreas body/tail,hypoattenuating
+PanTS_00009459,1,1,2.9,1.6,pancreas head,isoattenuating
+PanTS_00009463,0,1,2.5,1.8,pancreas head,hypoattenuating
+PanTS_00009469,0,1,3.5,2.7,pancreas head,hypoattenuating
+PanTS_00009472,0,1,3.6,2.0,pancreas head,hypoattenuating
+PanTS_00009477,0,1,4.5,3.9,pancreas head,hyperattenuating
+PanTS_00009482,0,1,6.3,3.9,pancreas head/body/tail,hypoattenuating
+PanTS_00009494,0,1,1.7,1.1,pancreas head,hypoattenuating
+PanTS_00009503,0,1,4.4,3.2,pancreas head,hypoattenuating
+PanTS_00009505,0,1,4.5,4.0,pancreas head/body,isoattenuating
+PanTS_00009509,0,1,5.4,3.7,pancreas head,hyperattenuating
+PanTS_00009516,0,1,2.7,1.9,pancreas head,isoattenuating
+PanTS_00009517,1,1,2.7,1.7,pancreas tail,hypoattenuating
+PanTS_00009519,0,1,1.7,1.5,,hypoattenuating
+PanTS_00009522,0,1,0.9,0.6,pancreas body/tail,hypoattenuating
+PanTS_00009527,0,1,6.4,4.0,pancreas head,hyperattenuating
+PanTS_00009533,0,1,3.6,2.7,pancreas body/tail,hyperattenuating
+PanTS_00009543,0,1,3.0,2.0,pancreas head,hyperattenuating
+PanTS_00009544,1,1,5.1,2.3,pancreas body,hypoattenuating
+PanTS_00009550,0,1,3.4,2.2,pancreas head,hypoattenuating
+PanTS_00009561,0,1,4.3,3.1,pancreas body/tail,hypoattenuating
+PanTS_00009566,0,1,7.6,5.6,,hypoattenuating
+PanTS_00009568,0,1,2.3,1.7,pancreas head,hyperattenuating
+PanTS_00009577,0,1,3.4,2.2,pancreas head,hypoattenuating
+PanTS_00009583,0,1,0.5,0.4,pancreas head,isoattenuating
+PanTS_00009604,0,1,0.5,0.3,pancreas head,hypoattenuating
+PanTS_00009607,0,1,2.2,1.9,pancreas body/tail,hypoattenuating
+PanTS_00009611,0,1,3.2,2.1,pancreas head,hyperattenuating
+PanTS_00009612,1,1,4.7,3.6,pancreas head,hypoattenuating
+PanTS_00009619,0,1,1.8,1.5,pancreas head,hypoattenuating
+PanTS_00009621,0,1,1.6,1.1,pancreas head,hypoattenuating
+PanTS_00009634,0,1,3.3,2.7,pancreas head/body,hypoattenuating
+PanTS_00009639,0,1,2.8,2.2,pancreas head,isoattenuating
+PanTS_00009640,1,1,2.8,2.4,pancreas head,isoattenuating
+PanTS_00009648,0,1,2.3,1.9,pancreas body,hyperattenuating
+PanTS_00009651,0,1,2.6,2.0,pancreas head,hypoattenuating
+PanTS_00009658,0,1,6.5,4.2,pancreas tail,hypoattenuating
+PanTS_00009665,0,1,1.5,1.3,pancreas head,hypoattenuating
+PanTS_00009686,0,1,1.8,1.2,pancreas body,hypoattenuating
+PanTS_00009725,0,1,7.5,6.1,pancreas body/tail,hyperattenuating
+PanTS_00009730,0,1,3.0,2.0,pancreas head,hyperattenuating
+PanTS_00009738,0,1,2.4,1.8,pancreas tail,hypoattenuating
+PanTS_00009751,0,1,2.7,2.3,pancreas body/tail,hypoattenuating
+PanTS_00009759,0,1,3.2,2.3,pancreas head,isoattenuating
+PanTS_00009764,0,1,1.8,1.4,pancreas tail,hyperattenuating
+PanTS_00009765,1,1,5.3,2.8,pancreas body/tail,hypoattenuating
+PanTS_00009767,0,1,1.3,1.0,pancreas head,hypoattenuating
+PanTS_00009768,1,1,1.7,1.2,pancreas body,hypoattenuating
+PanTS_00009779,0,1,1.2,0.7,pancreas body,isoattenuating
+PanTS_00009780,1,1,2.9,2.4,pancreas head,hypoattenuating
+PanTS_00009783,0,1,2.8,2.4,pancreas head/body,hypoattenuating
+PanTS_00009786,0,1,3.9,3.2,pancreas tail,hypoattenuating
+PanTS_00009787,1,1,5.4,4.2,pancreas tail,hypoattenuating
+PanTS_00009789,0,1,4.8,3.5,pancreas tail,hypoattenuating
+PanTS_00009796,0,1,1.6,1.2,pancreas head,isoattenuating
+PanTS_00009820,0,1,3.6,2.2,pancreas head,hyperattenuating
+PanTS_00009823,0,1,0.5,0.5,pancreas body,hypoattenuating
+PanTS_00009825,0,1,1.8,1.6,pancreas head,hypoattenuating
+PanTS_00009831,0,1,5.2,4.1,pancreas head,hyperattenuating
+PanTS_00009837,0,1,4.2,3.7,pancreas head,hyperattenuating
+PanTS_00009861,0,1,3.0,2.4,pancreas head/body,hyperattenuating
+PanTS_00009867,0,1,1.1,0.7,pancreas body,isoattenuating
+PanTS_00009881,0,1,1.2,0.7,pancreas body,hypoattenuating
+PanTS_00009881,0,2,0.3,0.3,pancreas body,isoattenuating
+PanTS_00009884,0,1,0.5,0.3,pancreas tail,hypoattenuating
+PanTS_00009886,0,1,3.0,2.1,pancreas head,hypoattenuating
+PanTS_00009891,0,1,1.8,1.4,pancreas head,hypoattenuating
+PanTS_00009893,0,1,2.0,1.8,pancreas head,hypoattenuating
+PanTS_00009895,0,1,1.7,1.4,pancreas tail,hypoattenuating
+PanTS_00009896,1,1,2.4,1.6,pancreas body,hypoattenuating
+PanTS_00009900,0,1,2.9,2.1,pancreas body/tail,isoattenuating
