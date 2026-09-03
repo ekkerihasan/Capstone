@@ -62,4 +62,4 @@ Outputs go to `results/<review>/`; checkpoints to `checkpoints/` (gitignored).
 - Oktay et al., *Attention U-Net: Learning Where to Look for the Pancreas*, MIDL 2018.
 - Gal & Ghahramani, *Dropout as a Bayesian Approximation*, ICML 2016.
 - Zheng et al., *F-Fidelity: A Robust Framework for Faithfulness Evaluation of Explainable AI*, ICLR 2025.
-- Antonelli et al., *The Medical Segmentation Decathlon*, Nat. Commun. 2022.
+- Antonelli et al., *The Medical Segmentation Decathlon*, Nat. Commun. 2022..
