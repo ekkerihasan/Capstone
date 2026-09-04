@@ -1,0 +1,35 @@
+{
+ "stage": "6.1",
+ "data_root": "data/Task07_Pancreas",
+ "seed": 42,
+ "n_cases": 20,
+ "split_counts": {
+  "train": 16,
+  "val": 4
+ },
+ "cases_with_tumor": 20,
+ "cases_sub2cm": 4,
+ "median_tumor_diam_cm": 2.5164999999999997,
+ "preprocessing": {
+  "spacing_mm": [
+   1.5,
+   1.5,
+   2.0
+  ],
+  "orientation": "RAS",
+  "hu_window": [
+   -100.0,
+   240.0
+  ],
+  "normalised_to": [
+   0.0,
+   1.0
+  ],
+  "augmentation": [
+   "RandFlipd",
+   "RandRotate90d",
+   "Rand3DElasticd"
+  ]
+ },
+ "runtime_s": 41.5
+}

@@ -1,0 +1,119 @@
+{
+ "seed": 42,
+ "counts": {
+  "train": 16,
+  "val": 4
+ },
+ "case_ids": {
+  "train": [
+   "pancreas_041",
+   "pancreas_012",
+   "pancreas_029",
+   "pancreas_010",
+   "pancreas_019",
+   "pancreas_028",
+   "pancreas_032",
+   "pancreas_040",
+   "pancreas_015",
+   "pancreas_025",
+   "pancreas_037",
+   "pancreas_021",
+   "pancreas_004",
+   "pancreas_024",
+   "pancreas_005",
+   "pancreas_035"
+  ],
+  "val": [
+   "pancreas_016",
+   "pancreas_018",
+   "pancreas_001",
+   "pancreas_006"
+  ]
+ },
+ "files": {
+  "train": [
+   {
+    "image": "data\\Task07_Pancreas\\imagesTr\\pancreas_041.nii.gz",
+    "label": "data\\Task07_Pancreas\\labelsTr\\pancreas_041.nii.gz"
+   },
+   {
+    "image": "data\\Task07_Pancreas\\imagesTr\\pancreas_012.nii.gz",
+    "label": "data\\Task07_Pancreas\\labelsTr\\pancreas_012.nii.gz"
+   },
+   {
+    "image": "data\\Task07_Pancreas\\imagesTr\\pancreas_029.nii.gz",
+    "label": "data\\Task07_Pancreas\\labelsTr\\pancreas_029.nii.gz"
+   },
+   {
+    "image": "data\\Task07_Pancreas\\imagesTr\\pancreas_010.nii.gz",
+    "label": "data\\Task07_Pancreas\\labelsTr\\pancreas_010.nii.gz"
+   },
+   {
+    "image": "data\\Task07_Pancreas\\imagesTr\\pancreas_019.nii.gz",
+    "label": "data\\Task07_Pancreas\\labelsTr\\pancreas_019.nii.gz"
+   },
+   {
+    "image": "data\\Task07_Pancreas\\imagesTr\\pancreas_028.nii.gz",
+    "label": "data\\Task07_Pancreas\\labelsTr\\pancreas_028.nii.gz"
+   },
+   {
+    "image": "data\\Task07_Pancreas\\imagesTr\\pancreas_032.nii.gz",
+    "label": "data\\Task07_Pancreas\\labelsTr\\pancreas_032.nii.gz"
+   },
+   {
+    "image": "data\\Task07_Pancreas\\imagesTr\\pancreas_040.nii.gz",
+    "label": "data\\Task07_Pancreas\\labelsTr\\pancreas_040.nii.gz"
+   },
+   {
+    "image": "data\\Task07_Pancreas\\imagesTr\\pancreas_015.nii.gz",
+    "label": "data\\Task07_Pancreas\\labelsTr\\pancreas_015.nii.gz"
+   },
+   {
+    "image": "data\\Task07_Pancreas\\imagesTr\\pancreas_025.nii.gz",
+    "label": "data\\Task07_Pancreas\\labelsTr\\pancreas_025.nii.gz"
+   },
+   {
+    "image": "data\\Task07_Pancreas\\imagesTr\\pancreas_037.nii.gz",
+    "label": "data\\Task07_Pancreas\\labelsTr\\pancreas_037.nii.gz"
+   },
+   {
+    "image": "data\\Task07_Pancreas\\imagesTr\\pancreas_021.nii.gz",
+    "label": "data\\Task07_Pancreas\\labelsTr\\pancreas_021.nii.gz"
+   },
+   {
+    "image": "data\\Task07_Pancreas\\imagesTr\\pancreas_004.nii.gz",
+    "label": "data\\Task07_Pancreas\\labelsTr\\pancreas_004.nii.gz"
+   },
+   {
+    "image": "data\\Task07_Pancreas\\imagesTr\\pancreas_024.nii.gz",
+    "label": "data\\Task07_Pancreas\\labelsTr\\pancreas_024.nii.gz"
+   },
+   {
+    "image": "data\\Task07_Pancreas\\imagesTr\\pancreas_005.nii.gz",
+    "label": "data\\Task07_Pancreas\\labelsTr\\pancreas_005.nii.gz"
+   },
+   {
+    "image": "data\\Task07_Pancreas\\imagesTr\\pancreas_035.nii.gz",
+    "label": "data\\Task07_Pancreas\\labelsTr\\pancreas_035.nii.gz"
+   }
+  ],
+  "val": [
+   {
+    "image": "data\\Task07_Pancreas\\imagesTr\\pancreas_016.nii.gz",
+    "label": "data\\Task07_Pancreas\\labelsTr\\pancreas_016.nii.gz"
+   },
+   {
+    "image": "data\\Task07_Pancreas\\imagesTr\\pancreas_018.nii.gz",
+    "label": "data\\Task07_Pancreas\\labelsTr\\pancreas_018.nii.gz"
+   },
+   {
+    "image": "data\\Task07_Pancreas\\imagesTr\\pancreas_001.nii.gz",
+    "label": "data\\Task07_Pancreas\\labelsTr\\pancreas_001.nii.gz"
+   },
+   {
+    "image": "data\\Task07_Pancreas\\imagesTr\\pancreas_006.nii.gz",
+    "label": "data\\Task07_Pancreas\\labelsTr\\pancreas_006.nii.gz"
+   }
+  ]
+ }
+}
