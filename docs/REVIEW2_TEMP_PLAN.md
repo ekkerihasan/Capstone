@@ -73,7 +73,7 @@ The real stage 6.1 results on 281 cases stay clearly separated as the genuine re
 
 | Pri | Module | Why | Estimate |
 |---|---|---|---|
-| P0 | `src/phantom.py` | Lift the generator out of `tests/` so scripts and notebooks can use it, not only pytest. Unblocks everything below | 20 min |
+| P0 | `src/phantom.py` | **DONE 6 Oct.** Generator lifted out of `tests/`; `conftest.py` now imports it, so tests and demo share one phantom. Also provides `DEMO_STAMP` and `stamp_figure()` | - |
 | P0 | `src/roi.py`, `src/classifier.py`, `src/train_cls.py` | The 6.3 chain. On 64x64x40 phantoms this trains on CPU in seconds | 2-3 h |
 | P1 | `src/uncertainty.py`, `src/conformal.py`, ECE + reliability in `src/metrics.py` | Stage 6.4. Post-hoc on logits, pure CPU, and the source of the two best figures in the deck | 2 h |
 | P1 | `src/run_demo_pipeline.py` | One command: 6.1 -> 6.4 on phantoms -> `results/review2_demo/`, every figure stamped | 1 h |
@@ -153,3 +153,119 @@ session costs an epoch, not a run.
 > checkpoints and resumes, so a dropped session costs an epoch, not a run.
 
 Do not hide the GPU booking as the blocker. It is a scheduling fact, not a design failure.
+
+---
+
+## 9. Work split - three members, three Claudes, one repo
+
+Lanes follow the owners already named in `docs/Phase-II_Project_Plan.md` section 4, so the
+guide sees the same allocation she has seen before. `src/phantom.py` is done and pushed, so
+all three lanes start in parallel - nobody waits.
+
+### Mustafa - Stage 6.3, the ROI and classifier chain
+
+Owns, and is the only one who edits: `src/roi.py`, `src/classifier.py`, `src/train_cls.py`,
+`src/predict_cls.py`, `tests/test_roi.py`, `tests/test_classifier.py`.
+
+Deliverable: phantom -> ground-truth mask -> ROI crop -> 3D ResNet/DenseNet -> tumor
+present/absent, with per-case probabilities written to CSV. Trains on CPU in seconds at
+64x64x40, so this is a laptop job.
+
+Build against the **ground-truth** mask, not a predicted one. `roi.py` takes a mask and does
+not care which model produced it, so the same code serves the real run once 6.2 is trained.
+
+### Wasih - Stage 6.4, calibration, plus the real training run
+
+Owns, and is the only one who edits: `src/uncertainty.py`, `src/conformal.py`,
+`src/metrics.py`, `tests/test_uncertainty.py`, `tests/test_conformal.py`,
+`tests/test_metrics.py`.
+
+Deliverable: MC Dropout at T=20, split-conformal calibration on the 42-case calibration
+group, and the ECE / reliability-diagram / coverage figures. All of it is post-hoc on saved
+probabilities, so it can be written and tested against synthetic logits before 6.3 produces
+real ones.
+
+**Do the `metrics.py` additions first and push them within the hour** - Mustafa's AUROC
+reporting is blocked on them, and `metrics.py` has exactly one owner precisely so two Claudes
+never rewrite it at once.
+
+Wasih also owns the lab PC booking and the stage 6.2 training run when the GPU frees up.
+One caveat already pinned by `tests/test_train_seg.py`: only the convolution blocks pick up
+the `dropout` constructor argument, the attention gates stay at p=0.0. `enable_dropout()`
+must set p on the modules it wants rather than trusting the constructor.
+
+### Hasan - documentation first, then integration and the UI
+
+Owns, and is the only one who edits: `src/run_demo_pipeline.py`, `src/app.py`,
+`docs/logbook_notes.md`, `results/review2_demo/`, the Review 2 deck.
+
+Order matters here, because integration cannot start until the other two lanes land:
+
+1. **Logbook entries #3 and #4 - overdue.** The circular wants one every 10 days; the last is
+   #2 on 4 Sept. Three are missing. Independent of all code, and the panel checks it.
+2. **Test report** for `results/review2_demo/` - module, what is covered, result. "Testing so
+   far" is an explicit Review 2 deliverable and 56 tests already pass.
+3. **`run_demo_pipeline.py`** - one command runs 6.1 -> 6.4 on phantoms and writes every
+   figure through `phantom.stamp_figure()`.
+4. **`app.py`** - the Gradio shell. Volume in, mask + confidence + abstain decision out.
+   Highest visual impact per hour, but only after the three above.
+
+Stage 6.5 explainability (`src/explain.py`) stays Hasan's per the project plan, but it is P2
+and deferred until after the review.
+
+### Frozen interfaces
+
+Three Claudes working in parallel will invent three incompatible APIs unless the signatures
+are fixed in advance. These are fixed. Anyone who needs a change asks in the group first.
+
+```python
+# src/roi.py                                                   (Mustafa)
+def pancreas_bbox(mask, label=LABEL_PANCREAS, margin_mm=10.0,
+                  spacing_mm=SPACING_MM) -> tuple          # tuple of slices
+def crop_roi(image, mask, out_size=(96, 96, 96), margin_mm=10.0,
+             spacing_mm=SPACING_MM) -> dict                # {"image", "mask", "bbox", "spacing_mm"}
+
+# src/classifier.py                                            (Mustafa)
+def build_classifier(name="densenet121", in_channels=1,
+                     num_classes=2, dropout=0.0)           # -> torch.nn.Module
+
+# src/predict_cls.py  ->  results/<run>/cls_predictions.csv     (Mustafa)
+#   columns: case, group, y_true, prob_tumor, eq_diam_cm
+#   ^ this CSV is the contract between stage 6.3 and stage 6.4. Nothing else crosses the line.
+
+# src/metrics.py  (additions)                                   (Wasih)
+def auroc(y_true, y_score) -> float
+def sensitivity_specificity(y_true, y_pred) -> tuple
+def confusion(y_true, y_pred)                              # -> 2x2 ndarray
+def expected_calibration_error(y_true, y_prob, n_bins=15) -> float
+def reliability_curve(y_true, y_prob, n_bins=15) -> tuple  # (bin_centre, accuracy, confidence)
+
+# src/uncertainty.py                                            (Wasih)
+def enable_dropout(model, p=None) -> list                  # names of the modules switched on
+def mc_dropout_predict(model, x, T=20, device=None) -> dict  # {"mean", "std", "samples"}
+
+# src/conformal.py                                              (Wasih)
+def calibrate(probs_calib, y_calib, alpha=0.1) -> float    # qhat
+def predict_set(probs, qhat) -> list                       # one set of labels per case
+def coverage(sets, y_true) -> float
+
+# src/run_demo_pipeline.py                                      (Hasan)
+#   imports all of the above, writes results/review2_demo/, stamps every figure
+```
+
+Existing names stay as they are: `metrics.by_size_bucket()` is metric-agnostic, so the sub-2 cm
+reporting that `CLAUDE.md` requires comes free in 6.3 and 6.4 - do not reimplement it per stage.
+
+### Rules that keep three Claudes from fighting
+
+1. **Never edit a file in someone else's lane.** Ask in the group instead. A two-minute
+   message beats a merge conflict in a file none of you have read.
+2. **One branch per lane**: `feat/stage63-mustafa`, `feat/stage64-wasih`, `feat/demo-hasan`.
+   `git pull --rebase origin master` before every push.
+3. **`src/config.py` is shared.** New constants are append-only, and say so in the group
+   before pushing.
+4. **Tests ship with the code, in the same commit.** `.venv/Scripts/python.exe -m pytest -q`
+   must pass before any push - 56 tests pass today and that number should only go up.
+5. **No unstamped phantom figure leaves a lane.** Section 3 is not negotiable.
+6. Give your Claude `CLAUDE.md` plus this section. The frozen interfaces above are what make
+   three separately-written modules fit together on the first try.
