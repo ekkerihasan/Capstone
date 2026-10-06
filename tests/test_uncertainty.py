@@ -95,3 +95,52 @@ def test_mc_table_matches_the_cls_predictions_contract(x):
     assert set(rows[0]) >= {"case", "group", "y_true", "prob_tumor", "eq_diam_cm", "mc_std", "entropy"}
     assert all(0.0 <= r["prob_tumor"] <= 1.0 for r in rows)
     assert [r["case"] for r in rows] == [it["case"] for it in items]   # order preserved
+
+
+# --------------------------------------------------- regressions from review
+
+
+def test_mc_predict_restores_the_dropout_rates_it_overrode(x):
+    """enable_dropout(model, p) assigns p permanently, which is right for an
+    explicit call and wrong for an inference helper. Before this was fixed, a
+    T=20 pass at p=0.5 left the model training at 0.5 afterwards."""
+    model = Net()
+    before = {n: m.p for n, m in model.named_modules() if isinstance(m, nn.Dropout)}
+    assert before, "the fixture model must actually have dropout"
+    mc_dropout_predict(model, x, T=3, p=0.5)
+    after = {n: m.p for n, m in model.named_modules() if isinstance(m, nn.Dropout)}
+    assert after == before
+    assert not model.training
+
+
+def test_explicit_enable_dropout_still_sets_p_permanently():
+    """The restore belongs to mc_dropout_predict, not to enable_dropout: a
+    caller who switches dropout on by hand means it."""
+    model = Net()
+    enable_dropout(model, p=0.33)
+    assert all(m.p == 0.33 for m in model.modules() if isinstance(m, nn.Dropout))
+
+
+def test_entropy_uses_the_class_axis_not_the_last_one():
+    """[N, C] and [N, C, D, H, W] disagree about where the class axis is.
+    Summing over the last one silently summed over W for a segmentation model."""
+    probs = np.full((2, 3, 4, 5, 6), 1 / 3)
+    assert predictive_entropy(probs, class_axis=1).shape == (2, 4, 5, 6)
+    assert predictive_entropy(probs, class_axis=1) == pytest.approx(np.log(3))
+    # default stays -1, so the classifier call sites are unchanged
+    assert predictive_entropy(np.array([[0.5, 0.5]])).shape == (1,)
+
+
+def test_mc_predict_on_a_segmentation_shape_gives_per_voxel_entropy():
+    class Seg(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.drop = nn.Dropout3d(0.2)
+            self.conv = nn.Conv3d(1, 3, 3, padding=1)
+
+        def forward(self, v):
+            return self.conv(self.drop(v))
+
+    res = mc_dropout_predict(Seg(), torch.randn(2, 1, 8, 8, 8), T=3)
+    assert res["mean"].shape == (2, 3, 8, 8, 8)
+    assert res["entropy"].shape == (2, 8, 8, 8)

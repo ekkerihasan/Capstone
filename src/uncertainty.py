@@ -40,13 +40,38 @@ def enable_dropout(model: nn.Module, p: float | None = None) -> list:
     return names
 
 
-def disable_dropout(model: nn.Module) -> None:
+def dropout_rates(model: nn.Module) -> dict:
+    """The current p of every dropout module, by name. Taken before a call that
+    overrides them so it can be undone - `enable_dropout(model, p)` assigns p
+    permanently, which is right for an explicit call and wrong for an inference
+    helper that is only borrowing the model."""
+    return {name: m.p for name, m in model.named_modules() if isinstance(m, _DropoutNd)}
+
+
+def disable_dropout(model: nn.Module, rates: dict | None = None) -> None:
+    """Back to eval mode, and back to the dropout rates in `rates` if given."""
     model.eval()
+    if rates:
+        for name, m in model.named_modules():
+            if name in rates:
+                m.p = rates[name]
 
 
-def predictive_entropy(probs) -> np.ndarray:
+def predictive_entropy(probs, class_axis: int = -1) -> np.ndarray:
+    """Entropy of a probability distribution over `class_axis`.
+
+    The axis is explicit because the two shapes in this project disagree: the
+    classifier emits [N, C], where the class axis is also the last one, but a
+    segmentation model emits [N, C, D, H, W], where summing over the last axis
+    would quietly sum over W and return a number that is wrong without looking
+    wrong. Callers that know the shape should say so.
+
+    Note this is the entropy of the *mean* prediction, i.e. total predictive
+    uncertainty, not the epistemic part alone - that is the mutual information,
+    entropy of the mean minus the mean of the entropies.
+    """
     p = np.clip(np.asarray(probs, dtype=np.float64), 1e-12, 1.0)
-    return -(p * np.log(p)).sum(axis=-1)
+    return -(p * np.log(p)).sum(axis=class_axis)
 
 
 @torch.no_grad()
@@ -58,7 +83,11 @@ def mc_dropout_predict(model: nn.Module, x, T: int = MC_SAMPLES, device=None,
         mean      [N, C]   mean softmax over the T passes — the calibrated probability
         std       [N, C]   standard deviation of the softmax across passes
         samples   [T, N, C]
-        entropy   [N]      predictive entropy of the mean
+        entropy   [N]      predictive entropy of the mean, over the class axis
+
+    A segmentation model works too: [N, C, D, H, W] in gives per-voxel entropy
+    [N, D, H, W]. The model's dropout rates are restored on the way out, so a
+    call from inside a validation loop does not change how training continues.
     `p` overrides the dropout probability of every dropout module for this call
     (see the module docstring for why that is necessary with MONAI networks).
     """
@@ -69,17 +98,20 @@ def mc_dropout_predict(model: nn.Module, x, T: int = MC_SAMPLES, device=None,
         device = next(model.parameters()).device
     x = x.to(device)
     model.to(device)
+    rates = dropout_rates(model)        # restored below: this call borrows the model
     switched = enable_dropout(model, p)
     try:
         samples = torch.stack([torch.softmax(model(x), dim=1) for _ in range(T)])   # T,N,C
     finally:
-        disable_dropout(model)
+        disable_dropout(model, rates)
     mean = samples.mean(0)
     out = {
         "mean": mean.cpu().numpy(),
         "std": samples.std(0, unbiased=False).cpu().numpy(),
         "samples": samples.cpu().numpy(),
-        "entropy": predictive_entropy(mean.cpu().numpy()),
+        # class axis is 1, matching the softmax above - correct for a
+        # classifier's [N, C] and for a segmentation model's [N, C, D, H, W]
+        "entropy": predictive_entropy(mean.cpu().numpy(), class_axis=1),
         "dropout_modules": switched,
     }
     return out
