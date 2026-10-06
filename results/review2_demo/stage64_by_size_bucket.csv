@@ -1,0 +1,5 @@
+,covered,abstain,set_size,correct,n
+overall,1.0,0.35,1.35,0.75,20
+ge2cm,1.0,0.25,1.25,1.0,4
+no_tumor,1.0,0.5,1.5,0.5,8
+sub2cm,1.0,0.25,1.25,0.875,8
