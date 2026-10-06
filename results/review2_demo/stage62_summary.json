@@ -1,0 +1,18 @@
+{
+ "stage": "6.2",
+ "model": "AttentionUnet",
+ "epochs_completed": 2,
+ "best_dice_mean": 0.1213,
+ "patch": [
+  32,
+  32,
+  32
+ ],
+ "batch": 1,
+ "num_samples": 1,
+ "amp": false,
+ "device": "cpu",
+ "n_train": 40,
+ "n_val": 20,
+ "checkpoints": "results\\review2_demo\\checkpoints\\stage62"
+}

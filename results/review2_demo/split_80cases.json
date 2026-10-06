@@ -1,0 +1,424 @@
+{
+ "seed": 42,
+ "counts": {
+  "train": 40,
+  "val": 20,
+  "calib": 20
+ },
+ "case_ids": {
+  "train": [
+   "pancreas_049",
+   "pancreas_063",
+   "pancreas_023",
+   "pancreas_050",
+   "pancreas_030",
+   "pancreas_055",
+   "pancreas_008",
+   "pancreas_046",
+   "pancreas_057",
+   "pancreas_039",
+   "pancreas_015",
+   "pancreas_072",
+   "pancreas_059",
+   "pancreas_038",
+   "pancreas_042",
+   "pancreas_062",
+   "pancreas_025",
+   "pancreas_056",
+   "pancreas_076",
+   "pancreas_001",
+   "pancreas_070",
+   "pancreas_053",
+   "pancreas_018",
+   "pancreas_067",
+   "pancreas_019",
+   "pancreas_020",
+   "pancreas_043",
+   "pancreas_047",
+   "pancreas_033",
+   "pancreas_061",
+   "pancreas_032",
+   "pancreas_007",
+   "pancreas_065",
+   "pancreas_002",
+   "pancreas_016",
+   "pancreas_036",
+   "pancreas_022",
+   "pancreas_040",
+   "pancreas_024",
+   "pancreas_005"
+  ],
+  "val": [
+   "pancreas_006",
+   "pancreas_060",
+   "pancreas_073",
+   "pancreas_009",
+   "pancreas_052",
+   "pancreas_021",
+   "pancreas_066",
+   "pancreas_058",
+   "pancreas_010",
+   "pancreas_048",
+   "pancreas_000",
+   "pancreas_051",
+   "pancreas_074",
+   "pancreas_037",
+   "pancreas_075",
+   "pancreas_079",
+   "pancreas_026",
+   "pancreas_034",
+   "pancreas_044",
+   "pancreas_041"
+  ],
+  "calib": [
+   "pancreas_045",
+   "pancreas_012",
+   "pancreas_077",
+   "pancreas_068",
+   "pancreas_064",
+   "pancreas_029",
+   "pancreas_027",
+   "pancreas_071",
+   "pancreas_078",
+   "pancreas_004",
+   "pancreas_054",
+   "pancreas_011",
+   "pancreas_069",
+   "pancreas_013",
+   "pancreas_017",
+   "pancreas_028",
+   "pancreas_031",
+   "pancreas_035",
+   "pancreas_003",
+   "pancreas_014"
+  ]
+ },
+ "files": {
+  "train": [
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_049.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_049.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_063.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_063.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_023.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_023.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_050.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_050.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_030.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_030.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_055.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_055.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_008.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_008.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_046.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_046.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_057.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_057.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_039.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_039.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_015.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_015.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_072.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_072.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_059.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_059.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_038.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_038.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_042.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_042.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_062.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_062.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_025.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_025.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_056.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_056.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_076.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_076.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_001.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_001.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_070.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_070.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_053.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_053.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_018.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_018.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_067.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_067.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_019.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_019.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_020.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_020.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_043.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_043.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_047.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_047.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_033.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_033.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_061.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_061.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_032.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_032.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_007.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_007.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_065.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_065.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_002.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_002.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_016.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_016.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_036.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_036.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_022.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_022.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_040.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_040.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_024.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_024.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_005.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_005.nii.gz"
+   }
+  ],
+  "val": [
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_006.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_006.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_060.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_060.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_073.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_073.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_009.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_009.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_052.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_052.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_021.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_021.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_066.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_066.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_058.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_058.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_010.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_010.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_048.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_048.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_000.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_000.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_051.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_051.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_074.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_074.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_037.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_037.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_075.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_075.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_079.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_079.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_026.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_026.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_034.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_034.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_044.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_044.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_041.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_041.nii.gz"
+   }
+  ],
+  "calib": [
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_045.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_045.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_012.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_012.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_077.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_077.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_068.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_068.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_064.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_064.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_029.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_029.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_027.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_027.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_071.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_071.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_078.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_078.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_004.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_004.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_054.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_054.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_011.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_011.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_069.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_069.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_013.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_013.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_017.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_017.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_028.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_028.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_031.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_031.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_035.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_035.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_003.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_003.nii.gz"
+   },
+   {
+    "image": "C:\\dev\\capstone\\data\\phantom\\imagesTr\\pancreas_014.nii.gz",
+    "label": "C:\\dev\\capstone\\data\\phantom\\labelsTr\\pancreas_014.nii.gz"
+   }
+  ]
+ }
+}

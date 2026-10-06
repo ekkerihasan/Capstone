@@ -30,9 +30,20 @@ RAW_SPACING = (0.8, 0.8, 2.5)  # not the target 1.5/1.5/2.0 -> Spacingd must res
 DEMO_STAMP = "SYNTHETIC PHANTOM - PIPELINE DEMONSTRATION, NOT A RESULT"
 
 
-def make_phantom(seed: int, with_tumor: bool):
+PANCREAS_AXES = (9.0, 5.0, 7.0)   # semi-axes in voxels, centred at (28, 30, 20)
+TUMOR_RADIUS = 3.0
+
+
+def make_phantom(seed: int, with_tumor: bool, tumor_radius: float = TUMOR_RADIUS,
+                 pancreas_axes=PANCREAS_AXES):
     """A body ellipse of soft tissue on an air background, a pancreas blob
-    inside it, and optionally a small tumor inside the pancreas.
+    inside it, and optionally a tumor inside the pancreas.
+
+    `tumor_radius` and `pancreas_axes` default to the values the test fixtures
+    rely on. The demo pipeline enlarges both, because the default pancreas is
+    only ~1.6 cm in equivalent spherical diameter, so no tumor inside it can
+    ever land in the >= 2 cm bucket and the size-bucket table would show an
+    empty row.
 
     Returns (image, label) as float32 HU and uint8 labels, both of shape SHAPE.
     """
@@ -44,12 +55,14 @@ def make_phantom(seed: int, with_tumor: bool):
     image[body] = 40.0 + rng.normal(0, 5, size=body.sum())     # soft tissue
 
     label = np.zeros(SHAPE, dtype=np.uint8)
-    pancreas = ((zz - 28) / 9) ** 2 + ((yy - 30) / 5) ** 2 + ((xx - 20) / 7) ** 2 < 1.0
+    pa, pb, pc = pancreas_axes
+    pancreas = ((zz - 28) / pa) ** 2 + ((yy - 30) / pb) ** 2 + ((xx - 20) / pc) ** 2 < 1.0
     label[pancreas] = 1
     image[pancreas] = 55.0 + rng.normal(0, 3, size=pancreas.sum())
 
     if with_tumor:
-        tumor = ((zz - 28) / 3) ** 2 + ((yy - 30) / 3) ** 2 + ((xx - 20) / 3) ** 2 < 1.0
+        r = float(tumor_radius)
+        tumor = ((zz - 28) / r) ** 2 + ((yy - 30) / r) ** 2 + ((xx - 20) / r) ** 2 < 1.0
         tumor &= pancreas
         label[tumor] = 2
         image[tumor] = 35.0 + rng.normal(0, 3, size=tumor.sum())  # near-isodense, as in real PDAC
@@ -63,12 +76,17 @@ def has_tumor(index: int) -> bool:
     return index % 2 == 0
 
 
-def write_phantom_dataset(root, n_cases: int = 6, include_junk: bool = True) -> Path:
+def write_phantom_dataset(root, n_cases: int = 6, include_junk: bool = True,
+                          tumor_radii=None, pancreas_axes=PANCREAS_AXES) -> Path:
     """Write an MSD-shaped dataset to `root` and return it.
 
     `include_junk` adds the macOS resource-fork file ('._pancreas_000.nii.gz')
     that ships inside the official MSD tar, so the loader's skip logic is
     exercised here exactly as it is on the real data.
+
+    `tumor_radii` is cycled over the tumor-bearing cases, which is how the demo
+    gets a spread of tumor sizes instead of one size repeated. Left as None,
+    every tumor is TUMOR_RADIUS and the dataset is the one the tests use.
     """
     root = Path(root)
     (root / "imagesTr").mkdir(parents=True, exist_ok=True)
@@ -77,10 +95,15 @@ def write_phantom_dataset(root, n_cases: int = 6, include_junk: bool = True) -> 
     affine = np.diag(RAW_SPACING + (1.0,))
     affine[0, 0] *= -1  # LAS-ish, so Orientationd(RAS) has real work to do
 
-    training = []
+    radii = list(tumor_radii) if tumor_radii else [TUMOR_RADIUS]
+    training, n_tumor = [], 0
     for i in range(n_cases):
         name = f"pancreas_{i:03d}.nii.gz"
-        image, label = make_phantom(seed=i, with_tumor=has_tumor(i))
+        tumor = has_tumor(i)
+        r = radii[n_tumor % len(radii)]
+        n_tumor += int(tumor)
+        image, label = make_phantom(seed=i, with_tumor=tumor, tumor_radius=r,
+                                    pancreas_axes=pancreas_axes)
         nib.save(nib.Nifti1Image(image, affine), root / "imagesTr" / name)
         nib.save(nib.Nifti1Image(label, affine), root / "labelsTr" / name)
         training.append({"image": f"./imagesTr/{name}", "label": f"./labelsTr/{name}"})

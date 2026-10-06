@@ -1,0 +1,82 @@
+{
+ "stage": "6.4",
+ "predictions": "results\\review2_demo\\cls_predictions.csv",
+ "calib_group": "calib",
+ "n_calib": 20,
+ "test_group": "val",
+ "n_test": 20,
+ "n_test_positive": 12,
+ "n_test_sub2cm": 8,
+ "threshold": 0.5,
+ "auroc": {
+  "overall": {
+   "auroc": 0.958,
+   "n_pos": 12,
+   "n_neg": 8
+  },
+  "sub2cm": {
+   "auroc": 0.938,
+   "n_pos": 8,
+   "n_neg": 8
+  },
+  "ge2cm": {
+   "auroc": 1.0,
+   "n_pos": 4,
+   "n_neg": 8
+  }
+ },
+ "sensitivity": 0.9166666666666666,
+ "specificity": 0.5,
+ "confusion_tn_fp_fn_tp": [
+  4,
+  4,
+  1,
+  11
+ ],
+ "ece": 0.2666,
+ "n_bins": 15,
+ "mc_std_mean": null,
+ "conformal": {
+  "alpha": 0.1,
+  "target_coverage": 0.9,
+  "q_hat": 0.6416,
+  "n": 20,
+  "coverage": 1.0,
+  "mean_set_size": 1.35,
+  "frac_singleton": 0.65,
+  "frac_abstain": 0.35,
+  "frac_empty": 0.0
+ },
+ "by_size_bucket": {
+  "overall": {
+   "covered": 1.0,
+   "abstain": 0.35,
+   "set_size": 1.35,
+   "correct": 0.75,
+   "n": 20
+  },
+  "ge2cm": {
+   "covered": 1.0,
+   "abstain": 0.25,
+   "set_size": 1.25,
+   "correct": 1.0,
+   "n": 4
+  },
+  "no_tumor": {
+   "covered": 1.0,
+   "abstain": 0.5,
+   "set_size": 1.5,
+   "correct": 0.5,
+   "n": 8
+  },
+  "sub2cm": {
+   "covered": 1.0,
+   "abstain": 0.25,
+   "set_size": 1.25,
+   "correct": 0.875,
+   "n": 8
+  }
+ },
+ "sub2cm_threshold_cm": 2.0,
+ "stamped_phantom": true
+}

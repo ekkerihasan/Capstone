@@ -1,0 +1,194 @@
+{
+ "pipeline": "6.1 -> 6.4",
+ "data": "SYNTHETIC PHANTOM",
+ "stamp": "SYNTHETIC PHANTOM - PIPELINE DEMONSTRATION, NOT A RESULT",
+ "seed": 42,
+ "stages": {
+  "6.1": {
+   "status": "ran",
+   "stage": "6.1",
+   "data_root": "C:\\dev\\capstone\\data\\phantom",
+   "seed": 42,
+   "n_cases": 80,
+   "split_counts": {
+    "train": 40,
+    "val": 20,
+    "calib": 20
+   },
+   "cases_with_tumor": 40,
+   "cases_sub2cm": 30,
+   "median_tumor_diam_cm": 1.628,
+   "preprocessing": {
+    "spacing_mm": [
+     1.5,
+     1.5,
+     2.0
+    ],
+    "orientation": "RAS",
+    "hu_window": [
+     -100.0,
+     240.0
+    ],
+    "normalised_to": [
+     0.0,
+     1.0
+    ],
+    "augmentation": [
+     "RandFlipd",
+     "RandRotate90d",
+     "Rand3DElasticd"
+    ]
+   },
+   "stamped_phantom": true,
+   "runtime_s": 14.1
+  },
+  "6.2": {
+   "status": "ran (phantom, not a convergence claim)",
+   "stage": "6.2",
+   "model": "AttentionUnet",
+   "epochs_completed": 2,
+   "best_dice_mean": 0.1213,
+   "patch": [
+    32,
+    32,
+    32
+   ],
+   "batch": 1,
+   "num_samples": 1,
+   "amp": false,
+   "device": "cpu",
+   "n_train": 40,
+   "n_val": 20,
+   "checkpoints": "results\\review2_demo\\checkpoints\\stage62"
+  },
+  "6.3": {
+   "stage": "6.3",
+   "status": "PLACEHOLDER",
+   "n": 80,
+   "note": "generated, not predicted; replace with the real cls_predictions.csv via --predictions"
+  },
+  "6.4": {
+   "status": "ran",
+   "stage": "6.4",
+   "predictions": "results\\review2_demo\\cls_predictions.csv",
+   "calib_group": "calib",
+   "n_calib": 20,
+   "test_group": "val",
+   "n_test": 20,
+   "n_test_positive": 12,
+   "n_test_sub2cm": 8,
+   "threshold": 0.5,
+   "auroc": {
+    "overall": {
+     "auroc": 0.958,
+     "n_pos": 12,
+     "n_neg": 8
+    },
+    "sub2cm": {
+     "auroc": 0.938,
+     "n_pos": 8,
+     "n_neg": 8
+    },
+    "ge2cm": {
+     "auroc": 1.0,
+     "n_pos": 4,
+     "n_neg": 8
+    }
+   },
+   "sensitivity": 0.9166666666666666,
+   "specificity": 0.5,
+   "confusion_tn_fp_fn_tp": [
+    4,
+    4,
+    1,
+    11
+   ],
+   "ece": 0.2666,
+   "n_bins": 15,
+   "mc_std_mean": null,
+   "conformal": {
+    "alpha": 0.1,
+    "target_coverage": 0.9,
+    "q_hat": 0.6416,
+    "n": 20,
+    "coverage": 1.0,
+    "mean_set_size": 1.35,
+    "frac_singleton": 0.65,
+    "frac_abstain": 0.35,
+    "frac_empty": 0.0
+   },
+   "by_size_bucket": {
+    "overall": {
+     "covered": 1.0,
+     "abstain": 0.35,
+     "set_size": 1.35,
+     "correct": 0.75,
+     "n": 20
+    },
+    "ge2cm": {
+     "covered": 1.0,
+     "abstain": 0.25,
+     "set_size": 1.25,
+     "correct": 1.0,
+     "n": 4
+    },
+    "no_tumor": {
+     "covered": 1.0,
+     "abstain": 0.5,
+     "set_size": 1.5,
+     "correct": 0.5,
+     "n": 8
+    },
+    "sub2cm": {
+     "covered": 1.0,
+     "abstain": 0.25,
+     "set_size": 1.25,
+     "correct": 0.875,
+     "n": 8
+    }
+   },
+   "sub2cm_threshold_cm": 2.0,
+   "stamped_phantom": true
+  }
+ },
+ "runtime_s": 95.8,
+ "artifacts": [
+  "cls_predictions.csv",
+  "conformal_sets.csv",
+  "coverage_curve.csv",
+  "fig_size_distribution.png",
+  "fig_stage62_training.png",
+  "fig_stage64_conformal.png",
+  "fig_stage64_reliability.png",
+  "metrics_stage62.csv",
+  "overlay_pancreas_000.png",
+  "overlay_pancreas_006.png",
+  "overlay_pancreas_009.png",
+  "overlay_pancreas_010.png",
+  "overlay_pancreas_021.png",
+  "overlay_pancreas_026.png",
+  "overlay_pancreas_034.png",
+  "overlay_pancreas_037.png",
+  "overlay_pancreas_041.png",
+  "overlay_pancreas_044.png",
+  "overlay_pancreas_048.png",
+  "overlay_pancreas_051.png",
+  "overlay_pancreas_052.png",
+  "overlay_pancreas_058.png",
+  "overlay_pancreas_060.png",
+  "overlay_pancreas_066.png",
+  "overlay_pancreas_073.png",
+  "overlay_pancreas_074.png",
+  "overlay_pancreas_075.png",
+  "overlay_pancreas_079.png",
+  "raw_stats.csv",
+  "reliability_bins.csv",
+  "split_80cases.json",
+  "stage61_summary.json",
+  "stage62_summary.json",
+  "stage64_by_size_bucket.csv",
+  "stage64_summary.json",
+  "test_report.csv",
+  "test_report.md"
+ ]
+}

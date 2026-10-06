@@ -23,14 +23,19 @@ def best_axial_slice(label) -> int:
     return int(area.argmax())
 
 
-def save_fig(fig, path):
+def save_fig(fig, path, stamp: bool = False):
+    """Save at 150 dpi. `stamp=True` marks the figure as phantom-derived first —
+    see the rule in docs/REVIEW2_TEMP_PLAN.md section 3."""
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
+    if stamp:
+        from .phantom import stamp_figure
+        stamp_figure(fig)
     fig.savefig(path, dpi=DPI, bbox_inches="tight")
     return path
 
 
-def plot_case(image, label, title="", path=None, show=False):
+def plot_case(image, label, title="", path=None, show=False, stamp: bool = False):
     """Three panels: preprocessed CT, colour overlay, contours."""
     import matplotlib.pyplot as plt
 
@@ -55,7 +60,7 @@ def plot_case(image, label, title="", path=None, show=False):
     fig.tight_layout()
 
     if path:
-        save_fig(fig, path)
+        save_fig(fig, path, stamp=stamp)
     if show:
         plt.show()
     else:
@@ -63,7 +68,8 @@ def plot_case(image, label, title="", path=None, show=False):
     return fig
 
 
-def plot_size_distribution(stats, path=None, show=False, threshold=2.0):
+def plot_size_distribution(stats, path=None, show=False, threshold=2.0,
+                           stamp: bool = False):
     """Histogram of equivalent spherical diameter with the sub-2 cm line."""
     import matplotlib.pyplot as plt
 
@@ -88,7 +94,7 @@ def plot_size_distribution(stats, path=None, show=False, threshold=2.0):
 
     fig.tight_layout()
     if path:
-        save_fig(fig, path)
+        save_fig(fig, path, stamp=stamp)
     if show:
         plt.show()
     else:

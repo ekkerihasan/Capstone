@@ -59,6 +59,8 @@ def main(argv=None):
     p.add_argument("--names", default="train,val,calib")
     p.add_argument("--seed", type=int, default=SEED)
     p.add_argument("--no-figures", action="store_true")
+    p.add_argument("--stamp", action="store_true",
+                   help="mark figures as phantom-derived (mandatory for phantom runs)")
     args = p.parse_args(argv)
 
     set_determinism(args.seed)
@@ -88,12 +90,14 @@ def main(argv=None):
 
     val_key = "val" if "val" in split else names[-1]
     if not args.no_figures:
-        plot_size_distribution(stats, path=out / "fig_size_distribution.png")
+        plot_size_distribution(stats, path=out / "fig_size_distribution.png",
+                               stamp=args.stamp)
         val_tf = build_transforms(train=False)
         for c in split[val_key]:
             name = case_id(c["image"])
             d = val_tf(dict(c))
-            plot_case(d["image"], d["label"], title=name, path=out / f"overlay_{name}.png")
+            plot_case(d["image"], d["label"], title=name,
+                      path=out / f"overlay_{name}.png", stamp=args.stamp)
             print(f"[6.1] preprocessed {name}: {tuple(d['image'].shape[1:])} @ {SPACING_MM} mm")
 
     summary = {
@@ -113,6 +117,7 @@ def main(argv=None):
             "normalised_to": [0.0, 1.0],
             "augmentation": ["RandFlipd", "RandRotate90d", "Rand3DElasticd"],
         },
+        "stamped_phantom": bool(args.stamp),
         "runtime_s": round(time.time() - started, 1),
     }
     (out / "stage61_summary.json").write_text(json.dumps(summary, indent=1), encoding="utf-8")

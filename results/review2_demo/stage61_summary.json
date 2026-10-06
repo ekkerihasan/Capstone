@@ -1,0 +1,37 @@
+{
+ "stage": "6.1",
+ "data_root": "C:\\dev\\capstone\\data\\phantom",
+ "seed": 42,
+ "n_cases": 80,
+ "split_counts": {
+  "train": 40,
+  "val": 20,
+  "calib": 20
+ },
+ "cases_with_tumor": 40,
+ "cases_sub2cm": 30,
+ "median_tumor_diam_cm": 1.628,
+ "preprocessing": {
+  "spacing_mm": [
+   1.5,
+   1.5,
+   2.0
+  ],
+  "orientation": "RAS",
+  "hu_window": [
+   -100.0,
+   240.0
+  ],
+  "normalised_to": [
+   0.0,
+   1.0
+  ],
+  "augmentation": [
+   "RandFlipd",
+   "RandRotate90d",
+   "Rand3DElasticd"
+  ]
+ },
+ "stamped_phantom": true,
+ "runtime_s": 14.1
+}
