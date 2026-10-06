@@ -5,6 +5,62 @@ Each entry: dates covered, stage worked on, what exists as evidence, what is blo
 
 ---
 
+## Entry #3 — 6 Oct 2026 · Status reassessment, phantom harness, work split
+
+**Period covered:** 5 Sept – 6 Oct 2026.
+**Stage:** nothing advanced on real data. Groundwork laid for 6.3 and 6.4.
+
+**Gap in the record — stated plainly**
+No commits between 4 Sept and 6 Oct. Review 1 was delivered on 4 Sept and development stopped
+there: the lab RTX 4060 booking was never secured, and stage 6.2 cannot produce a real result
+without it. This entry records the gap rather than filling it, because the commit history is
+public and a logbook that disagreed with it would be worse than a logbook with a hole.
+
+**Status reassessment (6 Oct)**
+- Roughly **22%** of the technical work is complete measured by what has actually *run*;
+  nearer **27%** on the VTU review scale, which also credits plan, repo and deck.
+- 6.1 preprocessing — complete, on all 281 real MSD cases.
+- 6.2 segmentation — all modules written, 56 tests pass on CPU, **never run on real data**.
+- 6.3 through 6.6 — not started.
+
+**Defect found in the Review 1 record**
+Cells 18–24 of `notebooks/01_preprocessing_and_baseline.ipynb` — the whole MONAI DiNTS
+baseline section — carry no outputs. The Colab session stopped after section 4 (preprocessing
+figures on a 20-case subset); the full-281 numbers came from `src/run_preprocessing.py`
+separately. **Stage 6.2 therefore has no real results at all, baseline included.** It must not
+be listed as done in the Review 2 deck.
+
+**Done today**
+- `docs/REVIEW2_TEMP_PLAN.md` — interim plan: build every stage against synthetic phantoms
+  now, swap in real data when the GPU frees. Includes the rule that every phantom-derived
+  number and figure is stamped "SYNTHETIC PHANTOM — PIPELINE DEMONSTRATION, NOT A RESULT".
+- `src/phantom.py` — the synthetic MSD-shaped generator lifted out of `tests/` so the demo
+  pipeline and notebooks can use it, not only pytest; `tests/conftest.py` now imports it, so
+  there is one implementation. Half the phantom cases carry no tumor, which gives stage 6.3
+  the negatives that real MSD does not have, and the tumor stays near-isodense (35 HU in a
+  55 HU pancreas) so the task is not trivially separable on intensity.
+- Three-lane work split with the module interfaces frozen in advance — Mustafa on 6.3,
+  Wasih on 6.4 and the training run, Hasan on docs, integration and the UI.
+
+**Blocked on**
+- **Lab RTX 4060 booking.** Still the single hard blocker: no trained segmentation model means
+  no ROI, and no ROI means 6.3 through 6.6 cannot run on real data. Kaggle Notebooks
+  (12 h sessions, datasets mounted rather than downloaded) is the fallback; the atomic
+  checkpoint and resume in `src/checkpoints.py` was built for exactly that.
+
+**Two decisions still open — both cost nothing now and stall training later**
+1. Negative samples for 6.3: every real MSD case has a tumor, so negatives must come from
+   PanTS `tumor? = 0` cases or from non-tumor pancreas crops.
+2. Duct segmentation: `CLAUDE.md` scopes 6.2 as "pancreas + duct", but MSD Task07 labels only
+   background / pancreas / tumor and duct annotations live in PanTS, the *validation* set.
+   Settle with the guide; the clean answer is probably to record duct as future work.
+
+**Next**
+- Three lanes in parallel against the phantom, no lane waiting on another.
+- Book the 4060 (or start the Kaggle run) — this is the item that moves the percentage.
+
+---
+
 ## Entry #2 — 4 Sept 2026 · Stage 6.2 training loop
 
 **Stage:** 6.2 ROI segmentation — Attention U-Net.
