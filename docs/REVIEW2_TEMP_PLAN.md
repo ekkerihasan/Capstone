@@ -17,13 +17,15 @@ Measured by what has been *run*, not what has been written.
 | Stage | Weight | State | Earned |
 |---|---|---|---|
 | 6.1 Preprocessing | 10 | Complete - ran on all 281 real MSD cases | 10 |
-| 6.2 Segmentation | 20 | ~40% - all modules written, 43 tests pass, nothing run on real data | 8 |
-| 6.3 Classifier | 20 | Not started | 0 |
-| 6.4 Uncertainty | 15 | Not started (the 197/42/42 split exists, nothing else) | 0 |
-| 6.5 Explainability | 12 | Not started | 0 |
-| 6.6 Selective prediction + UI | 13 | Not started | 0 |
-| Report / deck / logbook | 10 | ~40% - plan, roadmap, Review 1 deck, 2 logbook entries | 4 |
-| | **100** | | **~22** |
+| 6.2 Segmentation | 20 | Code + tests done and running in the demo chain, but never on real data | 8 |
+| 6.3 Classifier | 20 | Not started - a placeholder is not progress on 6.3 | 0 |
+| 6.4 Uncertainty | 15 | MC Dropout, split conformal, ECE and coverage implemented and tested; run on synthetic input only | 9 |
+| 6.5 Explainability | 12 | Not started, deferred past Review 2 | 0 |
+| 6.6 Selective prediction + UI | 13 | Abstention rule and Gradio UI built and running on phantoms | 8 |
+| Report / deck / logbook | 10 | Plans, roadmap, logbook current, generated test report; **no Review 2 deck, no report chapters** | 5 |
+| | **100** | | **~40** |
+
+*Updated 7 Oct 2026. It was ~22 on 6 Oct, before the 6.4 and 6.6 lanes landed.*
 
 On the VTU review scale it reads nearer **27%**, because Review 1's 30% includes process
 marks (plan, repo, literature, deck) that were earned.
@@ -74,10 +76,10 @@ The real stage 6.1 results on 281 cases stay clearly separated as the genuine re
 | Pri | Module | Why | Estimate |
 |---|---|---|---|
 | P0 | `src/phantom.py` | **DONE 6 Oct.** Generator lifted out of `tests/`; `conftest.py` now imports it, so tests and demo share one phantom. Also provides `DEMO_STAMP` and `stamp_figure()` | - |
-| P0 | `src/roi.py`, `src/classifier.py`, `src/train_cls.py` | The 6.3 chain. On 64x64x40 phantoms this trains on CPU in seconds | 2-3 h |
-| P1 | `src/uncertainty.py`, `src/conformal.py`, ECE + reliability in `src/metrics.py` | Stage 6.4. Post-hoc on logits, pure CPU, and the source of the two best figures in the deck | 2 h |
-| P1 | `src/run_demo_pipeline.py` | One command: 6.1 -> 6.4 on phantoms -> `results/review2_demo/`, every figure stamped | 1 h |
-| P2 | `src/app.py` (Gradio shell) | Volume in -> mask, confidence, abstain decision. Highest visual impact per hour | 1-2 h |
+| P0 | `src/roi.py`, `src/classifier.py`, `src/train_cls.py` | The 6.3 chain. **Outstanding - Mustafa's lane, and the critical path for everything else** | 2-3 h |
+| P1 | `src/uncertainty.py`, `src/conformal.py`, ECE + reliability in `src/metrics.py` | **DONE 6 Oct (Wasih, fd1e46b).** Two defects open: `enable_dropout` does not restore `p`, and `predictive_entropy` assumes the class axis is last | - |
+| P1 | `src/run_demo_pipeline.py` | **DONE 6 Oct.** 6.1 -> 6.4 in ~96 s on CPU, 37 artifacts, `manifest.json` records which stages were real | - |
+| P2 | `src/app.py` (Gradio shell) | **DONE 7 Oct**, with `src/selective.py` for the abstention rule. Verified against a running server; screenshots in `results/review2_demo/screenshots/` | - |
 | P2 | `src/explain.py` (Grad-CAM++) | Can be stubbed for now | - |
 
 P0 + P1 is one working evening and yields a demonstrable 6.1 -> 6.4 chain.
