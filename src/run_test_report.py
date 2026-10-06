@@ -24,10 +24,14 @@ from pathlib import Path
 
 from .config import REPO_ROOT, RESULTS_DIR
 
-# Stage for the modules whose docstring does not name one.
+# Stage for the modules whose docstring does not name one, or names the wrong
+# one first - test_run_demo_pipeline's docstring opens by saying 6.2 is skipped.
 STAGE_FALLBACK = {
     "test_metrics": "all",
     "test_pants_meta": "EDA",
+}
+STAGE_OVERRIDE = {
+    "test_run_demo_pipeline": "6.1-6.4",
 }
 
 
@@ -47,6 +51,8 @@ def module_docstring(path: Path) -> str:
 
 
 def module_stage(path: Path, doc: str) -> str:
+    if path.stem in STAGE_OVERRIDE:
+        return STAGE_OVERRIDE[path.stem]
     full = path.read_text(encoding="utf-8")[:400]
     m = re.search(r"Stage\s+(\d\.\d)", full)
     if m:
