@@ -34,7 +34,7 @@ import torch
 
 from .config import CHECKPOINT_DIR, DATA_DIR, LABEL_PANCREAS, LABEL_TUMOR, RESULTS_DIR
 from .phantom import DEMO_STAMP
-from .selective import ABSTAIN, decide, label_of
+from .selective import ABSTAIN, MAX_MC_STD, decide, label_of
 
 TUMOR_CHANNEL = 2           # 0 background / 1 pancreas / 2 tumor
 PATCH = (32, 32, 32)        # inference window; must divide down through the U-Net depth
@@ -249,43 +249,153 @@ def analyse(image_path: Path, model, trained: bool, q_hat, alpha,
     return fig, verdict, gt, trained, alpha
 
 
-def report_markdown(verdict: dict, gt, trained: bool, alpha, mc_passes: int) -> str:
-    d = verdict["decision"]
-    colour = {"tumor": "#d1495b", "no_tumor": "#2a9d8f", ABSTAIN: "#e09f3e"}[d]
-    lines = [
-        f"<h2 style='color:{colour};margin:0'>{label_of(d)}</h2>",
-        "",
-        f"**p(tumor)** {verdict['prob_tumor']:.3f}",
-    ]
-    if verdict["mc_std"] is not None:
-        lines.append(f"**MC Dropout spread** {verdict['mc_std']:.3f} over T={mc_passes} passes")
-    if verdict["conformal_set"] is not None:
-        names = {0: "no tumor", 1: "tumor"}
-        inside = ", ".join(names[c] for c in verdict["conformal_set"]) or "(empty)"
-        lines.append(f"**Conformal set** at {int((1 - (alpha or 0.1)) * 100)} % target "
-                     f"coverage: {{{inside}}}")
-    fid = verdict.get("fidelity")
-    if fid is not None:
-        mark = "PASS" if fid["passed"] else "FAIL"
-        lines.append(f"**F-Fidelity** {mark} — masking the most salient voxels moves the "
-                     f"score {fid['mean_margin']:+.3f} more than masking at random "
-                     f"(needs > {fid['threshold']:.3f})")
-    if verdict["reasons"]:
-        lines += ["", "**Why it was escalated**"] + [f"- {r}" for r in verdict["reasons"]]
-    if gt is not None:
-        truth = "tumor" if (np.asarray(gt) == LABEL_TUMOR).any() else "no tumor"
-        lines += ["", f"*Phantom ground truth: {truth}.*"]
+CARD = ("display:inline-block;vertical-align:top;width:31%;min-width:230px;margin:0 1% 10px 0;"
+        "padding:14px 16px;border-radius:10px;background:#1b2730;border-left:4px solid {edge}")
 
-    lines += [
-        "", "---", "",
-        "**Provenance**",
-        f"- segmentation weights: {'checkpoint loaded' if trained else 'UNTRAINED (random)'}",
-        "- p(tumor): read off the segmentation tumor channel; **no stage 6.3 classifier exists yet**",
-        "- fidelity signal: Grad-CAM++ on the segmentation score head, "
-        "F-Fidelity vs random masking",
-        f"- data: synthetic phantom. {DEMO_STAMP}",
+VERDICT_STYLE = {
+    "tumor": ("#D1495B", "The system is reporting a tumour in this scan."),
+    "no_tumor": ("#2A9D8F", "The system found no tumour in this scan."),
+    ABSTAIN: ("#E09F3E", "The system will not answer this scan. It is asking for a human."),
+}
+
+
+def _card(edge: str, state: str, title: str, value: str, meaning: str) -> str:
+    return (f"<div style='{CARD.format(edge=edge)}'>"
+            f"<div style='font-size:12px;letter-spacing:1px;color:{edge};font-weight:600'>{state}</div>"
+            f"<div style='font-size:15px;font-weight:600;margin-top:2px'>{title}</div>"
+            f"<div style='font-size:19px;margin-top:6px'>{value}</div>"
+            f"<div style='font-size:13px;color:#9aa8b2;margin-top:4px;line-height:1.4'>{meaning}</div>"
+            "</div>")
+
+
+def verdict_html(verdict: dict, gt, alpha, mc_passes: int) -> str:
+    """The verdict as three labelled checks instead of one paragraph.
+
+    Each check states in words what it measured and whether that was a problem.
+    A reader who does not already know what a conformal set is cannot act on
+    "set size 2", and the people this has to convince are radiologists and
+    examiners, not the three of us who wrote it.
+    """
+    d = verdict["decision"]
+    colour, lead = VERDICT_STYLE[d]
+    ok, flag = "#2A9D8F", "#E09F3E"
+
+    out = [
+        f"<div style='padding:16px 18px;border-radius:12px;background:{colour}1A;"
+        f"border:1px solid {colour}'>"
+        f"<div style='font-size:26px;font-weight:700;color:{colour};line-height:1.2'>{label_of(d)}</div>"
+        f"<div style='font-size:15px;color:#c8d4da;margin-top:6px'>{lead}</div></div>",
+        "<div style='margin-top:14px'>",
     ]
-    return "\n".join(lines)
+
+    # 1 - the calibrated answer
+    cset = verdict["conformal_set"]
+    if cset is None:
+        out.append(_card("#6b7a85", "NOT AVAILABLE", "Calibrated answer",
+                         "&mdash;", "No calibration file was found."))
+    else:
+        names = {0: "no tumour", 1: "tumour"}
+        inside = ", ".join(names[c] for c in cset) or "empty"
+        single = len(cset) == 1
+        out.append(_card(
+            ok if single else flag,
+            "OK" if single else "NEEDS A HUMAN",
+            f"Calibrated answer &mdash; {int((1 - (alpha or 0.1)) * 100)}% confidence",
+            "{" + inside + "}",
+            "Narrowed to one answer at the confidence we demand." if single
+            else "At the confidence we demand, both answers are still possible."))
+
+    # 2 - do the repeated runs agree with each other
+    std = verdict["mc_std"]
+    if std is None:
+        out.append(_card("#6b7a85", "NOT AVAILABLE", "Model agreement",
+                         "&mdash;", "Repeat runs were switched off."))
+    else:
+        steady = std <= MAX_MC_STD
+        out.append(_card(
+            ok if steady else flag,
+            "OK" if steady else "NEEDS A HUMAN",
+            f"Model agreement &mdash; {mc_passes} repeat runs",
+            f"spread {std:.3f}",
+            f"The {mc_passes} runs agreed with each other." if steady
+            else f"The {mc_passes} runs disagreed (over {MAX_MC_STD:.2f})."))
+
+    # 3 - does the explanation survive being tested
+    fid = verdict.get("fidelity")
+    if fid is None:
+        out.append(_card("#6b7a85", "NOT AVAILABLE", "Explanation check",
+                         "&mdash;", "Saliency was switched off for this run."))
+    else:
+        passed = fid["passed"]
+        out.append(_card(
+            ok if passed else flag,
+            "OK" if passed else "NEEDS A HUMAN",
+            "Explanation check &mdash; F-Fidelity",
+            "PASS" if passed else "FAIL",
+            "Hiding the highlighted region really does change the answer." if passed
+            else "Hiding the highlighted region changed the answer no more than hiding "
+                 "random tissue, so the heat map is not trustworthy."))
+
+    out.append("</div>")
+
+    if verdict["reasons"]:
+        items = "".join(f"<li style='margin:3px 0'>{r}</li>" for r in verdict["reasons"])
+        out.append("<div style='margin-top:6px;font-size:14px;color:#c8d4da'>"
+                   f"<b>Escalated because:</b><ul style='margin:6px 0 0 18px'>{items}</ul></div>")
+
+    if gt is not None:
+        truth = "tumour" if (np.asarray(gt) == LABEL_TUMOR).any() else "no tumour"
+        agrees = (truth == "tumour") == (d == "tumor")
+        note = ("the system agreed" if d != ABSTAIN and agrees else
+                "the system disagreed" if d != ABSTAIN else
+                "the system declined to answer rather than guess")
+        out.append("<div style='margin-top:10px;font-size:14px;color:#9aa8b2'>"
+                   f"<b>Known answer for this test case:</b> {truth} &mdash; {note}.</div>")
+    return "".join(out)
+
+
+def provenance_html(trained: bool) -> str:
+    """Folded away by default, but always one click from the verdict."""
+    rows = [
+        ("Segmentation weights", "checkpoint loaded" if trained else "UNTRAINED (random)"),
+        ("Tumour probability", "read off the segmentation tumour channel &mdash; "
+                               "<b>no stage 6.3 classifier exists yet</b>"),
+        ("Explanation", "Grad-CAM++ on the segmentation score head, "
+                        "F-Fidelity vs random masking"),
+        ("Data", f"synthetic phantom &mdash; {DEMO_STAMP}"),
+    ]
+    body = "".join(
+        f"<tr><td style='padding:4px 14px 4px 0;color:#9aa8b2;white-space:nowrap'>{k}</td>"
+        f"<td style='padding:4px 0'>{v}</td></tr>" for k, v in rows)
+    return ("<details style='margin-top:14px;font-size:13px;color:#c8d4da'>"
+            "<summary style='cursor:pointer;color:#9aa8b2'>What this run is actually based on"
+            "</summary>"
+            f"<table style='margin-top:8px;border-collapse:collapse'>{body}</table></details>")
+
+
+HOW_TO_READ_SEG = (
+    "<div style='font-size:14px;color:#c8d4da;line-height:1.55'>"
+    "<b>How to read this.</b> Left is the CT after preprocessing. Middle is what the model "
+    "found: <span style='color:#4ade80'><b>green outline = pancreas</b></span>, "
+    "<span style='color:#f87171'><b>red outline = tumour</b></span>. Right is the correct "
+    "answer, for comparison.</div>")
+
+HOW_TO_READ_CAM = (
+    "<div style='font-size:14px;color:#c8d4da;line-height:1.55'>"
+    "<b>How to read this.</b> The heat map shows <i>where the model looked</i> to reach its "
+    "answer &mdash; <span style='color:#f87171'><b>red is where it looked hardest</b></span>, "
+    "blue is where it barely looked. The <b>white outline</b> is the real tumour. A "
+    "trustworthy explanation puts the red inside the white."
+    "<br><br><b>But looking right is not proof.</b> So the system hides the red region and "
+    "checks whether the answer actually changes, then compares that against hiding the same "
+    "amount of <i>random</i> tissue. If hiding the red region matters no more than hiding "
+    "anything else, the heat map was decoration &mdash; and the Explanation check above "
+    "reports FAIL.</div>")
+
+
+def report_markdown(verdict: dict, gt, trained: bool, alpha, mc_passes: int) -> str:
+    """The whole report as one string, for callers that want it in one piece."""
+    return verdict_html(verdict, gt, alpha, mc_passes) + provenance_html(trained)
 
 
 # -------------------------------------------------------------------------- UI
@@ -303,18 +413,26 @@ def build_ui(data_root: Path, checkpoint: str = "", mc_passes: int = MC_PASSES):
     patch = training_patch()
     cases = list_cases(data_root)
 
-    banner = (
-        f"### Pancreatic cancer early detection — stages 6.1 → 6.6\n"
-        f"**{DEMO_STAMP}**\n\n"
-        f"Segmentation checkpoint: `{ckpt if ckpt else 'none — random weights'}` · "
-        f"conformal q̂: `{q_hat if q_hat is not None else 'not calibrated'}` · "
-        f"MC Dropout T={mc_passes} · window {patch}"
-    )
+    header = (
+        "<div style='padding:2px 0 10px'>"
+        "<div style='font-size:24px;font-weight:700'>Pancreatic cancer early detection</div>"
+        "<div style='font-size:15px;color:#9aa8b2;margin-top:4px'>"
+        "A CT volume goes in. The system answers &mdash; or refuses, and says why. "
+        "Stages 6.1 to 6.6.</div>"
+        f"<div style='margin-top:10px;display:inline-block;padding:5px 11px;border-radius:6px;"
+        f"background:#C1453A22;border:1px solid #C1453A;color:#E8938B;font-size:12px;"
+        f"letter-spacing:1px;font-weight:600'>{DEMO_STAMP}</div></div>")
+
+    waiting = ("<div style='padding:28px 18px;border-radius:12px;background:#1b2730;"
+               "color:#9aa8b2;font-size:15px;line-height:1.6'>"
+               "Pick a case on the left and press <b>Analyse</b>.<br>"
+               "The system will run all six stages and show you the verdict, the three checks "
+               "behind it, and where the model looked.</div>")
 
     def run(case_name, uploaded, target_alpha, want_saliency):
         path = Path(uploaded) if uploaded else (data_root / "imagesTr" / case_name)
         if not path.exists():
-            return None, None, f"**No such case:** `{path}`"
+            return None, None, f"**No such case:** `{path}`", ""
         q = q_hat_for(curve, target_alpha, fallback=q_hat)
         fig, verdict, gt, is_trained, _ = analyse(
             path, model, trained, q, target_alpha, mc_passes=mc_passes, patch=patch,
@@ -326,28 +444,45 @@ def build_ui(data_root: Path, checkpoint: str = "", mc_passes: int = MC_PASSES):
             x, _ = load_volume(path)
             sal_fig = overlay_saliency(x, verdict["saliency"], gt=gt,
                                        title=path.name.replace(".nii.gz", ""))
-        return fig, sal_fig, report_markdown(verdict, gt, is_trained, target_alpha, mc_passes)
+        report = (verdict_html(verdict, gt, target_alpha, mc_passes)
+                  + provenance_html(is_trained))
+        return fig, sal_fig, report, (HOW_TO_READ_CAM if sal_fig is not None else "")
 
     with gr.Blocks(title="Pancreatic cancer early detection") as ui:
-        gr.Markdown(banner)
+        gr.HTML(header)
         with gr.Row():
-            with gr.Column(scale=1):
+            with gr.Column(scale=1, min_width=300):
                 case = gr.Dropdown(cases, value=cases[0] if cases else None,
-                                   label="Phantom case")
+                                   label="1. Choose a scan")
                 upload = gr.File(label="…or upload a NIfTI volume (.nii.gz)",
                                  file_types=[".gz", ".nii"], type="filepath")
                 alpha_in = gr.Slider(0.02, 0.5, value=alpha or 0.1, step=0.02,
-                                     label="conformal alpha (1 - target coverage)",
-                                     info="tighter coverage -> larger sets -> more escalations")
-                saliency_in = gr.Checkbox(value=True, label="Grad-CAM++ and F-Fidelity (6.5)",
-                                          info="adds ~20 forward passes")
-                go = gr.Button("Analyse", variant="primary")
-            with gr.Column(scale=2):
-                out_md = gr.Markdown()
-        out_fig = gr.Plot(label="Segmentation")
-        out_sal = gr.Plot(label="Grad-CAM++ saliency (stage 6.5)")
+                                     label="2. How confident must it be?",
+                                     info="Left = stricter, so more scans get sent to a human")
+                saliency_in = gr.Checkbox(value=True,
+                                          label="Explain the decision (stage 6.5)",
+                                          info="Adds about a minute: Grad-CAM++ and the "
+                                               "masking test")
+                go = gr.Button("3. Analyse", variant="primary", size="lg")
+                gr.HTML("<div style='margin-top:10px;font-size:12px;color:#6b7a85;"
+                        "line-height:1.5'>"
+                        f"Weights: {'checkpoint' if trained else 'UNTRAINED'} &middot; "
+                        f"repeat runs: {mc_passes} &middot; window {patch}</div>")
+            with gr.Column(scale=2, min_width=420):
+                out_md = gr.HTML(waiting)
+
+        gr.HTML("<div style='margin:18px 0 4px;font-size:17px;font-weight:600'>"
+                "What the model found</div>")
+        out_fig = gr.Plot(label="", show_label=False)
+        gr.HTML(HOW_TO_READ_SEG)
+
+        gr.HTML("<div style='margin:22px 0 4px;font-size:17px;font-weight:600'>"
+                "Why it decided that &mdash; and whether that reason holds up</div>")
+        out_sal = gr.Plot(label="", show_label=False)
+        cam_help = gr.HTML("")
+
         go.click(run, inputs=[case, upload, alpha_in, saliency_in],
-                 outputs=[out_fig, out_sal, out_md])
+                 outputs=[out_fig, out_sal, out_md, cam_help])
     return ui
 
 

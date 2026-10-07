@@ -40,26 +40,11 @@
     ]
    },
    "stamped_phantom": true,
-   "runtime_s": 13.5
+   "runtime_s": 15.0
   },
   "6.2": {
-   "status": "ran (phantom, not a convergence claim)",
-   "stage": "6.2",
-   "model": "AttentionUnet",
-   "epochs_completed": 2,
-   "best_dice_mean": 0.1213,
-   "patch": [
-    32,
-    32,
-    32
-   ],
-   "batch": 1,
-   "num_samples": 1,
-   "amp": false,
-   "device": "cpu",
-   "n_train": 40,
-   "n_val": 20,
-   "checkpoints": "results\\review2_demo\\checkpoints\\stage62"
+   "status": "skipped",
+   "note": "run without --skip-seg, or train on the lab 4060"
   },
   "6.3": {
    "stage": "6.3",
@@ -159,7 +144,7 @@
    "note": "explains a score head over the 6.2 model; no 6.3 classifier yet"
   }
  },
- "runtime_s": 144.1,
+ "runtime_s": 75.5,
  "artifacts": [
   "cls_predictions.csv",
   "conformal_sets.csv",

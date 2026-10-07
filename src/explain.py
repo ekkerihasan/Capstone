@@ -174,33 +174,75 @@ class ScoreHead(nn.Module):
 
 
 def overlay_saliency(image, saliency, path=None, title: str = "", gt=None,
-                     stamp: bool = True, z: int | None = None):
-    """CT, saliency heat map, and the two superimposed, on one axial slice."""
+                     stamp: bool = True, z: int | None = None,
+                     top_k_frac: float = 0.10):
+    """CT, the heat map, and the region the fidelity test actually masks.
+
+    The third panel is not a translucent wash of the whole heat map. It outlines
+    exactly the top `top_k_frac` of voxels - the ones `fidelity.mask_top_k`
+    hides when it tests the explanation - so the picture and the PASS/FAIL
+    verdict refer to the same region rather than to two loosely related things.
+
+    The heat map panel is stretched between its 50th and 99.5th percentile. A
+    Grad-CAM map from a weakly-trained network sits bunched near the top of
+    [0, 1]; drawn against a fixed 0-1 scale it is a solid red rectangle, which
+    looks like a bug and shows nothing.
+    """
     import matplotlib.pyplot as plt
 
+    from .config import LABEL_TUMOR
     from .phantom import stamp_figure
     from .viz import save_fig
 
     img = np.asarray(image).squeeze()
     sal = np.asarray(saliency).squeeze()
     if z is None:
-        z = int(sal.sum(axis=(0, 1)).argmax()) if sal.any() else img.shape[2] // 2
+        # Prefer the slice holding the most tumour: the question this figure
+        # answers is "did it look where the tumour is", which cannot be read off
+        # a slice the tumour is not on. Only when there is no tumour to show
+        # does the brightest saliency slice become the useful one.
+        z = None
+        if gt is not None:
+            tumour = np.asarray(gt).squeeze() == LABEL_TUMOR
+            if tumour.any():
+                z = int(tumour.sum(axis=(0, 1)).argmax())
+        if z is None:
+            z = int(sal.sum(axis=(0, 1)).argmax()) if sal.any() else img.shape[2] // 2
 
-    im, sl = np.rot90(img[:, :, z]), np.rot90(sal[:, :, z])
+    # the top-k voxels over the WHOLE volume, so the slice shows this slice's
+    # share of what the test masks rather than its own local maximum
+    flat = sal.ravel()
+    n = max(1, int(round(top_k_frac * flat.size)))
+    cut = float(np.partition(flat, -n)[-n]) if flat.size else 1.0
+
+    im = np.rot90(img[:, :, z])
+    sl = np.rot90(sal[:, :, z])
+    hot = sl >= cut
+
+    lo, hi = np.percentile(sal, 50), np.percentile(sal, 99.5)
+    if hi <= lo:
+        lo, hi = float(sal.min()), max(float(sal.max()), float(sal.min()) + 1e-6)
+
     fig, ax = plt.subplots(1, 3, figsize=(12.5, 4.2))
     ax[0].imshow(im, cmap="gray")
-    ax[0].set_title("preprocessed CT")
-    hm = ax[1].imshow(sl, cmap="jet", vmin=0, vmax=1)
-    ax[1].set_title("Grad-CAM++")
-    fig.colorbar(hm, ax=ax[1], fraction=0.046)
-    ax[2].imshow(im, cmap="gray")
-    ax[2].imshow(sl, cmap="jet", alpha=0.45, vmin=0, vmax=1)
-    if gt is not None:
-        from .config import LABEL_TUMOR
+    ax[0].set_title("preprocessed CT", fontsize=11)
 
+    hm = ax[1].imshow(sl, cmap="inferno", vmin=lo, vmax=hi)
+    ax[1].set_title("where the model looked", fontsize=11)
+    cb = fig.colorbar(hm, ax=ax[1], fraction=0.046)
+    cb.set_ticks([lo, hi])
+    cb.set_ticklabels(["barely", "hardest"])
+
+    ax[2].imshow(im, cmap="gray")
+    ax[2].imshow(np.ma.masked_where(~hot, hot.astype(float)), cmap="autumn", alpha=0.55)
+    ax[2].contour(hot, colors="#ff3b30", linewidths=1.2)
+    legend = f"red = top {top_k_frac:.0%} the test hides"
+    if gt is not None:
         ax[2].contour(np.rot90(np.asarray(gt).squeeze()[:, :, z]) == LABEL_TUMOR,
-                      colors="white", linewidths=1.0)
-    ax[2].set_title("overlay" + (" (white = true tumor)" if gt is not None else ""))
+                      colors="white", linewidths=1.4)
+        legend += " · white = true tumor"
+    ax[2].set_title(legend, fontsize=10)
+
     for a in ax:
         a.axis("off")
     fig.suptitle(f"{title}  |  axial slice z={z}", fontsize=11)
