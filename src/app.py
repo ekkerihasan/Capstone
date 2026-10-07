@@ -214,8 +214,21 @@ def overlay_figure(image, pred, gt, title: str):
 
 # -------------------------------------------------------------------- analysis
 
+def explain_case(explainer, x, k_fractions=(0.01, 0.05, 0.10), n_random: int = 3):
+    """Stage 6.5 for one case: Grad-CAM++, then the masking test that says
+    whether the map is worth showing. Fewer k and fewer random masks than the
+    offline default, because this runs while somebody is watching."""
+    from .explain import gradcam_plusplus
+    from .fidelity import fidelity_test
+
+    cam, cls, _ = gradcam_plusplus(explainer, x)
+    fid = fidelity_test(explainer, x, cam, class_idx=cls,
+                        k_fractions=k_fractions, n_random=n_random)
+    return cam, fid
+
+
 def analyse(image_path: Path, model, trained: bool, q_hat, alpha,
-            mc_passes: int = MC_PASSES, patch=PATCH):
+            mc_passes: int = MC_PASSES, patch=PATCH, explainer=None):
     x, gt = load_volume(image_path)
     mask, prob, mc_std = predict(model, x, mc_passes=mc_passes, patch=patch)
 
@@ -224,8 +237,14 @@ def analyse(image_path: Path, model, trained: bool, q_hat, alpha,
         probs = [1.0 - prob, prob]
         conformal_set = [c for c, p in enumerate(probs) if (1.0 - p) <= q_hat]
 
+    cam = fid = None
+    if explainer is not None:
+        cam, fid = explain_case(explainer, x)
+
     verdict = decide(prob, conformal_set=conformal_set, mc_std=mc_std,
-                     fidelity_pass=None)          # stage 6.5 does not exist yet
+                     fidelity_pass=None if fid is None else fid["passed"])
+    verdict["saliency"] = cam
+    verdict["fidelity"] = fid
     fig = overlay_figure(x, mask, gt, image_path.name.replace(".nii.gz", ""))
     return fig, verdict, gt, trained, alpha
 
@@ -245,6 +264,12 @@ def report_markdown(verdict: dict, gt, trained: bool, alpha, mc_passes: int) -> 
         inside = ", ".join(names[c] for c in verdict["conformal_set"]) or "(empty)"
         lines.append(f"**Conformal set** at {int((1 - (alpha or 0.1)) * 100)} % target "
                      f"coverage: {{{inside}}}")
+    fid = verdict.get("fidelity")
+    if fid is not None:
+        mark = "PASS" if fid["passed"] else "FAIL"
+        lines.append(f"**F-Fidelity** {mark} — masking the most salient voxels moves the "
+                     f"score {fid['mean_margin']:+.3f} more than masking at random "
+                     f"(needs > {fid['threshold']:.3f})")
     if verdict["reasons"]:
         lines += ["", "**Why it was escalated**"] + [f"- {r}" for r in verdict["reasons"]]
     if gt is not None:
@@ -256,7 +281,8 @@ def report_markdown(verdict: dict, gt, trained: bool, alpha, mc_passes: int) -> 
         "**Provenance**",
         f"- segmentation weights: {'checkpoint loaded' if trained else 'UNTRAINED (random)'}",
         "- p(tumor): read off the segmentation tumor channel; **no stage 6.3 classifier exists yet**",
-        "- fidelity signal: **absent**, stage 6.5 not built",
+        "- fidelity signal: Grad-CAM++ on the segmentation score head, "
+        "F-Fidelity vs random masking",
         f"- data: synthetic phantom. {DEMO_STAMP}",
     ]
     return "\n".join(lines)
@@ -267,8 +293,11 @@ def report_markdown(verdict: dict, gt, trained: bool, alpha, mc_passes: int) -> 
 def build_ui(data_root: Path, checkpoint: str = "", mc_passes: int = MC_PASSES):
     import gradio as gr
 
+    from .explain import ScoreHead
+
     ckpt = find_checkpoint(checkpoint)
     model, trained = load_model(ckpt)
+    explainer = ScoreHead(model)
     q_hat, alpha = load_q_hat()
     curve = load_coverage_curve()
     patch = training_patch()
@@ -282,14 +311,22 @@ def build_ui(data_root: Path, checkpoint: str = "", mc_passes: int = MC_PASSES):
         f"MC Dropout T={mc_passes} · window {patch}"
     )
 
-    def run(case_name, uploaded, target_alpha):
+    def run(case_name, uploaded, target_alpha, want_saliency):
         path = Path(uploaded) if uploaded else (data_root / "imagesTr" / case_name)
         if not path.exists():
-            return None, f"**No such case:** `{path}`"
+            return None, None, f"**No such case:** `{path}`"
         q = q_hat_for(curve, target_alpha, fallback=q_hat)
-        fig, verdict, gt, is_trained, _ = analyse(path, model, trained, q, target_alpha,
-                                                  mc_passes=mc_passes, patch=patch)
-        return fig, report_markdown(verdict, gt, is_trained, target_alpha, mc_passes)
+        fig, verdict, gt, is_trained, _ = analyse(
+            path, model, trained, q, target_alpha, mc_passes=mc_passes, patch=patch,
+            explainer=explainer if want_saliency else None)
+
+        sal_fig = None
+        if verdict.get("saliency") is not None:
+            from .explain import overlay_saliency
+            x, _ = load_volume(path)
+            sal_fig = overlay_saliency(x, verdict["saliency"], gt=gt,
+                                       title=path.name.replace(".nii.gz", ""))
+        return fig, sal_fig, report_markdown(verdict, gt, is_trained, target_alpha, mc_passes)
 
     with gr.Blocks(title="Pancreatic cancer early detection") as ui:
         gr.Markdown(banner)
@@ -302,11 +339,15 @@ def build_ui(data_root: Path, checkpoint: str = "", mc_passes: int = MC_PASSES):
                 alpha_in = gr.Slider(0.02, 0.5, value=alpha or 0.1, step=0.02,
                                      label="conformal alpha (1 - target coverage)",
                                      info="tighter coverage -> larger sets -> more escalations")
+                saliency_in = gr.Checkbox(value=True, label="Grad-CAM++ and F-Fidelity (6.5)",
+                                          info="adds ~20 forward passes")
                 go = gr.Button("Analyse", variant="primary")
             with gr.Column(scale=2):
                 out_md = gr.Markdown()
         out_fig = gr.Plot(label="Segmentation")
-        go.click(run, inputs=[case, upload, alpha_in], outputs=[out_fig, out_md])
+        out_sal = gr.Plot(label="Grad-CAM++ saliency (stage 6.5)")
+        go.click(run, inputs=[case, upload, alpha_in, saliency_in],
+                 outputs=[out_fig, out_sal, out_md])
     return ui
 
 

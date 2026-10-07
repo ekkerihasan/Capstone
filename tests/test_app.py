@@ -111,7 +111,7 @@ def test_report_always_declares_its_provenance():
     assert DEMO_STAMP in md
     assert "UNTRAINED" in md
     assert "no stage 6.3 classifier exists yet" in md
-    assert "stage 6.5 not built" in md
+    assert "Grad-CAM++ on the segmentation score head" in md
     assert "FLAGGED FOR SPECIALIST REVIEW" in md
 
 
@@ -137,3 +137,41 @@ def test_find_checkpoint_returns_none_when_there_is_nothing(tmp_path, monkeypatc
     monkeypatch.setattr(app, "DEFAULT_CKPT", tmp_path / "nope.pt")
     monkeypatch.setattr(app, "CHECKPOINT_DIR", tmp_path)
     assert find_checkpoint("") is None
+
+
+# ------------------------------------------------- stage 6.5 wired into 6.6
+
+
+def test_explainer_adds_the_fidelity_signal_to_the_verdict(phantom_root, model):
+    """The abstention rule promises three signals. Until 6.5 existed only two
+    were ever supplied; this is the third arriving."""
+    from src.explain import ScoreHead
+
+    m, trained = model
+    _, verdict, _, _, _ = analyse(
+        phantom_root / "imagesTr" / "pancreas_000.nii.gz", m, trained,
+        q_hat=0.5, alpha=0.1, mc_passes=1, patch=(32, 32, 32),
+        explainer=ScoreHead(m))
+    assert verdict["saliency"] is not None
+    assert verdict["fidelity"] is not None
+    assert verdict["fidelity_pass"] is verdict["fidelity"]["passed"]
+
+
+def test_without_an_explainer_the_fidelity_signal_stays_absent(phantom_root, model):
+    """Absent must not read as failed, or every case escalates for the wrong
+    reason whenever saliency is switched off."""
+    m, trained = model
+    _, verdict, _, _, _ = analyse(
+        phantom_root / "imagesTr" / "pancreas_000.nii.gz", m, trained,
+        q_hat=0.5, alpha=0.1, mc_passes=1, patch=(32, 32, 32))
+    assert verdict["saliency"] is None
+    assert verdict["fidelity"] is None
+    assert verdict["fidelity_pass"] is None
+
+
+def test_report_shows_the_fidelity_verdict():
+    verdict = {"decision": "tumor", "abstain": False, "prob_tumor": 0.9, "mc_std": None,
+               "conformal_set": None, "reasons": [], "fidelity_pass": True,
+               "fidelity": {"passed": True, "mean_margin": 0.12, "threshold": 0.01}}
+    md = report_markdown(verdict, gt=None, trained=True, alpha=0.1, mc_passes=20)
+    assert "F-Fidelity" in md and "PASS" in md

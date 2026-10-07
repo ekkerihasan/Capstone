@@ -20,12 +20,13 @@ Measured by what has been *run*, not what has been written.
 | 6.2 Segmentation | 20 | Code + tests done and running in the demo chain, but never on real data | 8 |
 | 6.3 Classifier | 20 | Not started - a placeholder is not progress on 6.3 | 0 |
 | 6.4 Uncertainty | 15 | MC Dropout, split conformal, ECE and coverage implemented and tested; run on synthetic input only | 9 |
-| 6.5 Explainability | 12 | Not started, deferred past Review 2 | 0 |
-| 6.6 Selective prediction + UI | 13 | Abstention rule and Gradio UI built and running on phantoms | 8 |
+| 6.5 Explainability | 12 | Grad-CAM++ and the F-Fidelity masking test built and tested; verified to pass a faithful map and fail an unfaithful one | 9 |
+| 6.6 Selective prediction + UI | 13 | Abstention rule and Gradio UI running, now with all three signals including fidelity | 9 |
 | Report / deck / logbook | 10 | Plans, roadmap, logbook current, generated test report; **no Review 2 deck, no report chapters** | 5 |
-| | **100** | | **~40** |
+| | **100** | | **~50** |
 
-*Updated 7 Oct 2026. It was ~22 on 6 Oct, before the 6.4 and 6.6 lanes landed.*
+*Updated 7 Oct 2026. ~22 on 6 Oct, ~40 after the 6.4 and 6.6 lanes, ~50 with 6.5.
+Everything left needs real data: stage 6.3, and training 6.2 on the 4060.*
 
 On the VTU review scale it reads nearer **27%**, because Review 1's 30% includes process
 marks (plan, repo, literature, deck) that were earned.
@@ -80,7 +81,7 @@ The real stage 6.1 results on 281 cases stay clearly separated as the genuine re
 | P1 | `src/uncertainty.py`, `src/conformal.py`, ECE + reliability in `src/metrics.py` | **DONE 6 Oct (Wasih, fd1e46b).** Two defects open: `enable_dropout` does not restore `p`, and `predictive_entropy` assumes the class axis is last | - |
 | P1 | `src/run_demo_pipeline.py` | **DONE 6 Oct.** 6.1 -> 6.4 in ~96 s on CPU, 37 artifacts, `manifest.json` records which stages were real | - |
 | P2 | `src/app.py` (Gradio shell) | **DONE 7 Oct**, with `src/selective.py` for the abstention rule. Verified against a running server; screenshots in `results/review2_demo/screenshots/` | - |
-| P2 | `src/explain.py` (Grad-CAM++) | Can be stubbed for now | - |
+| P2 | `src/explain.py` + `src/fidelity.py` | **DONE 7 Oct.** Grad-CAM++ written out rather than taken from `pytorch-grad-cam` (this pipeline is 3D and the method has to be defended at the viva). Fidelity verdict is the mean margin across k, not a vote per k | - |
 
 P0 + P1 is one working evening and yields a demonstrable 6.1 -> 6.4 chain.
 

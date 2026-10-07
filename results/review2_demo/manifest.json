@@ -1,5 +1,5 @@
 {
- "pipeline": "6.1 -> 6.4",
+ "pipeline": "6.1 -> 6.5",
  "data": "SYNTHETIC PHANTOM",
  "stamp": "SYNTHETIC PHANTOM - PIPELINE DEMONSTRATION, NOT A RESULT",
  "seed": 42,
@@ -40,7 +40,7 @@
     ]
    },
    "stamped_phantom": true,
-   "runtime_s": 14.1
+   "runtime_s": 13.5
   },
   "6.2": {
    "status": "ran (phantom, not a convergence claim)",
@@ -149,17 +149,34 @@
    },
    "sub2cm_threshold_cm": 2.0,
    "stamped_phantom": true
+  },
+  "6.5": {
+   "stage": "6.5",
+   "status": "ran",
+   "n_cases": 4,
+   "n_passed": 0,
+   "checkpoint_trained": true,
+   "note": "explains a score head over the 6.2 model; no 6.3 classifier yet"
   }
  },
- "runtime_s": 95.8,
+ "runtime_s": 144.1,
  "artifacts": [
   "cls_predictions.csv",
   "conformal_sets.csv",
   "coverage_curve.csv",
+  "fidelity_pancreas_006.png",
+  "fidelity_pancreas_009.png",
+  "fidelity_pancreas_060.png",
+  "fidelity_pancreas_073.png",
   "fig_size_distribution.png",
   "fig_stage62_training.png",
   "fig_stage64_conformal.png",
   "fig_stage64_reliability.png",
+  "gradcam_pancreas_006.png",
+  "gradcam_pancreas_009.png",
+  "gradcam_pancreas_060.png",
+  "gradcam_pancreas_073.png",
+  "manifest.json",
   "metrics_stage62.csv",
   "overlay_pancreas_000.png",
   "overlay_pancreas_006.png",
@@ -188,6 +205,7 @@
   "stage62_summary.json",
   "stage64_by_size_bucket.csv",
   "stage64_summary.json",
+  "stage65_fidelity.csv",
   "test_report.csv",
   "test_report.md"
  ]

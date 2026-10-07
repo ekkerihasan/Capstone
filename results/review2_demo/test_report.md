@@ -3,7 +3,7 @@
 **AI-Based Pancreatic Cancer Prediction Using Deep Learning (Early Detection from Medical Imaging Data)**
 Generated 2026-10-07 by `python -m src.run_test_report` - do not edit by hand, regenerate it.
 
-**129 of 129 tests pass** (0 failed, 0 skipped) in 40.2 s.
+**156 of 156 tests pass** (0 failed, 0 skipped) in 51.1 s.
 
 The whole suite runs on CPU against the synthetic phantom in `src/phantom.py`, so it
 needs neither the 12 GB MSD download nor a GPU. That is the point: every stage stays
@@ -11,17 +11,19 @@ verifiable on a laptop while the lab RTX 4060 is unavailable.
 
 | Module | Stage | Covers | Tests | Passed | Failed | Time (s) |
 |---|---|---|---|---|---|---|
-| `test_app.py` | 6.6 | the demo UI's logic, without launching a server. | 12 | 12 | 0 | 4.2 |
+| `test_app.py` | 6.6 | the demo UI's logic, without launching a server. | 15 | 15 | 0 | 12.1 |
 | `test_conformal.py` | 6.4 | split conformal prediction. | 11 | 11 | 0 | 0.1 |
 | `test_data.py` | 6.1 | dataset discovery and patient-wise splitting. | 7 | 7 | 0 | 0.4 |
-| `test_metrics.py` | all | Metrics: Dice, the sub-2 cm size bucket, and the stage 6.3/6.4 classification | 17 | 17 | 0 | 0.3 |
+| `test_explain.py` | 6.5 | Grad-CAM++. | 12 | 12 | 0 | 1.2 |
+| `test_fidelity.py` | 6.5 | the F-Fidelity masking test. | 12 | 12 | 0 | 0.6 |
+| `test_metrics.py` | all | Metrics: Dice, the sub-2 cm size bucket, and the stage 6.3/6.4 classification | 17 | 17 | 0 | 0.1 |
 | `test_pants_meta.py` | EDA | PanTS structured-report parsing. | 13 | 13 | 0 | 0.1 |
-| `test_run_demo_pipeline.py` | 6.1-6.4 | The 6.1 -> 6.4 demo pipeline, end to end on phantoms. | 10 | 10 | 0 | 14.3 |
+| `test_run_demo_pipeline.py` | 6.1-6.4 | The 6.1 -> 6.5 demo pipeline, end to end on phantoms. | 10 | 10 | 0 | 13.9 |
 | `test_run_stage64.py` | 6.4 | Stage 6.4 runner, driven by a synthetic cls_predictions.csv in the agreed | 6 | 6 | 0 | 1.4 |
 | `test_selective.py` | 6.6 | the abstention rule. | 12 | 12 | 0 | 0.0 |
-| `test_train_seg.py` | 6.2 | model, checkpointing and the training loop. | 16 | 16 | 0 | 17.9 |
+| `test_train_seg.py` | 6.2 | model, checkpointing and the training loop. | 16 | 16 | 0 | 19.2 |
 | `test_transforms.py` | 6.1 | the preprocessing pipeline itself, on the phantom volumes. | 12 | 12 | 0 | 1.3 |
-| `test_uncertainty.py` | 6.4 | MC Dropout. | 13 | 13 | 0 | 0.2 |
+| `test_uncertainty.py` | 6.4 | MC Dropout. | 13 | 13 | 0 | 0.6 |
 
 ## What the suite does not cover
 
@@ -40,132 +42,159 @@ Stated so the table is not read as more than it is:
 
 | Module | Test | Status | Time (s) |
 |---|---|---|---|
-| `test_app` | `test_analyse_returns_a_verdict_on_untrained_weights` | passed | 1.419 |
-| `test_app` | `test_conformal_set_widens_as_q_hat_grows` | passed | 0.663 |
+| `test_app` | `test_analyse_returns_a_verdict_on_untrained_weights` | passed | 1.498 |
+| `test_app` | `test_conformal_set_widens_as_q_hat_grows` | passed | 0.896 |
+| `test_app` | `test_explainer_adds_the_fidelity_signal_to_the_verdict` | passed | 7.361 |
 | `test_app` | `test_find_checkpoint_returns_none_when_there_is_nothing` | passed | 0.007 |
-| `test_app` | `test_list_cases_skips_the_macos_junk` | passed | 0.241 |
-| `test_app` | `test_load_volume_applies_stage61_and_finds_the_label` | passed | 0.092 |
-| `test_app` | `test_missing_q_hat_drops_the_signal_rather_than_raising` | passed | 0.349 |
-| `test_app` | `test_predict_restores_the_models_dropout_rates` | passed | 1.359 |
-| `test_app` | `test_q_hat_for_picks_the_nearest_calibrated_alpha` | passed | 0.002 |
-| `test_app` | `test_report_always_declares_its_provenance` | passed | 0.003 |
-| `test_app` | `test_report_says_when_a_checkpoint_was_loaded` | passed | 0.003 |
-| `test_app` | `test_training_patch_reads_the_checkpoints_own_window` | passed | 0.028 |
-| `test_app` | `test_tumor_probability_is_bounded_and_responds_to_the_tumor_channel` | passed | 0.003 |
-| `test_conformal` | `test_calibrate_matches_the_finite_sample_quantile_by_hand` | passed | 0.005 |
+| `test_app` | `test_list_cases_skips_the_macos_junk` | passed | 0.31 |
+| `test_app` | `test_load_volume_applies_stage61_and_finds_the_label` | passed | 0.084 |
+| `test_app` | `test_missing_q_hat_drops_the_signal_rather_than_raising` | passed | 0.314 |
+| `test_app` | `test_predict_restores_the_models_dropout_rates` | passed | 1.128 |
+| `test_app` | `test_q_hat_for_picks_the_nearest_calibrated_alpha` | passed | 0.003 |
+| `test_app` | `test_report_always_declares_its_provenance` | passed | 0.002 |
+| `test_app` | `test_report_says_when_a_checkpoint_was_loaded` | passed | 0.002 |
+| `test_app` | `test_report_shows_the_fidelity_verdict` | passed | 0.003 |
+| `test_app` | `test_training_patch_reads_the_checkpoints_own_window` | passed | 0.027 |
+| `test_app` | `test_tumor_probability_is_bounded_and_responds_to_the_tumor_channel` | passed | 0.084 |
+| `test_app` | `test_without_an_explainer_the_fidelity_signal_stays_absent` | passed | 0.384 |
+| `test_conformal` | `test_calibrate_matches_the_finite_sample_quantile_by_hand` | passed | 0.004 |
 | `test_conformal` | `test_calibrate_rejects_bad_alpha_and_handles_empty` | passed | 0.002 |
 | `test_conformal` | `test_coverage_by_hand` | passed | 0.003 |
-| `test_conformal` | `test_coverage_curve_rows_are_well_formed` | passed | 0.004 |
-| `test_conformal` | `test_marginal_coverage_holds_on_exchangeable_data[0.05]` | passed | 0.022 |
-| `test_conformal` | `test_marginal_coverage_holds_on_exchangeable_data[0.1]` | passed | 0.021 |
-| `test_conformal` | `test_marginal_coverage_holds_on_exchangeable_data[0.2]` | passed | 0.021 |
-| `test_conformal` | `test_nonconformity_accepts_matrix_and_vector` | passed | 0.003 |
+| `test_conformal` | `test_coverage_curve_rows_are_well_formed` | passed | 0.005 |
+| `test_conformal` | `test_marginal_coverage_holds_on_exchangeable_data[0.05]` | passed | 0.027 |
+| `test_conformal` | `test_marginal_coverage_holds_on_exchangeable_data[0.1]` | passed | 0.024 |
+| `test_conformal` | `test_marginal_coverage_holds_on_exchangeable_data[0.2]` | passed | 0.025 |
+| `test_conformal` | `test_nonconformity_accepts_matrix_and_vector` | passed | 0.004 |
 | `test_conformal` | `test_predict_set_shapes_and_edge_thresholds` | passed | 0.002 |
-| `test_conformal` | `test_qhat_is_monotone_in_alpha` | passed | 0.003 |
+| `test_conformal` | `test_qhat_is_monotone_in_alpha` | passed | 0.046 |
 | `test_conformal` | `test_summarize_sets_reports_abstention` | passed | 0.003 |
-| `test_data` | `test_assert_disjoint_catches_leakage` | passed | 0.003 |
+| `test_data` | `test_assert_disjoint_catches_leakage` | passed | 0.004 |
 | `test_data` | `test_datalist_is_sorted_and_absolute` | passed | 0.003 |
-| `test_data` | `test_datalist_skips_macos_resource_forks` | passed | 0.345 |
-| `test_data` | `test_split_is_deterministic` | passed | 0.004 |
-| `test_data` | `test_split_is_patient_disjoint_and_complete` | passed | 0.004 |
+| `test_data` | `test_datalist_skips_macos_resource_forks` | passed | 0.364 |
+| `test_data` | `test_split_is_deterministic` | passed | 0.005 |
+| `test_data` | `test_split_is_patient_disjoint_and_complete` | passed | 0.003 |
 | `test_data` | `test_split_rejects_bad_fractions` | passed | 0.003 |
-| `test_data` | `test_split_roundtrips_through_json` | passed | 0.025 |
-| `test_metrics` | `test_auroc_by_size_bucket_ranks_small_tumors_against_all_negatives` | passed | 0.015 |
-| `test_metrics` | `test_auroc_perfect_reversed_and_undefined` | passed | 0.252 |
-| `test_metrics` | `test_by_size_bucket_reports_overall_and_strata` | passed | 0.012 |
-| `test_metrics` | `test_confusion_layout_is_tn_fp_fn_tp` | passed | 0.002 |
-| `test_metrics` | `test_dice_bounds` | passed | 0.002 |
+| `test_data` | `test_split_roundtrips_through_json` | passed | 0.028 |
+| `test_explain` | `test_cam_can_be_asked_for_a_specific_class` | passed | 0.012 |
+| `test_explain` | `test_cam_has_the_input_shape_and_is_normalised` | passed | 0.009 |
+| `test_explain` | `test_cam_lands_on_the_evidence` | passed | 0.022 |
+| `test_explain` | `test_find_target_layer_picks_the_last_convolution` | passed | 0.004 |
+| `test_explain` | `test_find_target_layer_refuses_a_model_without_convolutions` | passed | 0.003 |
+| `test_explain` | `test_gradcam_works_end_to_end_through_score_head` | passed | 0.183 |
+| `test_explain` | `test_hooks_are_removed_on_exit` | passed | 0.008 |
+| `test_explain` | `test_model_is_left_in_eval_and_without_stale_gradients` | passed | 0.01 |
+| `test_explain` | `test_overlay_is_stamped_and_saved` | passed | 0.771 |
+| `test_explain` | `test_score_head_pads_awkward_volume_shapes` | passed | 0.076 |
+| `test_explain` | `test_score_head_reduces_a_segmentation_model_to_two_logits` | passed | 0.032 |
+| `test_explain` | `test_segmentation_logits_are_rejected_with_a_useful_message` | passed | 0.063 |
+| `test_fidelity` | `test_a_faithful_map_passes` | passed | 0.034 |
+| `test_fidelity` | `test_a_meaningless_map_fails` | passed | 0.026 |
+| `test_fidelity` | `test_figure_is_written` | passed | 0.372 |
+| `test_fidelity` | `test_is_deterministic_for_a_fixed_seed` | passed | 0.019 |
+| `test_fidelity` | `test_mask_random_blanks_the_requested_fraction` | passed | 0.096 |
+| `test_fidelity` | `test_mask_top_k_blanks_the_most_salient_voxels` | passed | 0.006 |
+| `test_fidelity` | `test_mask_top_k_rounds_up_so_a_tiny_fraction_still_masks_something` | passed | 0.004 |
+| `test_fidelity` | `test_masking_does_not_touch_the_original` | passed | 0.004 |
+| `test_fidelity` | `test_result_reports_the_whole_curve` | passed | 0.019 |
+| `test_fidelity` | `test_uniform_saliency_fails` | passed | 0.02 |
+| `test_fidelity` | `test_verdict_uses_the_aggregate_not_a_vote_per_k` | passed | 0.026 |
+| `test_fidelity` | `test_zero_margin_cannot_pass_on_zero_variance` | passed | 0.012 |
+| `test_metrics` | `test_auroc_by_size_bucket_ranks_small_tumors_against_all_negatives` | passed | 0.022 |
+| `test_metrics` | `test_auroc_perfect_reversed_and_undefined` | passed | 0.016 |
+| `test_metrics` | `test_by_size_bucket_reports_overall_and_strata` | passed | 0.049 |
+| `test_metrics` | `test_confusion_layout_is_tn_fp_fn_tp` | passed | 0.003 |
+| `test_metrics` | `test_dice_bounds` | passed | 0.003 |
 | `test_metrics` | `test_dice_half_overlap` | passed | 0.002 |
-| `test_metrics` | `test_ece_equals_the_gap_for_one_overconfident_bin` | passed | 0.002 |
-| `test_metrics` | `test_ece_is_zero_when_every_bin_is_calibrated` | passed | 0.002 |
-| `test_metrics` | `test_ece_weights_bins_by_count` | passed | 0.002 |
+| `test_metrics` | `test_ece_equals_the_gap_for_one_overconfident_bin` | passed | 0.003 |
+| `test_metrics` | `test_ece_is_zero_when_every_bin_is_calibrated` | passed | 0.003 |
+| `test_metrics` | `test_ece_weights_bins_by_count` | passed | 0.008 |
 | `test_metrics` | `test_equivalent_diameter_recovers_a_known_sphere` | passed | 0.002 |
-| `test_metrics` | `test_reliability_curve_keeps_p_equal_to_one_in_the_last_bin` | passed | 0.003 |
-| `test_metrics` | `test_reliability_curve_shapes_and_empty_bins_are_nan` | passed | 0.005 |
-| `test_metrics` | `test_sensitivity_specificity` | passed | 0.002 |
+| `test_metrics` | `test_reliability_curve_keeps_p_equal_to_one_in_the_last_bin` | passed | 0.005 |
+| `test_metrics` | `test_reliability_curve_shapes_and_empty_bins_are_nan` | passed | 0.003 |
+| `test_metrics` | `test_sensitivity_specificity` | passed | 0.003 |
 | `test_metrics` | `test_size_bucket_edges` | passed | 0.002 |
 | `test_metrics` | `test_tumor_stats_flags_sub2cm` | passed | 0.002 |
 | `test_metrics` | `test_tumor_stats_on_a_tumor_free_case` | passed | 0.002 |
-| `test_metrics` | `test_voxel_volume_ml` | passed | 0.003 |
-| `test_pants_meta` | `test_clean_report_expands_excel_newlines` | passed | 0.002 |
-| `test_pants_meta` | `test_coverage_denominator_is_tumor_cases_not_lesion_cases` | passed | 0.007 |
+| `test_metrics` | `test_voxel_volume_ml` | passed | 0.002 |
+| `test_pants_meta` | `test_clean_report_expands_excel_newlines` | passed | 0.003 |
+| `test_pants_meta` | `test_coverage_denominator_is_tumor_cases_not_lesion_cases` | passed | 0.011 |
 | `test_pants_meta` | `test_kidney_volume_after_the_lesion_does_not_leak_in` | passed | 0.002 |
-| `test_pants_meta` | `test_lesion_table_keeps_the_tumor_flag` | passed | 0.006 |
-| `test_pants_meta` | `test_millimetre_sizes_are_converted_to_centimetres` | passed | 0.002 |
-| `test_pants_meta` | `test_organ_volume_is_not_mistaken_for_lesion_volume` | passed | 0.002 |
-| `test_pants_meta` | `test_parses_a_single_lesion_completely` | passed | 0.002 |
+| `test_pants_meta` | `test_lesion_table_keeps_the_tumor_flag` | passed | 0.007 |
+| `test_pants_meta` | `test_millimetre_sizes_are_converted_to_centimetres` | passed | 0.003 |
+| `test_pants_meta` | `test_organ_volume_is_not_mistaken_for_lesion_volume` | passed | 0.003 |
+| `test_pants_meta` | `test_parses_a_single_lesion_completely` | passed | 0.003 |
 | `test_pants_meta` | `test_parses_multiple_lesions_separately` | passed | 0.002 |
-| `test_pants_meta` | `test_report_without_a_lesion_block_yields_nothing` | passed | 0.004 |
-| `test_pants_meta` | `test_sub2cm_summary_defaults_to_tumor_cases_only` | passed | 0.013 |
-| `test_pants_meta` | `test_sub2cm_summary_reports_the_hardest_stratum` | passed | 0.008 |
-| `test_pants_meta` | `test_three_dimensional_size_uses_the_longest_axis` | passed | 0.004 |
-| `test_pants_meta` | `test_tumor_and_benign_lesions_are_separated` | passed | 0.008 |
-| `test_run_demo_pipeline` | `test_both_size_buckets_are_populated` | passed | 0.005 |
-| `test_run_demo_pipeline` | `test_every_stage_is_recorded` | passed | 11.627 |
+| `test_pants_meta` | `test_report_without_a_lesion_block_yields_nothing` | passed | 0.002 |
+| `test_pants_meta` | `test_sub2cm_summary_defaults_to_tumor_cases_only` | passed | 0.019 |
+| `test_pants_meta` | `test_sub2cm_summary_reports_the_hardest_stratum` | passed | 0.011 |
+| `test_pants_meta` | `test_three_dimensional_size_uses_the_longest_axis` | passed | 0.002 |
+| `test_pants_meta` | `test_tumor_and_benign_lesions_are_separated` | passed | 0.009 |
+| `test_run_demo_pipeline` | `test_both_size_buckets_are_populated` | passed | 0.008 |
+| `test_run_demo_pipeline` | `test_every_stage_is_recorded` | passed | 11.666 |
 | `test_run_demo_pipeline` | `test_manifest_admits_the_placeholder` | passed | 0.002 |
-| `test_run_demo_pipeline` | `test_missing_predictions_file_is_fatal` | passed | 2.592 |
-| `test_run_demo_pipeline` | `test_placeholder_is_deterministic_and_separable` | passed | 0.021 |
-| `test_run_demo_pipeline` | `test_placeholder_says_so_in_its_summary` | passed | 0.008 |
-| `test_run_demo_pipeline` | `test_predictions_honour_the_63_to_64_contract` | passed | 0.007 |
-| `test_run_demo_pipeline` | `test_stage61_artifacts_exist` | passed | 0.008 |
+| `test_run_demo_pipeline` | `test_missing_predictions_file_is_fatal` | passed | 2.173 |
+| `test_run_demo_pipeline` | `test_placeholder_is_deterministic_and_separable` | passed | 0.022 |
+| `test_run_demo_pipeline` | `test_placeholder_says_so_in_its_summary` | passed | 0.011 |
+| `test_run_demo_pipeline` | `test_predictions_honour_the_63_to_64_contract` | passed | 0.005 |
+| `test_run_demo_pipeline` | `test_stage61_artifacts_exist` | passed | 0.003 |
 | `test_run_demo_pipeline` | `test_stage61_marks_its_figures_as_phantom` | passed | 0.02 |
 | `test_run_demo_pipeline` | `test_stage64_artifacts_exist` | passed | 0.003 |
-| `test_run_stage64` | `test_calibration_metrics_are_bounded` | passed | 0.007 |
-| `test_run_stage64` | `test_conformal_block_is_consistent` | passed | 0.022 |
-| `test_run_stage64` | `test_load_predictions_rejects_missing_columns` | passed | 0.014 |
-| `test_run_stage64` | `test_runner_fails_loudly_without_a_calibration_group` | passed | 0.022 |
-| `test_run_stage64` | `test_runner_writes_every_deliverable` | passed | 1.293 |
+| `test_run_stage64` | `test_calibration_metrics_are_bounded` | passed | 0.006 |
+| `test_run_stage64` | `test_conformal_block_is_consistent` | passed | 0.024 |
+| `test_run_stage64` | `test_load_predictions_rejects_missing_columns` | passed | 0.013 |
+| `test_run_stage64` | `test_runner_fails_loudly_without_a_calibration_group` | passed | 0.02 |
+| `test_run_stage64` | `test_runner_writes_every_deliverable` | passed | 1.313 |
 | `test_run_stage64` | `test_summary_reports_overall_and_sub2cm` | passed | 0.002 |
 | `test_selective` | `test_confident_positive_and_negative` | passed | 0.002 |
-| `test_selective` | `test_decide_frame_adds_columns_and_parses_csv_sets` | passed | 0.009 |
+| `test_selective` | `test_decide_frame_adds_columns_and_parses_csv_sets` | passed | 0.01 |
 | `test_selective` | `test_degrades_to_a_plain_threshold_with_no_signals` | passed | 0.002 |
 | `test_selective` | `test_empty_set_escalates` | passed | 0.002 |
-| `test_selective` | `test_failed_fidelity_escalates_but_absent_fidelity_does_not` | passed | 0.002 |
-| `test_selective` | `test_labels_phrase_abstention_as_an_action` | passed | 0.004 |
-| `test_selective` | `test_mc_spread_escalates` | passed | 0.002 |
+| `test_selective` | `test_failed_fidelity_escalates_but_absent_fidelity_does_not` | passed | 0.003 |
+| `test_selective` | `test_labels_phrase_abstention_as_an_action` | passed | 0.002 |
+| `test_selective` | `test_mc_spread_escalates` | passed | 0.003 |
 | `test_selective` | `test_reasons_accumulate` | passed | 0.002 |
 | `test_selective` | `test_summarize_handles_an_empty_table` | passed | 0.003 |
 | `test_selective` | `test_summarize_scores_only_the_answered_cases` | passed | 0.007 |
-| `test_selective` | `test_threshold_is_inclusive_at_the_boundary` | passed | 0.004 |
-| `test_selective` | `test_two_label_set_escalates_however_confident_the_probability_looks` | passed | 0.004 |
-| `test_train_seg` | `test_a_dropout_checkpoint_loads_into_a_dropout_free_model` | passed | 0.041 |
-| `test_train_seg` | `test_checkpoint_records_the_patch_size_it_was_trained_at` | passed | 0.138 |
-| `test_train_seg` | `test_checkpoint_roundtrips_model_and_optimizer` | passed | 4.587 |
-| `test_train_seg` | `test_checkpoint_write_is_atomic` | passed | 0.054 |
-| `test_train_seg` | `test_dropout_probability_follows_the_argument` | passed | 0.03 |
-| `test_train_seg` | `test_metrics_csv_has_one_row_per_epoch_with_both_classes` | passed | 0.01 |
-| `test_train_seg` | `test_model_outputs_three_classes_at_input_resolution` | passed | 0.099 |
-| `test_train_seg` | `test_model_rejects_mismatched_channels_and_strides` | passed | 0.003 |
-| `test_train_seg` | `test_parameter_count_is_positive` | passed | 0.02 |
+| `test_selective` | `test_threshold_is_inclusive_at_the_boundary` | passed | 0.003 |
+| `test_selective` | `test_two_label_set_escalates_however_confident_the_probability_looks` | passed | 0.002 |
+| `test_train_seg` | `test_a_dropout_checkpoint_loads_into_a_dropout_free_model` | passed | 0.064 |
+| `test_train_seg` | `test_checkpoint_records_the_patch_size_it_was_trained_at` | passed | 0.108 |
+| `test_train_seg` | `test_checkpoint_roundtrips_model_and_optimizer` | passed | 5.191 |
+| `test_train_seg` | `test_checkpoint_write_is_atomic` | passed | 0.051 |
+| `test_train_seg` | `test_dropout_probability_follows_the_argument` | passed | 0.032 |
+| `test_train_seg` | `test_metrics_csv_has_one_row_per_epoch_with_both_classes` | passed | 0.023 |
+| `test_train_seg` | `test_model_outputs_three_classes_at_input_resolution` | passed | 0.094 |
+| `test_train_seg` | `test_model_rejects_mismatched_channels_and_strides` | passed | 0.004 |
+| `test_train_seg` | `test_parameter_count_is_positive` | passed | 0.017 |
 | `test_train_seg` | `test_parse_patch[64,64,32-expected1]` | passed | 0.003 |
 | `test_train_seg` | `test_parse_patch[96-expected0]` | passed | 0.003 |
-| `test_train_seg` | `test_resume_continues_after_the_saved_epoch` | passed | 0.078 |
-| `test_train_seg` | `test_resume_from_nothing_starts_at_zero` | passed | 0.036 |
-| `test_train_seg` | `test_resume_retargets_the_cosine_schedule` | passed | 5.496 |
-| `test_train_seg` | `test_resumed_run_extends_history_instead_of_restarting` | passed | 4.268 |
-| `test_train_seg` | `test_training_run_produces_all_artifacts` | passed | 3.069 |
-| `test_transforms` | `test_augmentation_perturbs_image_and_label_together` | passed | 0.22 |
-| `test_transforms` | `test_foreground_crop_removes_air` | passed | 0.049 |
-| `test_transforms` | `test_hu_window_maps_the_right_endpoints` | passed | 0.025 |
-| `test_transforms` | `test_intensities_are_windowed_to_unit_range` | passed | 0.005 |
-| `test_transforms` | `test_labels_survive_resampling_unchanged` | passed | 0.005 |
-| `test_transforms` | `test_output_is_channel_first_and_paired` | passed | 0.072 |
-| `test_transforms` | `test_patch_sampling_pads_volumes_smaller_than_the_patch` | passed | 0.017 |
+| `test_train_seg` | `test_resume_continues_after_the_saved_epoch` | passed | 0.16 |
+| `test_train_seg` | `test_resume_from_nothing_starts_at_zero` | passed | 0.02 |
+| `test_train_seg` | `test_resume_retargets_the_cosine_schedule` | passed | 5.774 |
+| `test_train_seg` | `test_resumed_run_extends_history_instead_of_restarting` | passed | 4.45 |
+| `test_train_seg` | `test_training_run_produces_all_artifacts` | passed | 3.182 |
+| `test_transforms` | `test_augmentation_perturbs_image_and_label_together` | passed | 0.208 |
+| `test_transforms` | `test_foreground_crop_removes_air` | passed | 0.047 |
+| `test_transforms` | `test_hu_window_maps_the_right_endpoints` | passed | 0.005 |
+| `test_transforms` | `test_intensities_are_windowed_to_unit_range` | passed | 0.003 |
+| `test_transforms` | `test_labels_survive_resampling_unchanged` | passed | 0.004 |
+| `test_transforms` | `test_output_is_channel_first_and_paired` | passed | 0.077 |
+| `test_transforms` | `test_patch_sampling_pads_volumes_smaller_than_the_patch` | passed | 0.034 |
 | `test_transforms` | `test_patch_sampling_returns_fixed_size_patches` | passed | 0.026 |
 | `test_transforms` | `test_reoriented_to_ras` | passed | 0.004 |
 | `test_transforms` | `test_resampled_to_target_spacing` | passed | 0.004 |
-| `test_transforms` | `test_train_pipeline_with_patches_yields_uniform_cubes` | passed | 0.903 |
-| `test_transforms` | `test_validation_pipeline_has_no_random_transforms` | passed | 0.013 |
-| `test_uncertainty` | `test_attention_unet_dropout_can_be_switched_on_after_training` | passed | 0.02 |
-| `test_uncertainty` | `test_enable_dropout_reports_the_modules_and_leaves_batchnorm_in_eval` | passed | 0.005 |
-| `test_uncertainty` | `test_enable_dropout_sets_p_explicitly` | passed | 0.005 |
+| `test_transforms` | `test_train_pipeline_with_patches_yields_uniform_cubes` | passed | 0.863 |
+| `test_transforms` | `test_validation_pipeline_has_no_random_transforms` | passed | 0.014 |
+| `test_uncertainty` | `test_attention_unet_dropout_can_be_switched_on_after_training` | passed | 0.422 |
+| `test_uncertainty` | `test_enable_dropout_reports_the_modules_and_leaves_batchnorm_in_eval` | passed | 0.003 |
+| `test_uncertainty` | `test_enable_dropout_sets_p_explicitly` | passed | 0.003 |
 | `test_uncertainty` | `test_entropy_uses_the_class_axis_not_the_last_one` | passed | 0.006 |
-| `test_uncertainty` | `test_explicit_enable_dropout_still_sets_p_permanently` | passed | 0.004 |
-| `test_uncertainty` | `test_mc_predict_is_deterministic_when_p_is_zero` | passed | 0.012 |
-| `test_uncertainty` | `test_mc_predict_on_a_segmentation_shape_gives_per_voxel_entropy` | passed | 0.028 |
-| `test_uncertainty` | `test_mc_predict_rejects_zero_passes` | passed | 0.01 |
-| `test_uncertainty` | `test_mc_predict_restores_eval_mode` | passed | 0.012 |
-| `test_uncertainty` | `test_mc_predict_restores_the_dropout_rates_it_overrode` | passed | 0.009 |
-| `test_uncertainty` | `test_mc_predict_returns_valid_probabilities_with_spread` | passed | 0.095 |
+| `test_uncertainty` | `test_explicit_enable_dropout_still_sets_p_permanently` | passed | 0.003 |
+| `test_uncertainty` | `test_mc_predict_is_deterministic_when_p_is_zero` | passed | 0.01 |
+| `test_uncertainty` | `test_mc_predict_on_a_segmentation_shape_gives_per_voxel_entropy` | passed | 0.025 |
+| `test_uncertainty` | `test_mc_predict_rejects_zero_passes` | passed | 0.008 |
+| `test_uncertainty` | `test_mc_predict_restores_eval_mode` | passed | 0.009 |
+| `test_uncertainty` | `test_mc_predict_restores_the_dropout_rates_it_overrode` | passed | 0.01 |
+| `test_uncertainty` | `test_mc_predict_returns_valid_probabilities_with_spread` | passed | 0.07 |
 | `test_uncertainty` | `test_mc_table_matches_the_cls_predictions_contract` | passed | 0.014 |
 | `test_uncertainty` | `test_predictive_entropy_is_zero_for_certainty_and_max_for_uniform` | passed | 0.003 |
