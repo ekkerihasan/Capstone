@@ -1,9 +1,10 @@
-"""The 6.1 -> 6.4 demo pipeline, end to end on phantoms.
+"""The 6.1 -> 6.5 demo pipeline, end to end on phantoms.
 
 Stage 6.2 is skipped here: it is covered by test_train_seg.py and training even a
-tiny network twice would dominate the suite's runtime. What this file checks is
-the wiring - that each stage hands the next one what it expects, and that the
-manifest tells the truth about which stages were real.
+tiny network twice would dominate the suite's runtime. Stage 6.5 is skipped for
+the same reason - Grad-CAM++ and the masking test have their own files. What
+this file checks is the wiring: that each stage hands the next one what it
+expects, and that the manifest tells the truth about which stages were real.
 """
 import json
 
@@ -23,13 +24,13 @@ def demo(tmp_path_factory):
     out = tmp_path_factory.mktemp("demo_out")
     data = tmp_path_factory.mktemp("demo_data")
     manifest = main(["--out", str(out), "--data-root", str(data),
-                     "--cases", str(CASES), "--skip-seg"])
+                     "--cases", str(CASES), "--skip-seg", "--skip-explain"])
     return out, manifest
 
 
 def test_every_stage_is_recorded(demo):
     _, manifest = demo
-    assert set(manifest["stages"]) == {"6.1", "6.2", "6.3", "6.4"}
+    assert set(manifest["stages"]) == {"6.1", "6.2", "6.3", "6.4", "6.5"}
     assert manifest["data"] == "SYNTHETIC PHANTOM"
     assert manifest["stamp"] == DEMO_STAMP
 
@@ -40,6 +41,7 @@ def test_manifest_admits_the_placeholder(demo):
     _, manifest = demo
     assert manifest["stages"]["6.3"]["status"] == "PLACEHOLDER"
     assert manifest["stages"]["6.2"]["status"] == "skipped"
+    assert manifest["stages"]["6.5"]["status"] == "skipped"
     assert manifest["stages"]["6.1"]["status"] == "ran"
 
 
@@ -127,5 +129,5 @@ def test_missing_predictions_file_is_fatal(tmp_path):
     the placeholder - that is how a placeholder reaches a slide."""
     with pytest.raises(SystemExit):
         main(["--out", str(tmp_path / "o"), "--data-root", str(tmp_path / "d"),
-              "--cases", "6", "--skip-seg",
+              "--cases", "6", "--skip-seg", "--skip-explain",
               "--predictions", str(tmp_path / "does_not_exist.csv")])

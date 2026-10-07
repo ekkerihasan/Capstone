@@ -1,4 +1,4 @@
-"""Stages 6.1 -> 6.4 end to end on synthetic phantoms, in one command.
+"""Stages 6.1 -> 6.5 end to end on synthetic phantoms, in one command.
 
     python -m src.run_demo_pipeline --out results/review2_demo
 
@@ -6,7 +6,8 @@ The lab RTX 4060 is unavailable, so no stage can be run on real data yet. This
 runner exists so the *pipeline* is demonstrably runnable in the meantime: it
 builds a phantom dataset, preprocesses it (6.1), optionally trains the Attention
 U-Net for a couple of epochs (6.2), produces per-case tumor probabilities (6.3)
-and calibrates them (6.4), writing every artifact the review deck needs.
+calibrates them (6.4), and explains them with Grad-CAM++ verified by the
+F-Fidelity masking test (6.5), writing every artifact the review deck needs.
 
 Every figure it produces is stamped SYNTHETIC PHANTOM - PIPELINE DEMONSTRATION,
 NOT A RESULT. Nothing here is a result. The numbers describe a phantom whose
@@ -107,6 +108,56 @@ def placeholder_predictions(stats: pd.DataFrame, out_path: Path, seed: int) -> d
                     "cls_predictions.csv via --predictions"}
 
 
+def run_stage65(data_root: Path, out: Path, split_path: Path, checkpoint: Path | None,
+                n_cases: int = 4) -> dict:
+    """Grad-CAM++ and the F-Fidelity check on a handful of held-out cases.
+
+    Stage 6.3's classifier does not exist, so the saliency explains a score head
+    wrapped round the segmentation model. Grad-CAM++ itself does not care which
+    model it is pointed at - when `classifier.py` lands this becomes one import
+    change rather than a rewrite.
+    """
+    import pandas as pd
+
+    from .app import load_model, load_volume
+    from .data import load_split
+    from .explain import ScoreHead, gradcam_plusplus, overlay_saliency
+    from .fidelity import fidelity_test, plot_fidelity
+
+    # the split JSON nests the groups under "files" - use the loader, not json
+    split = load_split(split_path)
+    cases = [c["image"] for c in split.get("val", [])][:n_cases]
+    if not cases:
+        return {"stage": "6.5", "status": "skipped", "note": "no val cases"}
+
+    model, trained = load_model(checkpoint)
+    explainer = ScoreHead(model)
+
+    rows = []
+    for image in cases:
+        name = Path(image).name.replace(".nii.gz", "")
+        x, gt = load_volume(Path(image))
+        cam, cls, _ = gradcam_plusplus(explainer, x)
+        fid = fidelity_test(explainer, x, cam, class_idx=cls)
+        overlay_saliency(x, cam, path=out / f"gradcam_{name}.png", title=name, gt=gt)
+        plot_fidelity(fid, path=out / f"fidelity_{name}.png", title=name)
+        rows.append({"case": name, "class_idx": cls, "base_score": round(fid["base_score"], 4),
+                     "mean_margin": round(fid["mean_margin"], 4),
+                     "threshold": round(fid["threshold"], 4),
+                     "k_passed": fid["n_k_passed"], "n_k": fid["n_k"],
+                     "fidelity_pass": fid["passed"]})
+        print(f"[6.5] {name}: fidelity {'PASS' if fid['passed'] else 'FAIL'} "
+              f"(margin {fid['mean_margin']:+.4f})")
+
+    df = pd.DataFrame(rows)
+    df.to_csv(out / "stage65_fidelity.csv", index=False)
+    n_pass = int(df["fidelity_pass"].sum())
+    print(f"[6.5] {n_pass}/{len(df)} saliency maps passed the masking test")
+    return {"stage": "6.5", "status": "ran", "n_cases": len(df), "n_passed": n_pass,
+            "checkpoint_trained": bool(trained),
+            "note": "explains a score head over the 6.2 model; no 6.3 classifier yet"}
+
+
 def run_stage64(predictions: Path, out: Path, alpha: float) -> dict:
     from . import run_stage64 as s64
     return s64.main([
@@ -132,13 +183,17 @@ def main(argv=None):
     p.add_argument("--seg-epochs", type=int, default=2)
     p.add_argument("--skip-seg", action="store_true",
                    help="skip the stage 6.2 training run (it is the slow part)")
+    p.add_argument("--skip-explain", action="store_true",
+                   help="skip stage 6.5 (Grad-CAM++ and the fidelity masking test)")
+    p.add_argument("--explain-cases", type=int, default=4,
+                   help="held-out cases to explain and fidelity-check")
     p.add_argument("--seed", type=int, default=SEED)
     args = p.parse_args(argv)
 
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     started = time.time()
-    manifest = {"pipeline": "6.1 -> 6.4", "data": "SYNTHETIC PHANTOM",
+    manifest = {"pipeline": "6.1 -> 6.5", "data": "SYNTHETIC PHANTOM",
                 "stamp": DEMO_STAMP, "seed": args.seed, "stages": {}}
 
     data_root = build_phantom_data(Path(args.data_root), args.cases)
@@ -168,6 +223,14 @@ def main(argv=None):
         manifest["stages"]["6.3"] = placeholder_predictions(stats, preds, args.seed)
 
     manifest["stages"]["6.4"] = {"status": "ran", **run_stage64(preds, out, args.alpha)}
+
+    if args.skip_explain:
+        manifest["stages"]["6.5"] = {"status": "skipped"}
+        print("[6.5] skipped")
+    else:
+        from .app import find_checkpoint
+        manifest["stages"]["6.5"] = run_stage65(
+            data_root, out, split_path, find_checkpoint(), n_cases=args.explain_cases)
 
     manifest["runtime_s"] = round(time.time() - started, 1)
     manifest["artifacts"] = sorted(f.name for f in out.iterdir() if f.is_file())
