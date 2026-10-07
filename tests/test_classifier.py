@@ -115,3 +115,47 @@ def test_mc_flag_without_dropout_checkpoint_fails_loudly(msd_phantom, tmp_path):
     with pytest.raises(SystemExit, match="dropout"):
         predict_main(["--split", str(split), "--data-root", str(msd_phantom), "--out", str(out),
                       "--ckpt", str(ckpt / "stage63" / "best.pt"), "--device", "cpu", "--mc", "3"])
+
+
+# ------------------------------- regression: best.pt was chosen by val loss
+
+
+def test_selection_prefers_auroc_over_loss():
+    """The defect: on a small validation set the loss explodes once the model
+    grows confident, so its minimum sits at an early chance-level epoch while
+    AUROC keeps climbing. Selecting on loss saved that useless checkpoint."""
+    from src.train_cls import selection_score
+
+    chance_epoch = selection_score({"auroc": 0.50, "loss": 0.69}, 0.69, has_val=True)
+    learned_epoch = selection_score({"auroc": 0.95, "loss": 4.30}, 0.21, has_val=True)
+    assert learned_epoch > chance_epoch          # despite the far worse loss
+
+
+def test_loss_breaks_ties_between_equal_auroc():
+    """A tiny validation group saturates AUROC at 1.0 for many epochs, so
+    without a tie-break the first of them wins by accident."""
+    from src.train_cls import selection_score
+
+    tight = selection_score({"auroc": 1.0, "loss": 0.30}, 0.1, has_val=True)
+    loose = selection_score({"auroc": 1.0, "loss": 2.40}, 0.1, has_val=True)
+    assert tight > loose
+
+
+def test_undefined_auroc_ranks_below_any_real_one():
+    """A single-class validation group makes AUROC undefined; such an epoch
+    must never outrank one that actually measured something."""
+    import numpy as np
+
+    from src.train_cls import selection_score
+
+    undefined = selection_score({"auroc": np.nan, "loss": 0.01}, 0.01, has_val=True)
+    measured = selection_score({"auroc": 0.51, "loss": 9.99}, 9.99, has_val=True)
+    assert measured > undefined
+
+
+def test_without_a_validation_group_it_falls_back_to_training_loss():
+    from src.train_cls import selection_score
+
+    better = selection_score({}, 0.10, has_val=False)
+    worse = selection_score({}, 0.80, has_val=False)
+    assert better > worse
