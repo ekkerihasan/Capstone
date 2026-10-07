@@ -8,8 +8,8 @@ measured apart from segmentation error. When stage 6.2 is trained, `roi.py` take
 the predicted mask instead and nothing else here changes.
 
 Every epoch writes checkpoints/stage63/last.pt and the loop resumes from it with
---resume (overnight lab-PC access is not guaranteed). best.pt tracks the lowest
-validation loss.
+--resume (overnight lab-PC access is not guaranteed). best.pt tracks the highest
+validation AUROC, with validation loss as a tie-break.
 
 Negatives: real MSD Task07 has a tumor in *every* case, so a classifier trained on
 it alone sees one class. The phantom supplies negatives; real data needs PanTS
@@ -44,6 +44,23 @@ from .transforms import build_transforms
 
 STAGE = "stage63"
 ROI_SIZE = (48, 48, 32)       # CPU-friendly default; the 8 GB GPU run uses --roi-size 96
+
+
+def selection_score(val: dict, train_loss: float, has_val: bool) -> tuple:
+    """Sort key for "is this the best epoch so far", larger is better.
+
+    (val AUROC, -val loss). AUROC first because it is what stage 6.3 reports and
+    what survives a model being badly calibrated; the negated loss breaks ties
+    between the many epochs that reach the same AUROC on a small validation set.
+    Undefined AUROC (a single-class group, or no validation group at all) drops
+    to -inf so any epoch with a real AUROC outranks it.
+    """
+    if not has_val:
+        return (float("-inf"), -float(train_loss))
+    auroc = float(val["auroc"])
+    if np.isnan(auroc):
+        return (float("-inf"), -float(val["loss"]))
+    return (auroc, -float(val["loss"]))
 
 
 def load_roi_cases(cases, group: str, roi_size, margin_mm: float = 10.0, mask_fn=None) -> list:
@@ -226,17 +243,26 @@ def main(argv=None):
                "seconds": round(time.time() - t0, 1)}
         history.append(row)
 
-        score = val["loss"] if len(yva) else train_loss     # lower is better
-        improved = best is None or score < best
+        # best.pt is selected on val AUROC, with val loss only as a tie-break.
+        #
+        # Selecting on val loss alone saved a chance-level epoch: on a small
+        # validation set the loss explodes once the model grows confident, so
+        # its minimum sits early, before the model has learned anything, while
+        # AUROC keeps climbing. AUROC is also the metric this stage reports, and
+        # a checkpoint should be chosen by the number it will be judged on.
+        # A single-class validation group makes AUROC undefined, so that case
+        # falls back to the loss.
+        score = selection_score(val, train_loss, has_val=bool(len(yva)))
+        improved = best is None or score > tuple(best)
         if improved:
-            best = score
+            best = list(score)
         save_checkpoint(ckpt_dir / LAST, model, epoch, optimizer, best_metric=best,
                         history=history, extra=extra)
         if improved:
             save_checkpoint(ckpt_dir / BEST, model, epoch, best_metric=best,
                             history=history, extra=extra)
         print(f"[6.3] epoch {epoch:3d} | train {row['train_loss']:.4f} | val {row['val_loss']:.4f} "
-              f"| val AUROC {row['val_auroc']} | {row['seconds']}s{' *' if improved else ''}")
+              f"| val AUROC {row['val_auroc']} | {row['seconds']}s{' *best*' if improved else ''}")
 
     (out / "cls_training_history.json").write_text(json.dumps(history, indent=1), encoding="utf-8")
     if history:
