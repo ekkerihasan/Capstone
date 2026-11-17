@@ -56,3 +56,18 @@ def test_assert_disjoint_catches_leakage(msd_phantom):
     leaky = {"train": cases[:4], "val": cases[3:]}   # pancreas_003 in both
     with pytest.raises(AssertionError, match="pancreas_003"):
         assert_disjoint(leaky)
+
+
+def test_split_made_on_windows_loads_on_linux(tmp_path):
+    """The 281-case split was saved on Windows with backslash paths; Colab is Linux."""
+    import json
+    from src.data import case_id, load_split, rebase_split_to_msd
+
+    win = {"image": "data\Task07_Pancreas\imagesTr\pancreas_290.nii.gz",
+           "label": "data\Task07_Pancreas\labelsTr\pancreas_290.nii.gz"}
+    f = tmp_path / "split.json"
+    f.write_text(json.dumps({"files": {"train": [win]}}))
+    case = rebase_split_to_msd(load_split(f), "/content/data/Task07_Pancreas")["train"][0]
+    assert case["image"].replace("\\", "/").endswith("Task07_Pancreas/imagesTr/pancreas_290.nii.gz")
+    assert case["label"].replace("\\", "/").endswith("Task07_Pancreas/labelsTr/pancreas_290.nii.gz")
+    assert case_id(win["image"]) == "pancreas_290"

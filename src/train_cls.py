@@ -11,17 +11,21 @@ Every epoch writes checkpoints/stage63/last.pt and the loop resumes from it with
 --resume (overnight lab-PC access is not guaranteed). best.pt tracks the highest
 validation AUROC, with validation loss as a tie-break.
 
-Negatives: real MSD Task07 has a tumor in *every* case, so a classifier trained on
-it alone sees one class. The phantom supplies negatives; real data needs PanTS
-`tumor? = 0` cases or non-tumor crops, which is still an open decision
-(docs/REVIEW2_TEMP_PLAN.md section 6). A single-class train set is warned about
-rather than silently trained on.
+Negatives: real MSD Task07 has a tumor in *every* case, so a case-level label has
+one class. `--sampling patch` (use it for real MSD) learns tumor vs non-tumor
+*tissue* instead: per case one jittered tumor window and `--neg-per-case`
+tumor-free windows from the same pancreas (roi.sample_patch_starts). Rows in
+cls_predictions.csv are then patches, named <case>#pos / <case>#neg<k>; the split
+stays patient-wise, so no patient's tissue sits on both sides of calibration.
+`--sampling case` (default) is the original one-ROI-per-case path, kept for the
+phantom, which does have tumor-free cases. Decision: docs/FINAL_2DAY_PLAN.md.
 """
 from __future__ import annotations
 
 import argparse
 import json
 import time
+import zlib
 from pathlib import Path
 
 import matplotlib
@@ -38,7 +42,7 @@ from .classifier import build_classifier, describe, tumor_probability
 from .config import CHECKPOINT_DIR, MSD_DIR, RESULTS_DIR, SEED, SPACING_MM, parse_patch
 from .data import assert_disjoint, case_id
 from .metrics import auroc, tumor_stats
-from .roi import bbox_fits, crop_roi
+from .roi import bbox_fits, crop_at, crop_roi, sample_patch_starts
 from .train_seg import get_split
 from .transforms import build_transforms
 
@@ -94,6 +98,60 @@ def load_roi_cases(cases, group: str, roi_size, margin_mm: float = 10.0, mask_fn
             "eq_diam_cm": float(truth["eq_diam_cm"]),
         })
     return items
+
+
+def _case_rng(seed: int, cid: str) -> np.random.Generator:
+    """Per-case generator: the same case yields the same patches in train_cls
+    and predict_cls, whatever order the cases arrive in."""
+    return np.random.default_rng([seed, zlib.crc32(cid.encode())])
+
+
+def load_patch_items(cases, group: str, roi_size, n_neg: int = 2, mask_fn=None,
+                     seed: int = SEED) -> list:
+    """Patch-level items (see module docstring). Same dict layout as
+    load_roi_cases plus 'patient', so stack / predict_table / MC Dropout and the
+    stage 6.4 CSV contract are unchanged.
+
+    Tissue for negatives comes from `mask_fn`'s mask when given (the real path:
+    predicted pancreas), but the tumor that negatives must avoid, and the
+    positive's location, always come from the ground truth.
+    """
+    tf = build_transforms(train=False)
+    items = []
+    for case in cases:
+        cid = case_id(case["image"])
+        data = tf(case)
+        image = np.asarray(data["image"], dtype=np.float32)[0]
+        label = np.asarray(data["label"])[0]
+        truth = tumor_stats(label, SPACING_MM)
+        tissue = label if mask_fn is None else np.asarray(mask_fn(case, label))
+        combined = (tissue >= 1).astype(np.uint8)
+        combined[label == 2] = 2
+        picks = sample_patch_starts(combined, roi_size, n_neg, _case_rng(seed, cid))
+        if not picks:
+            print(f"[6.3] skip {cid}: no pancreas tissue to sample")
+            continue
+        if truth["has_tumor"] and len(picks) - 1 < n_neg:
+            print(f"[6.3] {cid}: only {len(picks) - 1}/{n_neg} tumor-free windows fit")
+        k = 0
+        for starts, y in picks:
+            name = f"{cid}#pos" if y else f"{cid}#neg{k}"
+            k += 0 if y else 1
+            items.append({
+                "case": name, "patient": cid, "group": group,
+                "x": crop_at(image, starts, roi_size)[None].astype(np.float32),
+                "y_true": int(y),
+                "eq_diam_cm": float(truth["eq_diam_cm"]) if y else 0.0,
+            })
+    return items
+
+
+def load_items(args_or_cfg: dict, cases, group, roi_size, mask_fn=None) -> list:
+    """Dispatch on the sampling mode stored in the CLI args / checkpoint."""
+    if args_or_cfg.get("sampling", "case") == "patch":
+        return load_patch_items(cases, group, roi_size, args_or_cfg.get("neg_per_case", 2),
+                                mask_fn=mask_fn, seed=args_or_cfg.get("seed", SEED))
+    return load_roi_cases(cases, group, roi_size, args_or_cfg.get("margin_mm", 10.0), mask_fn)
 
 
 def stack(items):
@@ -197,6 +255,9 @@ def build_argparser():
     p.add_argument("--limit-train", type=int, default=0)
     p.add_argument("--limit-val", type=int, default=0)
     p.add_argument("--stamp", action="store_true", help="mark figures as phantom-derived")
+    p.add_argument("--sampling", choices=["case", "patch"], default="case",
+                   help="'patch' for real MSD (every case has a tumor); see module docstring")
+    p.add_argument("--neg-per-case", type=int, default=2, help="tumor-free windows per case (patch mode)")
     return p
 
 
@@ -212,9 +273,11 @@ def main(argv=None):
 
     split = get_split(args)
     assert_disjoint(split)
-    print(f"[6.3] cutting ROIs {roi_size} from the ground-truth mask ...")
-    train_items = load_roi_cases(split["train"], "train", roi_size, args.margin_mm)
-    val_items = load_roi_cases(split["val"], "val", roi_size, args.margin_mm)
+    print(f"[6.3] cutting {args.sampling} ROIs {roi_size} from the ground-truth mask ...")
+    cfg = {"sampling": args.sampling, "neg_per_case": args.neg_per_case, "seed": args.seed,
+           "margin_mm": args.margin_mm}
+    train_items = load_items(cfg, split["train"], "train", roi_size)
+    val_items = load_items(cfg, split["val"], "val", roi_size)
     if not train_items:
         raise SystemExit("[6.3] no usable training ROIs")
     xtr, ytr = stack(train_items)
@@ -231,8 +294,7 @@ def main(argv=None):
     if args.resume:
         start, best, history = resume_if_possible(STAGE, model, optimizer, root=args.ckpt_root,
                                                   map_location=device)
-    extra = {"model": args.model, "roi_size": list(roi_size), "dropout": args.dropout,
-             "margin_mm": args.margin_mm}
+    extra = {"model": args.model, "roi_size": list(roi_size), "dropout": args.dropout, **cfg}
 
     for epoch in range(start, args.epochs):
         t0 = time.time()

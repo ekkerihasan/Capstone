@@ -20,22 +20,24 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import torch
 
 from .checkpoints import BEST, load_checkpoint
 from .classifier import build_classifier, tumor_probability
 from .config import CHECKPOINT_DIR, MSD_DIR, RESULTS_DIR
-from .data import load_split
+from .data import case_id, load_split, rebase_split_to_msd
 from .metrics import auroc, by_size_bucket, sensitivity_specificity
-from .train_cls import STAGE, load_roi_cases, stack
+from .train_cls import STAGE, load_items, stack
 from .uncertainty import MC_SAMPLES, mc_dropout_table
 
 COLUMNS = ["case", "group", "y_true", "prob_tumor", "eq_diam_cm"]
 
 
 def predict_table(model, items, device, mc: int = 0, batch: int = 8) -> pd.DataFrame:
-    """One row per case in the cls_predictions.csv layout."""
+    """One row per case (or per patch, for a --sampling patch checkpoint) in the
+    cls_predictions.csv layout."""
     if not items:
         return pd.DataFrame(columns=COLUMNS)
     if mc:
@@ -75,6 +77,9 @@ def build_argparser():
     p.add_argument("--ckpt", default=str(CHECKPOINT_DIR / STAGE / BEST))
     p.add_argument("--mc", type=int, default=0, const=MC_SAMPLES, nargs="?",
                    help="MC-Dropout passes (bare --mc = 20); needs a --dropout > 0 checkpoint")
+    p.add_argument("--pred-masks", default="",
+                   help="dir of <case>.npy masks from predict_seg --save-masks: the real path, "
+                        "ROIs cut from the stage 6.2 prediction instead of the ground truth")
     p.add_argument("--groups", nargs="*", default=None, help="default: every group in the split")
     p.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     return p
@@ -93,15 +98,27 @@ def main(argv=None):
         raise SystemExit("[6.3] --mc needs a checkpoint trained with --dropout > 0; this one has none")
     roi_size = tuple(cfg["roi_size"])
 
-    split = load_split(args.split, root=Path(args.data_root) / "imagesTr")
-    # load_split rebases every path onto one folder; labels live in labelsTr
-    for cases in split.values():
-        for c in cases:
-            c["label"] = str(Path(args.data_root) / "labelsTr" / Path(c["label"]).name)
+    split = rebase_split_to_msd(load_split(args.split), args.data_root)
+
+    mask_fn = None
+    if args.pred_masks:
+        def mask_fn(case, label, root=Path(args.pred_masks)):
+            pred = np.load(root / f"{case_id(case['image'])}.npy")
+            if pred.shape != label.shape:
+                raise SystemExit(f"[6.3] {root} mask {pred.shape} != grid {label.shape}: "
+                                 "masks must come from predict_seg on the same 6.1 transforms")
+            return pred
+        print(f"[6.3] ROIs from predicted masks in {args.pred_masks}")
 
     frames = []
     for group in (args.groups or list(split)):
-        items = load_roi_cases(split[group], group, roi_size, cfg.get("margin_mm", 10.0))
+        if mask_fn is not None:
+            missing = [c for c in split[group]
+                       if not (Path(args.pred_masks) / f"{case_id(c['image'])}.npy").exists()]
+            if missing:
+                print(f"[6.3] {group}: no predicted mask for {len(missing)} cases, group skipped")
+                continue
+        items = load_items(cfg, split[group], group, roi_size, mask_fn=mask_fn)
         frames.append(predict_table(model, items, device, mc=args.mc))
     df = pd.concat(frames, ignore_index=True)
 

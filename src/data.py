@@ -7,6 +7,7 @@ the same held-out patients.
 from __future__ import annotations
 
 import json
+import re
 import os
 import random
 from pathlib import Path
@@ -20,7 +21,7 @@ def _clean(rel: str) -> str:
 
 def case_id(path: str | os.PathLike) -> str:
     """'.../imagesTr/pancreas_004.nii.gz' -> 'pancreas_004'."""
-    return Path(path).name.replace(".nii.gz", "").replace(".nii", "")
+    return _basename(path).replace(".nii.gz", "").replace(".nii", "")
 
 
 def load_msd_datalist(root: str | os.PathLike = MSD_DIR, section: str = "training"):
@@ -92,10 +93,28 @@ def load_split(path, root: str | os.PathLike | None = None):
     if root is not None:
         root = Path(root)
         split = {
-            k: [{kk: str(root / Path(vv).name) for kk, vv in c.items()} for c in v]
+            k: [{kk: str(root / _basename(vv)) for kk, vv in c.items()} for c in v]
             for k, v in split.items()
         }
     return split
+
+
+def _basename(stored: str) -> str:
+    """File name of a stored path written on *either* OS. Splits created on the
+    Windows lab PC hold backslash paths, and on Linux (Colab) pathlib treats
+    such a string as a single file name."""
+    return re.split(r"[\\/]", str(stored))[-1]
+
+
+def rebase_split_to_msd(split: dict, data_root) -> dict:
+    """Point every case at <data_root>/imagesTr and <data_root>/labelsTr, so one
+    split JSON works on the lab PC, Colab and a laptop alike."""
+    root = Path(data_root)
+    return {
+        k: [{"image": str(root / "imagesTr" / _basename(c["image"])),
+             "label": str(root / "labelsTr" / _basename(c["label"]))} for c in v]
+        for k, v in split.items()
+    }
 
 
 def assert_disjoint(split):

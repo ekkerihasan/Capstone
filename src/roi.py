@@ -103,3 +103,69 @@ def crop_roi(image, mask, out_size=PATCH_SIZE, margin_mm=10.0, spacing_mm=SPACIN
 def bbox_fits(bbox, out_size) -> bool:
     """True when the whole pancreas box fits in the crop window."""
     return all((s.stop - s.start) <= n for s, n in zip(bbox, out_size))
+
+
+# --------------------------------------------------------------------------
+# Patch sampling: tumor vs non-tumor pancreatic tissue.
+#
+# Real MSD Task07 has a tumor in *every* case, so a case-level present/absent
+# label has one class. The decision taken for the final review (docs/
+# FINAL_2DAY_PLAN.md) is to learn tumor vs non-tumor *tissue* instead:
+#   positive = a window containing the tumor centroid (jittered so the lesion
+#              is not always dead centre - otherwise the network can learn
+#              "blob in the middle" rather than "tumor");
+#   negative = a window centred on pancreas tissue that contains no tumor
+#              voxel at all, with a safety margin.
+# PanTS stays external-validation-only, as CLAUDE.md requires.
+# --------------------------------------------------------------------------
+
+def _tumor_free(starts, out_size, tumor_lo, tumor_hi) -> bool:
+    """True when the window [starts, starts+out_size) does not overlap the
+    (margin-grown) tumor box [tumor_lo, tumor_hi) on at least one axis."""
+    return any(s + n <= lo or s >= hi
+               for s, n, lo, hi in zip(starts, out_size, tumor_lo, tumor_hi))
+
+
+def sample_patch_starts(mask, out_size, n_neg: int, rng, tumor_label: int = 2,
+                        pancreas_label: int = LABEL_PANCREAS, tumor_margin_mm: float = 5.0,
+                        spacing_mm=SPACING_MM, max_tries: int = 200) -> list:
+    """Window start corners for one positive (if the mask has a tumor) and up
+    to `n_neg` tumor-free negatives. Returns [(starts, y), ...] with y in {0, 1}.
+
+    Fewer than `n_neg` negatives come back when the pancreas has no room for a
+    tumor-free window (a large tumor filling a small organ); never a negative
+    that touches the tumor.
+    """
+    mask = _squeeze_mask(mask)
+    size = np.asarray(out_size, dtype=int)
+    out = []
+
+    tumor = np.argwhere(mask == tumor_label)
+    if len(tumor):
+        lo_t, hi_t = tumor.min(0), tumor.max(0) + 1
+        centroid = tumor.mean(0).round().astype(int)
+        # jitter up to a quarter window, but keep the whole centroid inside
+        jitter = rng.integers(-(size // 4), size // 4 + 1)
+        out.append((tuple(int(v) for v in centroid + jitter - size // 2), 1))
+        margin = np.ceil(tumor_margin_mm / np.asarray(spacing_mm, dtype=float)).astype(int)
+        lo_t, hi_t = lo_t - margin, hi_t + margin
+    else:
+        lo_t = hi_t = None
+
+    tissue = np.argwhere(mask == pancreas_label)
+    if not len(tissue) or n_neg <= 0:
+        return out
+    found = []
+    for _ in range(max_tries):
+        if len(found) >= n_neg:
+            break
+        centre = tissue[rng.integers(len(tissue))]
+        starts = tuple(int(v) for v in centre - size // 2)
+        if lo_t is None or _tumor_free(starts, size, lo_t, hi_t):
+            found.append((starts, 0))
+    return out + found
+
+
+def crop_at(volume, starts, out_size) -> np.ndarray:
+    """Fixed-size window at `starts` (zero-padded off the volume edge)."""
+    return _cut(np.asarray(volume), starts, out_size, pad_value=0)

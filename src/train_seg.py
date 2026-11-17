@@ -36,7 +36,7 @@ from .checkpoints import BEST, LAST, resume_if_possible, save_checkpoint, stage_
 from .config import (BATCH_SIZE, CACHE_RATE, CHECKPOINT_DIR, MSD_DIR, NUM_WORKERS,
                      RESULTS_DIR, SEED, parse_patch)
 from .data import (assert_disjoint, load_msd_datalist, load_split, patient_wise_split,
-                   save_split)
+                   rebase_split_to_msd, save_split)
 from .models import N_CLASSES, build_attention_unet, describe
 from .transforms import build_transforms
 
@@ -48,8 +48,8 @@ def get_split(args):
     """Reuse the split JSON when one exists — every stage must score the same
     held-out patients — otherwise make one and save it."""
     if args.split and Path(args.split).exists():
-        split = load_split(args.split)
-        print(f"[6.2] split loaded from {args.split}")
+        split = rebase_split_to_msd(load_split(args.split), args.data_root)
+        print(f"[6.2] split loaded from {args.split}, rebased onto {args.data_root}")
     else:
         cases = load_msd_datalist(args.data_root)
         split = patient_wise_split(cases, seed=args.seed)

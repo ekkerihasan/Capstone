@@ -30,9 +30,9 @@ from monai.inferers import sliding_window_inference
 from monai.utils import set_determinism
 
 from .checkpoints import load_checkpoint
-from .config import (CHECKPOINT_DIR, LABEL_PANCREAS, LABEL_TUMOR, PATCH_SIZE,
+from .config import (CHECKPOINT_DIR, MSD_DIR, LABEL_PANCREAS, LABEL_TUMOR, PATCH_SIZE,
                      RESULTS_DIR, SEED, parse_patch)
-from .data import case_id, load_split
+from .data import case_id, load_split, rebase_split_to_msd
 from .metrics import by_size_bucket, dice, size_bucket, tumor_stats
 from .models import build_attention_unet
 from .transforms import build_transforms
@@ -82,11 +82,14 @@ def main(argv=None):
     p = argparse.ArgumentParser(description="Stage 6.2 evaluation and overlays")
     p.add_argument("--checkpoint", default=str(CHECKPOINT_DIR / "stage62" / "best.pt"))
     p.add_argument("--split", required=True)
+    p.add_argument("--data-root", default=str(MSD_DIR), help="rebase the split's paths onto this root")
     p.add_argument("--group", default="val", help="which split group to score")
     p.add_argument("--out", default=str(RESULTS_DIR / "review2"))
     p.add_argument("--patch", default="", help="defaults to the training patch size")
     p.add_argument("--limit", type=int, default=0)
     p.add_argument("--max-figures", type=int, default=6)
+    p.add_argument("--save-masks", default="",
+                   help="dir for <case>.npy predicted masks on the 6.1 grid (input to predict_cls --pred-masks)")
     p.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     p.add_argument("--seed", type=int, default=SEED)
     args = p.parse_args(argv)
@@ -105,7 +108,7 @@ def main(argv=None):
     print(f"[6.2-eval] {args.checkpoint} | epoch {ckpt['epoch']} | "
           f"best={ckpt.get('best_metric')} | patch={patch} | device={device}")
 
-    cases = load_split(args.split)[args.group]
+    cases = rebase_split_to_msd(load_split(args.split), args.data_root)[args.group]
     if args.limit:
         cases = cases[: args.limit]
     transform = build_transforms(train=False)
@@ -130,6 +133,10 @@ def main(argv=None):
         rows.append(row)
         print(f"[6.2-eval] {name}: pancreas={row['dice_pancreas']} tumor={row['dice_tumor']} "
               f"({row['size_bucket']})")
+
+        if args.save_masks:
+            Path(args.save_masks).mkdir(parents=True, exist_ok=True)
+            np.save(Path(args.save_masks) / f"{name}.npy", pred.astype(np.uint8))
 
         if i < args.max_figures:
             plot_prediction(image, truth, pred, name, out / f"pred_{name}.png",
