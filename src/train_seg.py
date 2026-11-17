@@ -145,6 +145,21 @@ def plot_curves(history, path):
     return path
 
 
+RUN_JSON = "run.json"
+
+
+def epochs_for_budget(hours: float, epoch_seconds: float, minimum: int = 2) -> int:
+    """How many whole epochs fit in `hours` at the measured pace."""
+    return max(minimum, int(hours * 3600 // max(epoch_seconds, 1e-6)))
+
+
+def write_run_json(path, epochs, hours, epoch_seconds):
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    Path(path).write_text(json.dumps({"epochs": int(epochs), "hours": hours,
+                                      "epoch_seconds_measured": epoch_seconds}, indent=1),
+                          encoding="utf-8")
+
+
 def build_argparser():
     p = argparse.ArgumentParser(description="Stage 6.2 Attention U-Net training")
     p.add_argument("--data-root", default=str(MSD_DIR))
@@ -163,6 +178,8 @@ def build_argparser():
     p.add_argument("--val-interval", type=int, default=1)
     p.add_argument("--seed", type=int, default=SEED)
     p.add_argument("--resume", action="store_true")
+    p.add_argument("--hours", type=float, default=0.0,
+                   help="training budget: time epoch 0, then fix --epochs to fit (stored in run.json)")
     p.add_argument("--no-amp", action="store_true")
     p.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     p.add_argument("--limit-train", type=int, default=0)
@@ -212,40 +229,72 @@ def main(argv=None):
             print(f"[6.2] retargeting cosine schedule: T_max {scheduler.T_max} -> {args.epochs}")
             scheduler.T_max = args.epochs
 
+    # --hours: how many epochs fit is unknown until one epoch has been timed on
+    # this GPU. A fresh budgeted run fixes the count after epoch 0 and records it
+    # in run.json; every resume reads it back, so the cosine horizon is decided
+    # once and never drifts between lab sessions.
+    run_json = ckpt_dir / RUN_JSON
+    if not args.resume and run_json.exists():
+        run_json.unlink()                       # a fresh run plans its own horizon
+    # Without --hours, an explicit --epochs wins (and may extend a run), as before.
+    if args.hours and args.resume and run_json.exists():
+        planned = int(json.loads(run_json.read_text(encoding="utf-8"))["epochs"])
+        print(f"[6.2] run.json fixes this run at {planned} epochs")
+        args.epochs = scheduler.T_max = planned
+
+    extra = {"patch": list(patch), "classes": list(CLASS_NAMES)}
     metrics_csv = out / "metrics_stage62.csv"
-    for epoch in range(start_epoch, args.epochs):
-        t0 = time.time()
-        lr = optimizer.param_groups[0]["lr"]        # the rate this epoch actually used
-        train_loss, steps = train_one_epoch(model, train_dl, optimizer, loss_fn, device,
-                                            scaler, use_amp, args.max_steps)
-        scheduler.step()
+    epoch = start_epoch
+    try:
+        while epoch < args.epochs:
+            t0 = time.time()
+            lr = optimizer.param_groups[0]["lr"]        # the rate this epoch actually used
+            train_loss, steps = train_one_epoch(model, train_dl, optimizer, loss_fn, device,
+                                                scaler, use_amp, args.max_steps)
+            scheduler.step()
 
-        row = {"epoch": epoch, "train_loss": round(train_loss, 4), "steps": steps,
-               "lr": lr, "seconds": round(time.time() - t0, 1),
-               "dice_pancreas": np.nan, "dice_tumor": np.nan, "dice_mean": np.nan,
-               "best": False}
+            row = {"epoch": epoch, "train_loss": round(train_loss, 4), "steps": steps,
+                   "lr": lr, "seconds": round(time.time() - t0, 1),
+                   "dice_pancreas": np.nan, "dice_tumor": np.nan, "dice_mean": np.nan,
+                   "best": False}
 
-        if (epoch + 1) % args.val_interval == 0 or epoch == args.epochs - 1:
-            dice = validate(model, val_dl, device, patch, metric, post_pred, post_label)
-            row.update({f"dice_{k}": round(v, 4) for k, v in dice.items()})
-            row["dice_mean"] = round(float(np.mean(list(dice.values()))), 4)
-            if best is None or row["dice_mean"] > best:
-                best = row["dice_mean"]
-                row["best"] = True
-                save_checkpoint(ckpt_dir / BEST, model, epoch, optimizer, scaler, scheduler,
-                                best_metric=best, history=history + [row],
-                                extra={"patch": list(patch), "classes": list(CLASS_NAMES)})
+            if (epoch + 1) % args.val_interval == 0 or epoch == args.epochs - 1:
+                dice = validate(model, val_dl, device, patch, metric, post_pred, post_label)
+                row.update({f"dice_{k}": round(v, 4) for k, v in dice.items()})
+                row["dice_mean"] = round(float(np.mean(list(dice.values()))), 4)
+                if best is None or row["dice_mean"] > best:
+                    best = row["dice_mean"]
+                    row["best"] = True
+                    save_checkpoint(ckpt_dir / BEST, model, epoch, optimizer, scaler, scheduler,
+                                    best_metric=best, history=history + [row], extra=extra)
+            row["epoch_seconds"] = round(time.time() - t0, 1)   # training + validation
 
-        history.append(row)
-        # written every epoch so an interrupted run still has its metrics
-        pd.DataFrame(history).to_csv(metrics_csv, index=False)
-        save_checkpoint(ckpt_dir / LAST, model, epoch, optimizer, scaler, scheduler,
-                        best_metric=best, history=history,
-                        extra={"patch": list(patch), "classes": list(CLASS_NAMES)})
+            if args.hours and epoch == 0 and not run_json.exists():
+                planned = epochs_for_budget(args.hours, row["epoch_seconds"])
+                print(f"[6.2] epoch 0 took {row['epoch_seconds']:.0f}s -> {args.hours} h budget "
+                      f"= {planned} epochs (fixed for this run in {run_json})")
+                args.epochs = scheduler.T_max = planned
+                write_run_json(run_json, planned, args.hours, row["epoch_seconds"])
 
-        print(f"[6.2] epoch {epoch:>3} loss={row['train_loss']:.4f} "
-              f"dice_pancreas={row['dice_pancreas']} dice_tumor={row['dice_tumor']} "
-              f"({row['seconds']}s){' *best*' if row['best'] else ''}")
+            history.append(row)
+            # written every epoch so an interrupted run still has its metrics
+            pd.DataFrame(history).to_csv(metrics_csv, index=False)
+            save_checkpoint(ckpt_dir / LAST, model, epoch, optimizer, scaler, scheduler,
+                            best_metric=best, history=history, extra=extra)
+
+            left = (args.epochs - epoch - 1) * row["epoch_seconds"] / 3600
+            print(f"[6.2] epoch {epoch + 1}/{args.epochs} loss={row['train_loss']:.4f} "
+                  f"dice_pancreas={row['dice_pancreas']} dice_tumor={row['dice_tumor']} "
+                  f"({row['epoch_seconds']}s, ~{left:.1f} h left){' *best*' if row['best'] else ''}"
+                  f" | saved - safe to Ctrl+C")
+            epoch += 1
+    except KeyboardInterrupt:
+        done = history[-1]["epoch"] + 1 if history else 0
+        print(f"\n[6.2] PAUSED. {done}/{args.epochs} epochs are saved in {ckpt_dir / LAST}.\n"
+              f"[6.2] Run the same command with --resume (or lab.bat) to continue from there.")
+        if history:
+            plot_curves(history, out / "fig_stage62_training.png")
+        return {"stage": "6.2", "paused": True, "epochs_completed": done, "epochs": args.epochs}
 
     if history:
         plot_curves(history, out / "fig_stage62_training.png")
@@ -253,6 +302,7 @@ def main(argv=None):
         "stage": "6.2",
         "model": "AttentionUnet",
         "epochs_completed": history[-1]["epoch"] + 1 if history else 0,
+        "epochs": args.epochs,
         "best_dice_mean": best,
         "patch": list(patch),
         "batch": args.batch,
