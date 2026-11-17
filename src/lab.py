@@ -31,7 +31,7 @@ from .config import CHECKPOINT_DIR, DATA_DIR, MSD_DIR, REPO_ROOT, RESULTS_DIR
 SPLIT = REPO_ROOT / "results" / "review1_local" / "full281" / "split_281cases.json"
 OUT = RESULTS_DIR / "final"
 CKPT = CHECKPOINT_DIR / "stage62"
-DEFAULT_HOURS = 13.0       # two 9-to-5 lab days, minus setup and the Day 2 inference
+DEFAULT_HOURS = 11.0       # ~6.5 h on day 1 + ~4.5 h on day 2 before the 14:00 inference
 
 
 def find_dataset(data_dir: Path | None = None, msd_dir: Path | None = None) -> Path:

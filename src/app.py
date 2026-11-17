@@ -8,14 +8,20 @@ prediction set and one of three verdicts come out - tumor present, no tumor, or
 FLAGGED FOR SPECIALIST REVIEW. The abstention rule itself lives in
 src/selective.py, deliberately apart from the UI.
 
-What this app is honest about, on screen, every time:
+    python -m src.app --data-root data/Task07_Pancreas     # real MSD, trained weights
 
-- the segmentation weights are whatever checkpoint it found, which today is a
-  two-epoch phantom run, not a trained model;
-- there is no stage 6.3 classifier yet, so p(tumor) is read off the
-  segmentation model's own tumor channel rather than a dedicated classifier;
-- stage 6.5 does not exist, so the fidelity signal is absent rather than passing;
-- the data is a phantom.
+Two ways to get p(tumor), chosen by what exists on disk:
+
+- Stage 6.3 classifier (checkpoints/stage63/best.pt, or --classifier): the 6.2
+  mask locates the pancreas, the classifier's window slides over it at half-
+  window stride, and p(tumor) is the highest-scoring window - with MC Dropout,
+  Grad-CAM++ and F-Fidelity computed on that window. This is the real pipeline.
+- Fallback, no classifier: p(tumor) is read off the segmentation model's own
+  tumor channel, as in the Review 2 demo.
+
+What this app is honest about, on screen, every time: which weights were
+loaded (or that they are untrained), which of the two routes produced p(tumor),
+where q-hat was calibrated, and whether the data is a phantom.
 
 Every one of those is shown in the provenance panel next to the verdict. The app
 is the pipeline's wiring made visible, not evidence about pancreatic cancer.
@@ -32,7 +38,7 @@ matplotlib.use("Agg")
 import numpy as np
 import torch
 
-from .config import CHECKPOINT_DIR, DATA_DIR, LABEL_PANCREAS, LABEL_TUMOR, RESULTS_DIR
+from .config import CHECKPOINT_DIR, DATA_DIR, LABEL_PANCREAS, LABEL_TUMOR, MSD_DIR, RESULTS_DIR
 from .phantom import DEMO_STAMP
 from .selective import ABSTAIN, decide, label_of
 
@@ -43,14 +49,18 @@ MC_PASSES = 20              # T in CLAUDE.md
 DEFAULT_CKPT = RESULTS_DIR / "review2_demo" / "checkpoints" / "stage62" / "best.pt"
 DEFAULT_Q_HAT = RESULTS_DIR / "review2_demo" / "stage64_summary.json"
 DEFAULT_CURVE = RESULTS_DIR / "review2_demo" / "coverage_curve.csv"
+DEFAULT_CLS = CHECKPOINT_DIR / "stage63" / "best.pt"
+# where stage 6.4 put its calibration, best first: real end-to-end, then oracle
+CALIBRATION_DIRS = (RESULTS_DIR / "final" / "real", RESULTS_DIR / "final" / "oracle")
+MIN_PANCREAS_FRAC = 0.01    # a window must be >= 1 % pancreas to be classified
 
 
 # ----------------------------------------------------------------- model layer
 
 def find_checkpoint(explicit: str = "") -> Path | None:
     for c in (Path(explicit) if explicit else None,
-              DEFAULT_CKPT,
-              CHECKPOINT_DIR / "stage62" / "best.pt"):
+              CHECKPOINT_DIR / "stage62" / "best.pt",
+              DEFAULT_CKPT):
         if c and c.exists():
             return c
     return None
@@ -79,6 +89,44 @@ def training_patch(summary: Path = RESULTS_DIR / "review2_demo" / "stage62_summa
         if patch:
             return tuple(patch)
     return PATCH
+
+
+def checkpoint_patch(checkpoint: Path | None):
+    """The training window recorded inside a stage 6.2 checkpoint, if any."""
+    if checkpoint is None:
+        return None
+    extra = torch.load(checkpoint, map_location="cpu", weights_only=False).get("extra", {})
+    return tuple(extra["patch"]) if extra.get("patch") else None
+
+
+def find_classifier(explicit: str = "") -> Path | None:
+    for c in (Path(explicit) if explicit else None, DEFAULT_CLS):
+        if c and c.exists():
+            return c
+    return None
+
+
+def load_classifier(checkpoint: Path):
+    """The stage 6.3 classifier and its training config (model, roi_size, dropout)."""
+    from .classifier import build_classifier
+
+    ckpt = torch.load(checkpoint, map_location="cpu", weights_only=False)
+    cfg = dict(ckpt.get("extra", {}))
+    model = build_classifier(cfg.get("model", "densenet121"), dropout=cfg.get("dropout", 0.0))
+    model.load_state_dict(ckpt["model"])
+    model.eval()
+    cfg["roi_size"] = tuple(cfg.get("roi_size", (32, 32, 32)))
+    cfg["path"] = str(checkpoint)
+    return model, cfg
+
+
+def calibration_dir(classifier_present: bool) -> Path:
+    """Use stage 6.4's real calibration when the classifier is the one in use."""
+    if classifier_present:
+        for d in CALIBRATION_DIRS:
+            if (d / "stage64_summary.json").exists():
+                return d
+    return DEFAULT_Q_HAT.parent
 
 
 def load_q_hat(path: Path = DEFAULT_Q_HAT):
@@ -162,6 +210,65 @@ def predict(model, x, mc_passes: int = MC_PASSES, dropout_p: float = 0.1, patch=
     return mask, prob, mc_std
 
 
+def pancreas_windows(mask, roi_size, min_frac: float = MIN_PANCREAS_FRAC) -> list:
+    """Window corners tiling the pancreas bbox at half-window stride, keeping
+    those that are at least `min_frac` pancreas. Half stride means any lesion
+    sits in the central half of some window, as the training positives did."""
+    from .roi import pancreas_bbox
+
+    mask = np.asarray(mask)
+    if not (mask >= LABEL_PANCREAS).any():
+        return []
+    bbox = pancreas_bbox(mask, margin_mm=0.0)
+    size = np.asarray(roi_size, dtype=int)
+    axes = []
+    for sl, n in zip(bbox, size):
+        lo, hi = sl.start, sl.stop
+        first = lo - n // 4
+        last = max(first, hi - 3 * n // 4)
+        stride = max(1, n // 2)
+        starts = list(range(first, last + 1, stride))
+        if starts[-1] < last:
+            starts.append(last)
+        axes.append(starts)
+    need = min_frac * float(np.prod(size))
+    keep = []
+    for a in axes[0]:
+        for b in axes[1]:
+            for c in axes[2]:
+                win = mask[max(a, 0):a + size[0], max(b, 0):b + size[1], max(c, 0):c + size[2]]
+                if (win >= LABEL_PANCREAS).sum() >= need:
+                    keep.append((a, b, c))
+    return keep
+
+
+@torch.no_grad()
+def classify_volume(classifier, cfg: dict, image, mask, mc_passes: int = MC_PASSES,
+                    batch: int = 16):
+    """Stage 6.3 on a whole volume: classify every pancreas window, keep the
+    highest. Returns None when the mask has no pancreas to look in."""
+    from .classifier import tumor_probability
+    from .roi import crop_at
+    from .uncertainty import mc_dropout_predict
+
+    roi = cfg["roi_size"]
+    starts = pancreas_windows(mask, roi)
+    if not starts:
+        return None
+    img = np.asarray(image, dtype=np.float32)
+    xs = torch.from_numpy(np.stack([crop_at(img, s, roi)[None] for s in starts]))
+    probs = torch.cat([tumor_probability(classifier, xs[i:i + batch])
+                       for i in range(0, len(xs), batch)]).numpy()
+    i = int(probs.argmax())
+    best = xs[i:i + 1]
+    prob, mc_std = float(probs[i]), None
+    if mc_passes > 1 and cfg.get("dropout", 0.0) > 0:
+        r = mc_dropout_predict(classifier, best, T=mc_passes, p=cfg["dropout"])
+        prob, mc_std = float(r["mean"][0, 1]), float(r["std"][0, 1])
+    return {"prob": prob, "mc_std": mc_std, "start": starts[i], "x": best,
+            "n_windows": len(starts), "window_probs": probs}
+
+
 # ------------------------------------------------------------------ case layer
 
 def list_cases(root: Path) -> list:
@@ -183,7 +290,7 @@ def load_volume(image_path: Path):
     return x, gt
 
 
-def overlay_figure(image, pred, gt, title: str):
+def overlay_figure(image, pred, gt, title: str, stamp: bool = True, box=None):
     import matplotlib.pyplot as plt
 
     from .phantom import stamp_figure
@@ -204,11 +311,18 @@ def overlay_figure(image, pred, gt, title: str):
             m = np.rot90(np.asarray(mask)[:, :, z])
             ax.contour(m >= LABEL_PANCREAS, colors="lime", linewidths=0.9)
             ax.contour(m == LABEL_TUMOR, colors="red", linewidths=0.9)
+        if box is not None and box[2][0] <= z < box[2][1]:
+            (x0, x1), (y0, y1) = box[0], box[1]
+            w = img.shape[1]
+            # np.rot90 shows element (i, j) at row w-1-j, column i
+            ax.add_patch(plt.Rectangle((x0 - 0.5, w - y1 - 0.5), x1 - x0, y1 - y0, fill=False,
+                                       edgecolor="yellow", linewidth=1.2, linestyle="--"))
         ax.set_title(name, fontsize=10)
         ax.axis("off")
     fig.suptitle(f"{title}  |  axial slice z={z}", fontsize=11)
     fig.tight_layout()
-    stamp_figure(fig)
+    if stamp:
+        stamp_figure(fig)
     return fig
 
 
@@ -228,7 +342,11 @@ def explain_case(explainer, x, k_fractions=(0.01, 0.05, 0.10), n_random: int = 3
 
 
 def analyse(image_path: Path, model, trained: bool, q_hat, alpha,
-            mc_passes: int = MC_PASSES, patch=PATCH, explainer=None):
+            mc_passes: int = MC_PASSES, patch=PATCH, explainer=None,
+            classifier=None, cls_cfg=None, want_saliency: bool = False, phantom: bool = True):
+    if classifier is not None:
+        return analyse_with_classifier(image_path, model, trained, q_hat, alpha, classifier,
+                                       cls_cfg, mc_passes, patch, want_saliency, phantom)
     x, gt = load_volume(image_path)
     mask, prob, mc_std = predict(model, x, mc_passes=mc_passes, patch=patch)
 
@@ -245,7 +363,52 @@ def analyse(image_path: Path, model, trained: bool, q_hat, alpha,
                      fidelity_pass=None if fid is None else fid["passed"])
     verdict["saliency"] = cam
     verdict["fidelity"] = fid
-    fig = overlay_figure(x, mask, gt, image_path.name.replace(".nii.gz", ""))
+    verdict["phantom"] = phantom
+    fig = overlay_figure(x, mask, gt, image_path.name.replace(".nii.gz", ""), stamp=phantom)
+    return fig, verdict, gt, trained, alpha
+
+
+def analyse_with_classifier(image_path: Path, model, trained: bool, q_hat, alpha,
+                            classifier, cls_cfg: dict, mc_passes: int = MC_PASSES,
+                            patch=PATCH, want_saliency: bool = False, phantom: bool = False):
+    """The real pipeline: 6.2 mask -> 6.3 windows -> 6.4 MC/conformal ->
+    6.5 Grad-CAM++/F-Fidelity on the deciding window -> 6.6 rule."""
+    from .explain import gradcam_plusplus
+    from .fidelity import fidelity_test
+
+    x, gt = load_volume(image_path)
+    mask, _, _ = predict(model, x, mc_passes=0, patch=patch)
+    res = classify_volume(classifier, cls_cfg, np.asarray(x)[0, 0], mask, mc_passes=mc_passes)
+    name = image_path.name.replace(".nii.gz", "")
+
+    if res is None:                       # nothing to classify: never guess
+        verdict = decide(0.5)
+        verdict.update({"decision": ABSTAIN, "abstain": True,
+                        "reasons": ["segmentation found no pancreas to examine"],
+                        "saliency": None, "fidelity": None, "source": "classifier",
+                        "classifier": cls_cfg, "phantom": phantom, "window": None,
+                        "n_windows": 0})
+        return overlay_figure(x, mask, gt, name, stamp=phantom), verdict, gt, trained, alpha
+
+    prob = res["prob"]
+    conformal_set = None
+    if q_hat is not None:
+        probs = [1.0 - prob, prob]
+        conformal_set = [c for c, p in enumerate(probs) if (1.0 - p) <= q_hat]
+
+    cam = fid = None
+    if want_saliency:
+        cam, cls, _ = gradcam_plusplus(classifier, res["x"])
+        fid = fidelity_test(classifier, res["x"], cam, class_idx=cls,
+                            k_fractions=(0.01, 0.05, 0.10), n_random=3)
+
+    verdict = decide(prob, conformal_set=conformal_set, mc_std=res["mc_std"],
+                     fidelity_pass=None if fid is None else fid["passed"])
+    box = [(s, s + n) for s, n in zip(res["start"], cls_cfg["roi_size"])]
+    verdict.update({"saliency": cam, "fidelity": fid, "source": "classifier",
+                    "classifier": cls_cfg, "phantom": phantom, "window": box,
+                    "window_x": res["x"], "n_windows": res["n_windows"]})
+    fig = overlay_figure(x, mask, gt, name, stamp=phantom, box=box)
     return fig, verdict, gt, trained, alpha
 
 
@@ -272,25 +435,40 @@ def report_markdown(verdict: dict, gt, trained: bool, alpha, mc_passes: int) -> 
                      f"(needs > {fid['threshold']:.3f})")
     if verdict["reasons"]:
         lines += ["", "**Why it was escalated**"] + [f"- {r}" for r in verdict["reasons"]]
+    phantom = verdict.get("phantom", True)
     if gt is not None:
         truth = "tumor" if (np.asarray(gt) == LABEL_TUMOR).any() else "no tumor"
-        lines += ["", f"*Phantom ground truth: {truth}.*"]
+        lines += ["", f"*{'Phantom ground' if phantom else 'Ground'} truth: {truth}.*"]
 
-    lines += [
-        "", "---", "",
-        "**Provenance**",
-        f"- segmentation weights: {'checkpoint loaded' if trained else 'UNTRAINED (random)'}",
-        "- p(tumor): read off the segmentation tumor channel; **no stage 6.3 classifier exists yet**",
-        "- fidelity signal: Grad-CAM++ on the segmentation score head, "
-        "F-Fidelity vs random masking",
-        f"- data: synthetic phantom. {DEMO_STAMP}",
-    ]
+    lines += ["", "---", "", "**Provenance**",
+              f"- segmentation weights: {'checkpoint loaded' if trained else 'UNTRAINED (random)'}"]
+    if verdict.get("source") == "classifier":
+        cfg = verdict.get("classifier") or {}
+        lines += [
+            f"- p(tumor): stage 6.3 classifier `{cfg.get('model', '?')}` "
+            f"(roi {tuple(cfg.get('roi_size', ()))}), highest of "
+            f"{verdict.get('n_windows', 0)} pancreas windows (yellow box)",
+            "- fidelity signal: Grad-CAM++ on the 6.3 classifier, deciding window, "
+            "F-Fidelity vs random masking",
+            "- conformal q̂ was calibrated on patches; here it is applied to the "
+            "highest-scoring window",
+        ]
+    else:
+        lines += [
+            "- p(tumor): read off the segmentation tumor channel; "
+            "**no stage 6.3 classifier exists yet**",
+            "- fidelity signal: Grad-CAM++ on the segmentation score head, "
+            "F-Fidelity vs random masking",
+        ]
+    lines.append(f"- data: synthetic phantom. {DEMO_STAMP}" if phantom
+                 else "- data: real CT (MSD Task07); research prototype, not for clinical use")
     return "\n".join(lines)
 
 
 # -------------------------------------------------------------------------- UI
 
-def build_ui(data_root: Path, checkpoint: str = "", mc_passes: int = MC_PASSES):
+def build_ui(data_root: Path, checkpoint: str = "", mc_passes: int = MC_PASSES,
+             classifier: str = ""):
     import gradio as gr
 
     from .explain import ScoreHead
@@ -298,16 +476,22 @@ def build_ui(data_root: Path, checkpoint: str = "", mc_passes: int = MC_PASSES):
     ckpt = find_checkpoint(checkpoint)
     model, trained = load_model(ckpt)
     explainer = ScoreHead(model)
-    q_hat, alpha = load_q_hat()
-    curve = load_coverage_curve()
-    patch = training_patch()
+    cls_path = find_classifier(classifier)
+    clf, cls_cfg = load_classifier(cls_path) if cls_path else (None, None)
+    calib = calibration_dir(clf is not None)
+    q_hat, alpha = load_q_hat(calib / "stage64_summary.json")
+    curve = load_coverage_curve(calib / "coverage_curve.csv")
+    patch = checkpoint_patch(ckpt) or training_patch()
     cases = list_cases(data_root)
+    phantom = "phantom" in str(data_root).lower()
 
     banner = (
-        f"### Pancreatic cancer early detection — stages 6.1 → 6.6\n"
-        f"**{DEMO_STAMP}**\n\n"
-        f"Segmentation checkpoint: `{ckpt if ckpt else 'none — random weights'}` · "
-        f"conformal q̂: `{q_hat if q_hat is not None else 'not calibrated'}` · "
+        "### Pancreatic cancer early detection — stages 6.1 → 6.6\n"
+        + (f"**{DEMO_STAMP}**\n\n" if phantom
+           else "**Real CT (MSD Task07) · research prototype, not for clinical use**\n\n")
+        + f"Segmentation: `{ckpt if ckpt else 'none — random weights'}` · "
+        f"classifier: `{cls_path if cls_path else 'none — segmentation tumor-channel fallback'}` · "
+        f"conformal q̂: `{q_hat if q_hat is not None else 'not calibrated'}` ({calib.name}) · "
         f"MC Dropout T={mc_passes} · window {patch}"
     )
 
@@ -318,14 +502,20 @@ def build_ui(data_root: Path, checkpoint: str = "", mc_passes: int = MC_PASSES):
         q = q_hat_for(curve, target_alpha, fallback=q_hat)
         fig, verdict, gt, is_trained, _ = analyse(
             path, model, trained, q, target_alpha, mc_passes=mc_passes, patch=patch,
-            explainer=explainer if want_saliency else None)
+            explainer=explainer if want_saliency else None,
+            classifier=clf, cls_cfg=cls_cfg, want_saliency=want_saliency, phantom=phantom)
 
         sal_fig = None
         if verdict.get("saliency") is not None:
             from .explain import overlay_saliency
-            x, _ = load_volume(path)
-            sal_fig = overlay_saliency(x, verdict["saliency"], gt=gt,
-                                       title=path.name.replace(".nii.gz", ""))
+            title = path.name.replace(".nii.gz", "")
+            if verdict.get("window_x") is not None:      # classifier: the deciding window
+                sal_fig = overlay_saliency(verdict["window_x"], verdict["saliency"],
+                                           title=title + " (deciding window)", stamp=phantom)
+            else:
+                x, _ = load_volume(path)
+                sal_fig = overlay_saliency(x, verdict["saliency"], gt=gt, title=title,
+                                           stamp=phantom)
         return fig, sal_fig, report_markdown(verdict, gt, is_trained, target_alpha, mc_passes)
 
     with gr.Blocks(title="Pancreatic cancer early detection") as ui:
@@ -333,7 +523,7 @@ def build_ui(data_root: Path, checkpoint: str = "", mc_passes: int = MC_PASSES):
         with gr.Row():
             with gr.Column(scale=1):
                 case = gr.Dropdown(cases, value=cases[0] if cases else None,
-                                   label="Phantom case")
+                                   label="Case")
                 upload = gr.File(label="…or upload a NIfTI volume (.nii.gz)",
                                  file_types=[".gz", ".nii"], type="filepath")
                 alpha_in = gr.Slider(0.02, 0.5, value=alpha or 0.1, step=0.02,
@@ -354,8 +544,11 @@ def build_ui(data_root: Path, checkpoint: str = "", mc_passes: int = MC_PASSES):
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("--data-root", default=str(DATA_DIR / "phantom"))
-    p.add_argument("--checkpoint", default="")
+    default_root = MSD_DIR if (MSD_DIR / "imagesTr").exists() else DATA_DIR / "phantom"
+    p.add_argument("--data-root", default=str(default_root))
+    p.add_argument("--checkpoint", default="", help="stage 6.2 checkpoint")
+    p.add_argument("--classifier", default="",
+                   help="stage 6.3 checkpoint (default: checkpoints/stage63/best.pt if present)")
     p.add_argument("--mc-passes", type=int, default=MC_PASSES)
     p.add_argument("--port", type=int, default=7860)
     p.add_argument("--share", action="store_true")
@@ -364,7 +557,7 @@ def main(argv=None):
     root = Path(args.data_root)
     if not root.exists():
         raise SystemExit(f"{root} does not exist — run `python -m src.run_demo_pipeline` first")
-    ui = build_ui(root, args.checkpoint, args.mc_passes)
+    ui = build_ui(root, args.checkpoint, args.mc_passes, args.classifier)
     ui.launch(server_port=args.port, share=args.share)
 
 

@@ -175,3 +175,105 @@ def test_report_shows_the_fidelity_verdict():
                "fidelity": {"passed": True, "mean_margin": 0.12, "threshold": 0.01}}
     md = report_markdown(verdict, gt=None, trained=True, alpha=0.1, mc_passes=20)
     assert "F-Fidelity" in md and "PASS" in md
+
+
+# ------------------------------------------- stage 6.3 classifier wired into 6.6
+
+
+@pytest.fixture(scope="module")
+def classifier_ckpt(tmp_path_factory):
+    """An untrained classifier saved exactly as train_cls saves one."""
+    from src.checkpoints import save_checkpoint
+    from src.classifier import build_classifier
+
+    path = tmp_path_factory.mktemp("cls") / "best.pt"
+    model = build_classifier("resnet10", dropout=0.2)
+    save_checkpoint(path, model, 0, extra={"model": "resnet10", "roi_size": [16, 16, 16],
+                                           "dropout": 0.2, "sampling": "patch"})
+    return path
+
+
+def test_pancreas_windows_cover_every_pancreas_voxel_in_a_central_half():
+    """Half-window stride: wherever the lesion is, some window holds it in its
+    central half, which is where training put the positives."""
+    from src.app import pancreas_windows
+
+    mask = np.zeros((60, 50, 40), dtype=np.uint8)
+    mask[10:45, 20:30, 12:24] = 1
+    starts = pancreas_windows(mask, (16, 16, 16))
+    assert starts
+    for v in np.argwhere(mask == 1)[::37]:
+        assert any(all(s + 4 <= c < s + 12 for s, c in zip(st, v)) for st in starts), v
+    assert pancreas_windows(np.zeros_like(mask), (16, 16, 16)) == []
+
+
+def test_classifier_route_gives_a_verdict_with_all_three_signals(phantom_root, model, classifier_ckpt):
+    from src.app import load_classifier
+
+    m, trained = model
+    clf, cfg = load_classifier(classifier_ckpt)
+    assert cfg["roi_size"] == (16, 16, 16) and cfg["dropout"] == 0.2
+
+    # random seg weights find no pancreas reliably, so feed the oracle mask route
+    # through classify_volume directly, then the full analyse() path
+    from src.app import classify_volume
+    x, gt = load_volume(phantom_root / "imagesTr" / "pancreas_000.nii.gz")
+    res = classify_volume(clf, cfg, np.asarray(x)[0, 0], gt, mc_passes=3)
+    assert 0 <= res["prob"] <= 1 and res["mc_std"] is not None and res["n_windows"] >= 1
+    assert res["x"].shape == (1, 1, 16, 16, 16)
+
+    _, verdict, _, _, _ = analyse(
+        phantom_root / "imagesTr" / "pancreas_000.nii.gz", m, trained, q_hat=0.5, alpha=0.1,
+        mc_passes=3, patch=(32, 32, 32), classifier=clf, cls_cfg=cfg, want_saliency=True,
+        phantom=True)
+    assert verdict["source"] == "classifier"
+    if verdict["window"] is None:            # untrained seg found no pancreas
+        assert verdict["abstain"] and "no pancreas" in verdict["reasons"][0]
+    else:
+        assert verdict["fidelity"] is not None and verdict["mc_std"] is not None
+        assert verdict["conformal_set"] is not None
+
+
+def test_classifier_report_names_the_classifier_and_drops_the_stamp_on_real_data():
+    verdict = {"decision": "tumor", "abstain": False, "prob_tumor": 0.9, "mc_std": 0.01,
+               "conformal_set": [1], "reasons": [], "fidelity_pass": True,
+               "source": "classifier", "phantom": False, "n_windows": 12,
+               "classifier": {"model": "densenet121", "roi_size": (32, 32, 32)}}
+    md = report_markdown(verdict, gt=None, trained=True, alpha=0.1, mc_passes=20)
+    assert "stage 6.3 classifier `densenet121`" in md and "12 pancreas windows" in md
+    assert "no stage 6.3 classifier exists yet" not in md
+    assert DEMO_STAMP not in md and "real CT" in md
+
+
+def test_real_calibration_is_preferred_when_the_classifier_is_in_use(tmp_path, monkeypatch):
+    import src.app as app
+
+    real, oracle = tmp_path / "real", tmp_path / "oracle"
+    oracle.mkdir()
+    (oracle / "stage64_summary.json").write_text("{}")
+    monkeypatch.setattr(app, "CALIBRATION_DIRS", (real, oracle))
+    assert app.calibration_dir(True) == oracle
+    real.mkdir()
+    (real / "stage64_summary.json").write_text("{}")
+    assert app.calibration_dir(True) == real
+    assert app.calibration_dir(False) == app.DEFAULT_Q_HAT.parent
+
+
+def test_full_classifier_route_with_a_working_mask(phantom_root, model, classifier_ckpt, monkeypatch):
+    """Pin the 6.2 mask to the ground truth so the whole 6.3 -> 6.6 branch runs:
+    windows, MC Dropout, conformal set, Grad-CAM++ and F-Fidelity, yellow box."""
+    import src.app as app
+
+    path = phantom_root / "imagesTr" / "pancreas_000.nii.gz"
+    _, gt = load_volume(path)
+    monkeypatch.setattr(app, "predict", lambda *a, **k: (gt, 0.0, None))
+    clf, cfg = app.load_classifier(classifier_ckpt)
+    m, trained = model
+    fig, verdict, _, _, _ = analyse(path, m, trained, q_hat=0.5, alpha=0.1, mc_passes=3,
+                                    classifier=clf, cls_cfg=cfg, want_saliency=True,
+                                    phantom=True)
+    assert verdict["window"] is not None and verdict["n_windows"] >= 1
+    assert verdict["fidelity"] is not None
+    assert verdict["fidelity_pass"] is verdict["fidelity"]["passed"]
+    assert verdict["mc_std"] is not None and verdict["conformal_set"] is not None
+    assert verdict["saliency"].shape[-3:] == (16, 16, 16)

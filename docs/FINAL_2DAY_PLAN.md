@@ -1,64 +1,56 @@
 # Final Review: 2-Day Plan (two people, real data, stages 6.2 to 6.6)
 
-Written 17 Nov 2026. Final review: **25 Nov**. Real-data results due by the evening of **19 Nov**.
+Written 17 Nov 2026, updated 18 Nov. Final review: **25 Nov**. Real-data results due by the evening of **19 Nov**.
 The days from 20 to 24 Nov are buffer for the report, deck, rehearsal and logbook.
 **Team for these two days: Wasih and Hasan.** Mustafa is writing the paper; send him numbers as they land.
 
 ## Starting point
-- All six stages are coded. Branch `feat/stage63-msd-negatives`: **204/204 tests pass** (17 Nov).
+- All six stages are coded and wired. Branch `feat/stage63-msd-negatives`: **215/215 tests pass**.
 - Only 6.1 has run on real data so far (281 MSD cases). Everything else is still phantom-only.
-- Changes on this branch since the Review 2 code:
-  - **6.3 negatives:** `--sampling patch`. One jittered tumor window per case plus `--neg-per-case` tumor-free windows of the same pancreas. A test guarantees that no negative window touches the tumor.
+- Changes on this branch:
+  - **6.3 negatives:** `--sampling patch`. One jittered tumor window per case plus `--neg-per-case` tumor-free windows of the same pancreas. A test guarantees no negative window touches the tumor.
   - **Split paths fixed:** the 281-case split was saved on Windows and would not have loaded on Colab (Linux). It now rebases onto `--data-root` on any OS.
-  - **6.2 to 6.3 hand-off:** `predict_seg --save-masks DIR` writes the predicted masks, and `predict_cls --pred-masks DIR` cuts ROIs from them. This is the real end-to-end path.
-- The split to use everywhere is `results/review1_local/full281/split_281cases.json`: 197 train / 42 val / 42 calib, patient-wise.
+  - **6.2 to 6.3 hand-off:** `predict_seg --save-masks DIR` writes the predicted masks, and `predict_cls --pred-masks DIR` reads them.
+  - **`lab.bat`:** one command on the lab PC. It starts or resumes training, and Ctrl+C pauses safely (see below).
+  - **App wired to 6.3:** `src/app.py` now uses the classifier. It segments, slides the classifier window over the pancreas, takes p(tumor) from the highest-scoring window, and runs MC Dropout, conformal, Grad-CAM++ and F-Fidelity on that window. If no classifier checkpoint exists, it falls back to the old segmentation-channel route.
+- The split everywhere is `results/review1_local/full281/split_281cases.json`: 197 train / 42 val / 42 calib, patient-wise.
 
-## Lab PC rules (9 am to 5 pm, no overnight)
-- Training saves `checkpoints/stage62/last.pt` after **every epoch**. Stopping loses at most the current epoch.
-- **5 pm:** press Ctrl+C. Copy `checkpoints/` and `results/final/` to the USB drive.
-- **9 am:** run the same command with `--resume` added. **Never change `--epochs`** after the first start, because the LR schedule is built on it.
+## The lab PC (9 to 5, no overnight)
+**First visit only, once:**
+```bat
+git clone -b feat/stage63-msd-negatives https://github.com/ekkerihasan/Capstone.git
+```
+Then copy `Task07_Pancreas.tar` from the USB drive into `Capstone\data\`. There's no need to extract it.
 
-## Tonight (17 Nov)
-| Who | Task |
-|---|---|
-| Wasih | Copy `data/Task07_Pancreas.tar` (12.3 GB) to a USB drive, along with the repo. |
-| Hasan | Pull `feat/stage63-msd-negatives`. Open a Colab notebook and check the T4 is assigned. |
+**Every visit, the whole procedure:**
+```bat
+cd Capstone
+lab.bat --backup E:\capstone
+```
+`E:` is the USB drive; leave out `--backup` if no drive is plugged in.
+
+`lab.bat` does everything else:
+- pulls the latest code;
+- on the first run, creates `.venv` with the CUDA build of PyTorch (about 10 min);
+- extracts the tar on the first run (about 10 min);
+- starts training or resumes it automatically.
+
+**Pausing:** press **Ctrl+C** whenever the lab has to be freed. Finished epochs are already saved; only the epoch in progress is lost, which is a few minutes. On exit it copies the checkpoints and metrics to the USB drive. If Windows asks "Terminate batch job (Y/N)?", either answer is fine.
+
+**How long it trains:**
+- The first session times one epoch on the 4060, then fixes the total number of epochs to fit **11 hours** of training. That is about 6.5 h today plus about 4.5 h tomorrow, finishing before the 14:00 inference.
+- The plan is stored in `checkpoints/stage62/run.json`, so every resume continues the same learning-rate schedule. Nobody chooses or types an epoch count.
+- Each epoch line shows `~X h left`.
+- `lab.bat --status` shows progress without training.
+- If you get an out-of-memory error: `lab.bat --fresh --batch 1`. If it still fails: add `--patch 64`.
 
 ## Day 1: 18 Nov
-### Wasih: lab RTX 4060, stage 6.2
-```bash
-git clone https://github.com/ekkerihasan/Capstone.git && cd Capstone && git checkout feat/stage63-msd-negatives
-python -m venv .venv && .venv\Scripts\activate
-pip install torch --index-url https://download.pytorch.org/whl/cu124    # before requirements
-pip install -r requirements.txt
-python -c "import torch; print(torch.cuda.get_device_name(0))"
-mkdir data && tar -xf E:\Task07_Pancreas.tar -C data          # E: = the USB drive
-python -m pytest -q                                             # expect 204 passed
-```
-**9:45, timing run.** Run 2 epochs to measure the time per epoch:
-```bash
-python -m src.train_seg --data-root data/Task07_Pancreas \
-  --split results/review1_local/full281/split_281cases.json \
-  --out results/final --epochs 2 --ckpt-root checkpoints_timing
-```
-**About 10:15, the real run.** Set `E = floor(13 h × 3600 / seconds_per_epoch)`. That is about 13 h of training across both days. Write E down and use the same E both days.
-```bash
-python -m src.train_seg --data-root data/Task07_Pancreas \
-  --split results/review1_local/full281/split_281cases.json \
-  --out results/final --epochs E
-```
-- If you get an OOM error: add `--batch 1`. If it still fails: `--patch 64`.
-- Watch `results/final` for the per-epoch CSV. The pancreas Dice should be rising by the afternoon.
-- 5 pm: Ctrl+C, then back up `checkpoints/` and `results/final/`.
-
-**Wasih, while the GPU trains:**
-1. **Wire the 6.3 classifier into `src/app.py`.** About 2 to 3 hours, and it is the main code task left. Today the app reads p(tumor) off the *segmentation* tumor channel. The `--data-root` default is the phantom, and `PATCH` is hard-coded to 32. The app needs to:
-   - load `stage63/best.pt`;
-   - slide `roi_size` windows over the predicted pancreas;
-   - set p(tumor) = max over the windows, with MC Dropout on that window;
-   - run Grad-CAM++ and F-Fidelity on the classifier.
-2. Notebooks `02`–`06` as thin wrappers around `src/` (CLAUDE.md requires one per stage).
-3. Logbook entries #5 and #6.
+### Wasih: lab PC
+- 9:00: clone, copy the tar, run `lab.bat --backup E:\capstone` (see above). Check that it prints `GPU: NVIDIA GeForce RTX 4060` and the line `epoch 0 took …s -> 11.0 h budget = N epochs`.
+- While it trains, at the lab or on the laptop:
+  1. Notebooks `02`–`06` as thin wrappers around `src/` (CLAUDE.md requires one per stage).
+  2. Logbook entries #5 and #6 (about four entries are overdue).
+- 17:00: Ctrl+C. The backup to the USB happens automatically.
 
 ### Hasan: Colab T4, stage 6.3 (plus the DiNTS baseline)
 ```python
@@ -87,13 +79,34 @@ Then the oracle results for 6.3 and 6.4 (ROIs cut from ground-truth masks):
 Copy `results/final/` to Drive. **If time is left:** run DiNTS baseline inference on the 42 val cases (notebook 01, section 5) to get the baseline Dice for the comparison table.
 
 ## Day 2: 19 Nov
-| Time | Wasih (lab PC) | Hasan (Colab + laptop) |
-|---|---|---|
-| 9:00 | `--resume` 6.2 with the same E | 6.5 (Grad-CAM++ + F-Fidelity) on the 6.3 model; save figures |
-| 14:00 | Stop. Use `best.pt` for both runs below. | Deck skeleton for the final review |
-| 14:15 | `predict_seg --split … --group val --save-masks results/final/masks --out results/final`, then the same with `--group calib` | |
-| 15:00 | Copy `results/final/masks` to Hasan (USB or Drive) | **Real end-to-end:** `predict_cls … --pred-masks results/final/masks --out results/final/real --mc 20`, then `run_stage64` on that output |
-| 16:00 | Gradio UI (`src/app.py`) on the trained weights; screenshots | Fill numbers into the deck and report; send them to Mustafa |
+**Wasih, lab PC:**
+- 9:00: `lab.bat --backup E:\capstone`. It resumes by itself, and should finish around 14:00 (the `~X h left` counter shows when).
+- **14:00**, stop (Ctrl+C) if it hasn't finished. Then save predicted masks for the val and calib groups:
+```bat
+.venv\Scripts\python -m src.predict_seg --split results/review1_local/full281/split_281cases.json --group val   --save-masks results/final/masks --out results/final/seg_val
+.venv\Scripts\python -m src.predict_seg --split results/review1_local/full281/split_281cases.json --group calib --save-masks results/final/masks --out results/final/seg_calib
+```
+`seg_val/seg_by_size_bucket.csv` holds **the 6.2 Dice table for the deck**.
+- 15:00: copy `results/final/masks` to Drive for Hasan. Copy Hasan's `stage63/best.pt` into `checkpoints\stage63\` and his `results/final/real` folder into `results\final\real`.
+eal`.
+eal`.
+- 16:00, **the demo** with real weights:
+```bat
+.venv\Scripts\python -m src.app
+```
+It picks up `checkpoints/stage62/best.pt`, `checkpoints/stage63/best.pt`, the real q-hat and the MSD data on its own. Open http://127.0.0.1:7860 and take screenshots for the deck.
+
+**Hasan, Colab and laptop:**
+- 9:00: 6.5 figures (Grad-CAM++ + F-Fidelity) on the 6.3 model. Start the deck skeleton.
+- 15:00: **real end-to-end**, using Wasih's masks on Drive:
+```python
+!python -m src.predict_cls --split results/review1_local/full281/split_281cases.json \
+   --data-root data/Task07_Pancreas --pred-masks /content/drive/MyDrive/capstone/masks \
+   --ckpt /content/drive/MyDrive/capstone/checkpoints/stage63/best.pt --mc 20 \
+   --groups val calib --out results/final/real
+!python -m src.run_stage64 --predictions results/final/real/cls_predictions.csv --out results/final/real
+```
+- 16:00: put the numbers into the deck and report, and send them to Mustafa.
 
 **Fallback.** If our 6.2 model is weak at 14:00 (pancreas Dice below about 0.6), produce the masks with DiNTS instead. 6.3 to 6.6 do not care which model drew the mask. Present the Attention U-Net as the comparison.
 
