@@ -5,7 +5,7 @@ The days from 20 to 24 Nov are buffer for the report, deck, rehearsal and logboo
 **Team for these two days: Wasih and Hasan.** Mustafa is writing the paper; send him numbers as they land.
 
 ## Starting point
-- All six stages are coded and wired. Branch `feat/stage63-msd-negatives`: **215/215 tests pass**.
+- All six stages are coded and wired. Branch `feat/stage63-msd-negatives`: **217/217 tests pass**.
 - Only 6.1 has run on real data so far (281 MSD cases). Everything else is still phantom-only.
 - Changes on this branch:
   - **6.3 negatives:** `--sampling patch`. One jittered tumor window per case plus `--neg-per-case` tumor-free windows of the same pancreas. A test guarantees no negative window touches the tumor.
@@ -20,7 +20,11 @@ The days from 20 to 24 Nov are buffer for the report, deck, rehearsal and logboo
 ```bat
 git clone -b feat/stage63-msd-negatives https://github.com/ekkerihasan/Capstone.git
 ```
-Then copy `Task07_Pancreas.tar` from the USB drive into `Capstone\data\`. There's no need to extract it.
+Data, either way works:
+- **If you have the tar on USB:** copy `Task07_Pancreas.tar` into `Capstone\data\`. There's no need to extract it.
+- **If not:** do nothing. `lab.bat` downloads the 12.3 GB tar itself and shows the speed and time left. Ctrl+C keeps the progress, and the next run continues the download.
+
+A half-copied tar is detected by its size and refused before extraction.
 
 **Every visit, the whole procedure:**
 ```bat

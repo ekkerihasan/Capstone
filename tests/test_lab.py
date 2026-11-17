@@ -29,6 +29,7 @@ def lab_env(tmp_path, monkeypatch):
     with tarfile.open(data / "Task07_Pancreas.tar", "w") as tf:
         tf.add(src_root, arcname="Task07_Pancreas")
     monkeypatch.setattr(lab, "DATA_DIR", data)
+    monkeypatch.setattr(lab, "MSD_TAR_BYTES", None)          # test tar is tiny
     monkeypatch.setattr(lab, "CKPT", tmp_path / "checkpoints" / "stage62")
     monkeypatch.setattr(lab, "OUT", tmp_path / "results" / "final")
     monkeypatch.setattr(lab, "SPLIT", tmp_path / "split.json")   # created on first run
@@ -45,7 +46,51 @@ def test_find_dataset_extracts_the_tar_once(lab_env):
 def test_missing_dataset_says_where_to_put_it(tmp_path, monkeypatch):
     monkeypatch.setattr(lab, "DATA_DIR", tmp_path)
     with pytest.raises(SystemExit, match="Task07_Pancreas.tar"):
+        lab.find_dataset(download=False)
+
+
+def test_truncated_tar_is_rejected_before_extraction(tmp_path, monkeypatch):
+    monkeypatch.setattr(lab, "DATA_DIR", tmp_path)
+    (tmp_path / "Task07_Pancreas.tar").write_bytes(b"x" * 1000)
+    with pytest.raises(SystemExit, match="unfinished copy"):
         lab.find_dataset()
+
+
+def test_download_resumes_from_the_part_file(tmp_path):
+    """Interrupted after 4 bytes, the second call asks only for the rest and the
+    file is renamed into place only when complete."""
+    import http.server
+    import threading
+
+    payload = bytes(range(256)) * 40
+    ranges = []
+
+    class H(http.server.BaseHTTPRequestHandler):
+        def do_GET(self):
+            rng = self.headers.get("Range")
+            ranges.append(rng)
+            start = int(rng.split("=")[1].rstrip("-")) if rng else 0
+            body = payload[start:]
+            self.send_response(206 if rng else 200)
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
+        def log_message(self, *a):
+            pass
+
+    srv = http.server.HTTPServer(("127.0.0.1", 0), H)
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    url = f"http://127.0.0.1:{srv.server_port}/t.tar"
+    dest = tmp_path / "Task07_Pancreas.tar"
+    (tmp_path / "Task07_Pancreas.tar.part").write_bytes(payload[:4])     # the interrupted run
+    try:
+        lab.download_msd(dest, url=url, chunk=1000)
+    finally:
+        srv.shutdown()
+    assert ranges == ["bytes=4-"]
+    assert dest.read_bytes() == payload
+    assert not (tmp_path / "Task07_Pancreas.tar.part").exists()
 
 
 def test_pause_then_resume_keeps_the_epoch_plan(lab_env, monkeypatch, capsys):
