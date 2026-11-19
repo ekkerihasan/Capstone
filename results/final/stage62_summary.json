@@ -1,0 +1,19 @@
+{
+ "stage": "6.2",
+ "model": "AttentionUnet",
+ "epochs_completed": 200,
+ "epochs": 200,
+ "best_dice_mean": 0.5561,
+ "patch": [
+  96,
+  96,
+  96
+ ],
+ "batch": 2,
+ "num_samples": 1,
+ "amp": true,
+ "device": "cuda",
+ "n_train": 197,
+ "n_val": 42,
+ "checkpoints": "C:\\Users\\datas\\Documents\\capstone-pancreas\\checkpoints\\stage62"
+}
