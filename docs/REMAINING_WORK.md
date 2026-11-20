@@ -33,7 +33,17 @@ Branch: `feat/stage63-msd-negatives`. Earlier plan: `docs/FINAL_2DAY_PLAN.md`.
 - [ ] Push any code or notebook changes to `feat/stage63-msd-negatives`.
 - [ ] Write down the 6.3 training settings you used: `--model`, `--roi-size`, `--neg-per-case`, `--dropout`, `--epochs`, and the best val AUROC.
 
-## 2. Lab PC: compute steps (Wasih)
+## 2a. Compute from the laptop, no lab visit: `notebooks/07_final_results_colab.ipynb`
+Steps 2 to 5 below, plus 6.5, in one notebook running on a free Colab T4 through the VS Code Colab extension.
+1. Upload `checkpoints/stage62/best.pt` (on this laptop) and Hasan's `stage63/best.pt` to Google Drive. Set each to **Share → Anyone with the link**.
+2. Open the notebook in VS Code. Choose **Select Kernel → Colab → New Colab Server → GPU (T4)**.
+3. Paste the two links into cell 2, then choose **Run All**. It takes about 30–45 minutes.
+4. All numbers and figures are displayed inside the notebook, so the saved `.ipynb` keeps them. For the files, download `final_results.zip` from the Colab file view.
+5. The last-but-one cell prints a public Gradio link for the demo screenshots.
+
+If the notebook covers everything, the lab steps below are not needed.
+
+## 2b. Lab PC: compute steps (Wasih)
 Open cmd in the `Capstone` folder. `F:` is the USB here; use whatever letter it gets on the lab PC.
 
 **Step 1: update the code**
@@ -83,7 +93,7 @@ xcopy /E /I /Y results\final F:\capstone\results_final
 ```
 
 ## 3. Code still to write (laptop, no GPU needed)
-- [ ] `src/run_stage65.py`: batch Grad-CAM++ + F-Fidelity over the real 6.3 classifier's val patches. Output: a fidelity pass-rate table and 3–4 saliency figures for the deck. **Without it, 6.5's only evidence is the app screenshots.**
+- [x] `src/run_stage65.py`: batch Grad-CAM++ + F-Fidelity over the 6.3 classifier's val patches. Writes pass rates (overall, tumor, tissue, sub-2 cm) and saliency figures. Runs in notebook 07; on the lab PC: `.venv\Scripts\python -m src.run_stage65 --split results/review1_local/full281/split_281cases.json --ckpt checkpoints/stage63/best.pt --pred-masks results/final/masks --group val --out results/final/stage65`
 - [ ] Notebooks `02`–`06`, one per stage as CLAUDE.md requires. These are thin wrappers that call `src/` and display the saved `results/final/` figures; no training inside them.
 - [ ] Update the status table in `CLAUDE.md`, which still says "Current task (3–4 Sept)".
 - [ ] Open a PR from `feat/stage63-msd-negatives` to `master` and merge it once the real numbers are in.

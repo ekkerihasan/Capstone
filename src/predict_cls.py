@@ -85,6 +85,29 @@ def build_argparser():
     return p
 
 
+def pred_mask_fn(mask_dir):
+    """mask_fn reading <case>.npy files written by predict_seg --save-masks."""
+    root = Path(mask_dir)
+
+    def mask_fn(case, label):
+        pred = np.load(root / f"{case_id(case['image'])}.npy")
+        if pred.shape != label.shape:
+            raise SystemExit(f"[6.3] {root} mask {pred.shape} != grid {label.shape}: "
+                             "masks must come from predict_seg on the same 6.1 transforms")
+        return pred
+    return mask_fn
+
+
+def load_cls_checkpoint(path, device="cpu"):
+    """Classifier + its training config, as train_cls saved them."""
+    ckpt = load_checkpoint(path, map_location=device)
+    cfg = ckpt["extra"]
+    model = build_classifier(cfg["model"], dropout=cfg["dropout"]).to(device)
+    model.load_state_dict(ckpt["model"])
+    model.eval()
+    return model, cfg
+
+
 def main(argv=None):
     args = build_argparser().parse_args(argv)
     device = torch.device(args.device)
@@ -100,14 +123,8 @@ def main(argv=None):
 
     split = rebase_split_to_msd(load_split(args.split), args.data_root)
 
-    mask_fn = None
-    if args.pred_masks:
-        def mask_fn(case, label, root=Path(args.pred_masks)):
-            pred = np.load(root / f"{case_id(case['image'])}.npy")
-            if pred.shape != label.shape:
-                raise SystemExit(f"[6.3] {root} mask {pred.shape} != grid {label.shape}: "
-                                 "masks must come from predict_seg on the same 6.1 transforms")
-            return pred
+    mask_fn = pred_mask_fn(args.pred_masks) if args.pred_masks else None
+    if mask_fn is not None:
         print(f"[6.3] ROIs from predicted masks in {args.pred_masks}")
 
     frames = []
