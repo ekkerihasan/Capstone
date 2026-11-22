@@ -1,0 +1,67 @@
+[6.2-eval] C:\Users\Home\Desktop\coding-club\pancreas-early-detection-repo\repo\checkpoints\stage62\best.pt | epoch 125 | best=0.5561 | patch=(96, 96, 96) | device=cpu
+[6.2-eval] pancreas_024: reusing pancreas_024.npy
+[6.2-eval] pancreas_024: pancreas=0.7343 tumor=0.115 (ge2cm)
+[6.2-eval] pancreas_318: reusing pancreas_318.npy
+[6.2-eval] pancreas_318: pancreas=0.6191 tumor=0.0011 (sub2cm)
+[6.2-eval] pancreas_109: reusing pancreas_109.npy
+[6.2-eval] pancreas_109: pancreas=0.7814 tumor=0.0 (sub2cm)
+[6.2-eval] pancreas_253: reusing pancreas_253.npy
+[6.2-eval] pancreas_253: pancreas=0.7201 tumor=0.0 (sub2cm)
+[6.2-eval] pancreas_147: reusing pancreas_147.npy
+[6.2-eval] pancreas_147: pancreas=0.8122 tumor=0.1539 (sub2cm)
+[6.2-eval] pancreas_389: reusing pancreas_389.npy
+[6.2-eval] pancreas_389: pancreas=0.7959 tumor=0.0 (sub2cm)
+[6.2-eval] pancreas_155: reusing pancreas_155.npy
+[6.2-eval] pancreas_155: pancreas=0.8224 tumor=0.7307 (ge2cm)
+[6.2-eval] pancreas_048: reusing pancreas_048.npy
+[6.2-eval] pancreas_048: pancreas=0.8366 tumor=0.7463 (ge2cm)
+[6.2-eval] pancreas_166: reusing pancreas_166.npy
+[6.2-eval] pancreas_166: pancreas=0.8486 tumor=0.7727 (ge2cm)
+[6.2-eval] pancreas_046: reusing pancreas_046.npy
+[6.2-eval] pancreas_046: pancreas=0.8628 tumor=0.8252 (ge2cm)
+[6.2-eval] pancreas_050: reusing pancreas_050.npy
+[6.2-eval] pancreas_050: pancreas=0.5387 tumor=0.6014 (ge2cm)
+[6.2-eval] pancreas_140: reusing pancreas_140.npy
+[6.2-eval] pancreas_140: pancreas=0.7183 tumor=0.8491 (ge2cm)
+[6.2-eval] pancreas_303: reusing pancreas_303.npy
+[6.2-eval] pancreas_303: pancreas=0.7266 tumor=0.4033 (sub2cm)
+[6.2-eval] pancreas_374: reusing pancreas_374.npy
+[6.2-eval] pancreas_374: pancreas=0.6607 tumor=0.0878 (ge2cm)
+[6.2-eval] pancreas_095: reusing pancreas_095.npy
+[6.2-eval] pancreas_095: pancreas=0.7989 tumor=0.0341 (ge2cm)
+[6.2-eval] pancreas_074: reusing pancreas_074.npy
+[6.2-eval] pancreas_074: pancreas=0.6383 tumor=0.6458 (ge2cm)
+[6.2-eval] pancreas_393: pancreas=0.5737 tumor=0.6526 (ge2cm)
+[6.2-eval] pancreas_279: pancreas=0.7843 tumor=0.0 (ge2cm)
+[6.2-eval] pancreas_411: pancreas=0.8567 tumor=0.0 (ge2cm)
+[6.2-eval] pancreas_130: pancreas=0.4601 tumor=0.0 (sub2cm)
+[6.2-eval] pancreas_006: pancreas=0.6802 tumor=0.6792 (ge2cm)
+[6.2-eval] pancreas_231: pancreas=0.7978 tumor=0.6404 (sub2cm)
+[6.2-eval] pancreas_351: pancreas=0.71 tumor=0.1847 (sub2cm)
+[6.2-eval] pancreas_191: pancreas=0.8433 tumor=0.7472 (ge2cm)
+[6.2-eval] pancreas_329: pancreas=0.456 tumor=0.2418 (ge2cm)
+[6.2-eval] pancreas_172: pancreas=0.7619 tumor=0.1784 (sub2cm)
+[6.2-eval] pancreas_028: pancreas=0.7388 tumor=0.517 (sub2cm)
+[6.2-eval] pancreas_391: pancreas=0.4956 tumor=0.1709 (ge2cm)
+[6.2-eval] pancreas_200: pancreas=0.7642 tumor=0.4613 (ge2cm)
+[6.2-eval] pancreas_187: pancreas=0.789 tumor=0.7617 (ge2cm)
+[6.2-eval] pancreas_086: pancreas=0.6977 tumor=0.0 (sub2cm)
+[6.2-eval] pancreas_032: pancreas=0.8095 tumor=0.4241 (sub2cm)
+[6.2-eval] pancreas_035: pancreas=0.7165 tumor=0.7228 (ge2cm)
+[6.2-eval] pancreas_331: pancreas=0.7762 tumor=0.7348 (sub2cm)
+[6.2-eval] pancreas_081: pancreas=0.7576 tumor=0.7528 (ge2cm)
+[6.2-eval] pancreas_092: pancreas=0.6691 tumor=0.2878 (ge2cm)
+[6.2-eval] pancreas_114: pancreas=0.8077 tumor=0.755 (ge2cm)
+[6.2-eval] pancreas_194: pancreas=0.8273 tumor=0.0964 (ge2cm)
+[6.2-eval] pancreas_210: pancreas=0.8715 tumor=0.587 (sub2cm)
+[6.2-eval] pancreas_229: pancreas=0.8034 tumor=0.6339 (ge2cm)
+[6.2-eval] pancreas_025: pancreas=0.8786 tumor=0.3887 (ge2cm)
+[6.2-eval] pancreas_098: pancreas=0.5829 tumor=0.1782 (ge2cm)
+
+[6.2-eval] Dice overall and by tumor size
+         dice_pancreas  dice_tumor   n
+overall          0.734       0.399  42
+ge2cm            0.731       0.479  27
+sub2cm           0.739       0.255  15
+
+[6.2-eval] mean pancreas Dice = 0.7339 -> results\final\seg_calib

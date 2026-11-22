@@ -133,3 +133,28 @@ def test_predicted_masks_dir_feeds_the_real_path(msd_phantom, tmp_path, cases):
     a = pd.read_csv(out / "oracle" / "cls_predictions.csv")
     b = pd.read_csv(out / "real" / "cls_predictions.csv")
     pd.testing.assert_frame_equal(a, b)
+
+
+def test_predict_seg_reuse_masks_resumes_without_reinference(msd_phantom, tmp_path, capsys):
+    """An interrupted mask run restarts with --reuse-masks: saved masks are scored,
+    not re-predicted, and the Dice table matches a full run."""
+    from src.predict_seg import main as seg_predict
+    from src.train_seg import main as seg_train
+
+    out, ck, masks = tmp_path / "o", tmp_path / "ck", tmp_path / "m"
+    seg_train(["--data-root", str(msd_phantom), "--out", str(out), "--ckpt-root", str(ck),
+               "--epochs", "1", "--patch", "32", "--batch", "1", "--device", "cpu", "--no-amp",
+               "--max-steps", "1", "--workers", "0", "--limit-train", "2", "--limit-val", "1"])
+    split = next(out.glob("split_*.json"))
+    common = ["--checkpoint", str(ck / "stage62" / "best.pt"), "--split", str(split),
+              "--data-root", str(msd_phantom), "--group", "train", "--save-masks", str(masks),
+              "--device", "cpu", "--max-figures", "0"]
+    seg_predict(common + ["--out", str(tmp_path / "full")])
+    first = sorted(masks.glob("*.npy"))
+    first[0].unlink()                                  # simulate a run killed before this case
+    capsys.readouterr()
+    seg_predict(common + ["--out", str(tmp_path / "resumed"), "--reuse-masks"])
+    log = capsys.readouterr().out
+    assert log.count("reusing") == len(first) - 1
+    pd.testing.assert_frame_equal(pd.read_csv(tmp_path / "full" / "seg_per_case.csv"),
+                                  pd.read_csv(tmp_path / "resumed" / "seg_per_case.csv"))

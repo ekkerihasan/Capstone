@@ -1,0 +1,4 @@
+,dice_pancreas,dice_tumor,n
+overall,0.736,0.415,42
+ge2cm,0.739,0.491,31
+sub2cm,0.73,0.202,11

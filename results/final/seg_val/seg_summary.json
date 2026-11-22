@@ -1,0 +1,28 @@
+{
+ "stage": "6.2",
+ "checkpoint": "C:\\Users\\Home\\Desktop\\coding-club\\pancreas-early-detection-repo\\repo\\checkpoints\\stage62\\best.pt",
+ "trained_epochs": 126,
+ "group": "val",
+ "n_cases": 42,
+ "mean_dice_pancreas": 0.7364,
+ "mean_dice_tumor_over_tumor_cases": 0.415,
+ "n_cases_with_tumor": 42,
+ "n_cases_sub2cm": 11,
+ "by_size_bucket": {
+  "overall": {
+   "dice_pancreas": 0.736,
+   "dice_tumor": 0.415,
+   "n": 42
+  },
+  "ge2cm": {
+   "dice_pancreas": 0.739,
+   "dice_tumor": 0.491,
+   "n": 31
+  },
+  "sub2cm": {
+   "dice_pancreas": 0.73,
+   "dice_tumor": 0.202,
+   "n": 11
+  }
+ }
+}

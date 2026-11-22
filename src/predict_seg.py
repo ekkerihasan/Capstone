@@ -88,6 +88,9 @@ def main(argv=None):
     p.add_argument("--patch", default="", help="defaults to the training patch size")
     p.add_argument("--limit", type=int, default=0)
     p.add_argument("--max-figures", type=int, default=6)
+    p.add_argument("--reuse-masks", action="store_true",
+                   help="with --save-masks: score masks already saved there instead of re-predicting "
+                        "(resumes an interrupted run)")
     p.add_argument("--save-masks", default="",
                    help="dir for <case>.npy predicted masks on the 6.1 grid (input to predict_cls --pred-masks)")
     p.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
@@ -116,7 +119,18 @@ def main(argv=None):
     rows = []
     for i, case in enumerate(cases):
         name = case_id(case["image"])
-        image, truth, pred, data = predict_case(model, case, device, patch, transform)
+        saved = Path(args.save_masks) / f"{name}.npy" if args.save_masks else None
+        if args.reuse_masks and saved is not None and saved.exists():
+            # an interrupted run: score the mask already on disk, skip inference
+            data = transform(dict(case))
+            image = np.asarray(data["image"]).squeeze()
+            truth = np.asarray(data["label"]).squeeze()
+            pred = np.load(saved)
+            if pred.shape != truth.shape:
+                raise SystemExit(f"[6.2-eval] {saved} has shape {pred.shape}, grid is {truth.shape}")
+            print(f"[6.2-eval] {name}: reusing {saved.name}")
+        else:
+            image, truth, pred, data = predict_case(model, case, device, patch, transform)
 
         spacing = tuple(float(x) for x in data["image"].pixdim)
         stats = tumor_stats(truth, spacing)
@@ -134,9 +148,9 @@ def main(argv=None):
         print(f"[6.2-eval] {name}: pancreas={row['dice_pancreas']} tumor={row['dice_tumor']} "
               f"({row['size_bucket']})")
 
-        if args.save_masks:
-            Path(args.save_masks).mkdir(parents=True, exist_ok=True)
-            np.save(Path(args.save_masks) / f"{name}.npy", pred.astype(np.uint8))
+        if saved is not None and not (args.reuse_masks and saved.exists()):
+            saved.parent.mkdir(parents=True, exist_ok=True)
+            np.save(saved, pred.astype(np.uint8))
 
         if i < args.max_figures:
             plot_prediction(image, truth, pred, name, out / f"pred_{name}.png",
