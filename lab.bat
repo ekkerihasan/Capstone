@@ -10,6 +10,7 @@ rem ---------------------------------------------------------------------------
 setlocal
 cd /d "%~dp0"
 
+
 echo [lab] updating code ...
 git pull --ff-only || echo [lab] git pull failed - continuing with the code already here
 
@@ -22,7 +23,7 @@ if not exist ".venv\Scripts\python.exe" (
         exit /b 1
     )
     ".venv\Scripts\python.exe" -m pip install --upgrade pip
-    ".venv\Scripts\python.exe" -m pip install torch --index-url https://download.pytorch.org/whl/cu124
+    ".venv\Scripts\python.exe" -m pip install torch --index-url https://download.pytorch.org/whl/cu130
 )
 ".venv\Scripts\python.exe" -m pip install -q -r requirements.txt
 

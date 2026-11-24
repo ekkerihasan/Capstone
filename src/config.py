@@ -43,3 +43,12 @@ MSD_DIR = DATA_DIR / "Task07_Pancreas"
 PANTS_DIR = DATA_DIR / "PanTS"
 RESULTS_DIR = REPO_ROOT / "results"
 CHECKPOINT_DIR = REPO_ROOT / "checkpoints"
+
+
+def portable_path(path):
+    """Return a repo-relative artifact path without exposing a machine path."""
+    resolved = Path(path).resolve()
+    try:
+        return resolved.relative_to(REPO_ROOT).as_posix()
+    except ValueError:
+        return resolved.name

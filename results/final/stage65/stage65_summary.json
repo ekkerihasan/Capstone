@@ -1,0 +1,34 @@
+{
+ "stage": "6.5",
+ "group": "val",
+ "checkpoint": "checkpoints/stage63/best.pt",
+ "masks": "predicted",
+ "overall": {
+  "n": 168,
+  "pass_rate": 0.4702
+ },
+ "tumor_patches": {
+  "n": 42,
+  "pass_rate": 0.6667
+ },
+ "tissue_patches": {
+  "n": 126,
+  "pass_rate": 0.4048
+ },
+ "sub2cm_tumor_patches": {
+  "n": 11,
+  "pass_rate": 0.5455
+ },
+ "ge2cm_tumor_patches": {
+  "n": 31,
+  "pass_rate": 0.7097
+ },
+ "correct_predictions": {
+  "n": 114,
+  "pass_rate": 0.3684
+ },
+ "wrong_predictions": {
+  "n": 54,
+  "pass_rate": 0.6852
+ }
+}

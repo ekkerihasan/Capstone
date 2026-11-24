@@ -37,8 +37,10 @@ matplotlib.use("Agg")
 
 import numpy as np
 import torch
+from monai.utils import set_determinism
 
-from .config import CHECKPOINT_DIR, DATA_DIR, LABEL_PANCREAS, LABEL_TUMOR, MSD_DIR, RESULTS_DIR
+from .config import (CHECKPOINT_DIR, DATA_DIR, LABEL_PANCREAS, LABEL_TUMOR, MSD_DIR,
+                     RESULTS_DIR, SEED)
 from .phantom import DEMO_STAMP
 from .selective import ABSTAIN, decide, label_of
 
@@ -66,12 +68,12 @@ def find_checkpoint(explicit: str = "") -> Path | None:
     return None
 
 
-def load_model(checkpoint: Path | None):
+def load_model(checkpoint: Path | None, device="cpu"):
     """The stage 6.2 Attention U-Net, with the checkpoint if there is one.
     Without one the app still runs - on random weights, which the UI says."""
     from .models import build_attention_unet
 
-    model = build_attention_unet()
+    model = build_attention_unet().to(device)
     trained = False
     if checkpoint is not None:
         state = torch.load(checkpoint, map_location="cpu", weights_only=False)
@@ -106,13 +108,14 @@ def find_classifier(explicit: str = "") -> Path | None:
     return None
 
 
-def load_classifier(checkpoint: Path):
+def load_classifier(checkpoint: Path, device="cpu"):
     """The stage 6.3 classifier and its training config (model, roi_size, dropout)."""
     from .classifier import build_classifier
 
     ckpt = torch.load(checkpoint, map_location="cpu", weights_only=False)
     cfg = dict(ckpt.get("extra", {}))
-    model = build_classifier(cfg.get("model", "densenet121"), dropout=cfg.get("dropout", 0.0))
+    model = build_classifier(cfg.get("model", "densenet121"),
+                             dropout=cfg.get("dropout", 0.0)).to(device)
     model.load_state_dict(ckpt["model"])
     model.eval()
     cfg["roi_size"] = tuple(cfg.get("roi_size", (32, 32, 32)))
@@ -186,6 +189,8 @@ def predict(model, x, mc_passes: int = MC_PASSES, dropout_p: float = 0.1, patch=
 
     from .uncertainty import enable_dropout
 
+    x = torch.as_tensor(x).to(next(model.parameters()).device)
+
     # Whole preprocessed volumes are not divisible by the U-Net's depth, so the
     # app infers the same way validation does: a sliding window, which pads.
     def forward(v):
@@ -255,12 +260,13 @@ def classify_volume(classifier, cfg: dict, image, mask, mc_passes: int = MC_PASS
     starts = pancreas_windows(mask, roi)
     if not starts:
         return None
+    device = next(classifier.parameters()).device
     img = np.asarray(image, dtype=np.float32)
     xs = torch.from_numpy(np.stack([crop_at(img, s, roi)[None] for s in starts]))
-    probs = torch.cat([tumor_probability(classifier, xs[i:i + batch])
+    probs = torch.cat([tumor_probability(classifier, xs[i:i + batch].to(device)).cpu()
                        for i in range(0, len(xs), batch)]).numpy()
     i = int(probs.argmax())
-    best = xs[i:i + 1]
+    best = xs[i:i + 1].to(device)
     prob, mc_std = float(probs[i]), None
     if mc_passes > 1 and cfg.get("dropout", 0.0) > 0:
         r = mc_dropout_predict(classifier, best, T=mc_passes, p=cfg["dropout"])
@@ -335,6 +341,7 @@ def explain_case(explainer, x, k_fractions=(0.01, 0.05, 0.10), n_random: int = 3
     from .explain import gradcam_plusplus
     from .fidelity import fidelity_test
 
+    x = torch.as_tensor(x).to(next(explainer.parameters()).device)
     cam, cls, _ = gradcam_plusplus(explainer, x)
     fid = fidelity_test(explainer, x, cam, class_idx=cls,
                         k_fractions=k_fractions, n_random=n_random)
@@ -358,6 +365,8 @@ def analyse(image_path: Path, model, trained: bool, q_hat, alpha,
     cam = fid = None
     if explainer is not None:
         cam, fid = explain_case(explainer, x)
+        if not fid["passed"]:
+            cam = None
 
     verdict = decide(prob, conformal_set=conformal_set, mc_std=mc_std,
                      fidelity_pass=None if fid is None else fid["passed"])
@@ -401,6 +410,8 @@ def analyse_with_classifier(image_path: Path, model, trained: bool, q_hat, alpha
         cam, cls, _ = gradcam_plusplus(classifier, res["x"])
         fid = fidelity_test(classifier, res["x"], cam, class_idx=cls,
                             k_fractions=(0.01, 0.05, 0.10), n_random=3)
+        if not fid["passed"]:
+            cam = None
 
     verdict = decide(prob, conformal_set=conformal_set, mc_std=res["mc_std"],
                      fidelity_pass=None if fid is None else fid["passed"])
@@ -430,9 +441,13 @@ def report_markdown(verdict: dict, gt, trained: bool, alpha, mc_passes: int) -> 
     fid = verdict.get("fidelity")
     if fid is not None:
         mark = "PASS" if fid["passed"] else "FAIL"
-        lines.append(f"**F-Fidelity** {mark} — masking the most salient voxels moves the "
-                     f"score {fid['mean_margin']:+.3f} more than masking at random "
-                     f"(needs > {fid['threshold']:.3f})")
+        if fid.get("failure_reason"):
+            lines.append(f"**F-Fidelity** {mark} — {fid['failure_reason']}; "
+                         "the saliency map is suppressed.")
+        else:
+            lines.append(f"**F-Fidelity** {mark} — masking the most salient voxels moves the "
+                         f"score {fid['mean_margin']:+.3f} more than masking at random "
+                         f"(needs > {fid['threshold']:.3f})")
     if verdict["reasons"]:
         lines += ["", "**Why it was escalated**"] + [f"- {r}" for r in verdict["reasons"]]
     phantom = verdict.get("phantom", True)
@@ -468,16 +483,18 @@ def report_markdown(verdict: dict, gt, trained: bool, alpha, mc_passes: int) -> 
 # -------------------------------------------------------------------------- UI
 
 def build_ui(data_root: Path, checkpoint: str = "", mc_passes: int = MC_PASSES,
-             classifier: str = ""):
+             classifier: str = "", device=None):
     import gradio as gr
 
     from .explain import ScoreHead
 
+    if device is None:
+        device = "cuda" if torch.cuda.is_available() else "cpu"
     ckpt = find_checkpoint(checkpoint)
-    model, trained = load_model(ckpt)
+    model, trained = load_model(ckpt, device=device)
     explainer = ScoreHead(model)
     cls_path = find_classifier(classifier)
-    clf, cls_cfg = load_classifier(cls_path) if cls_path else (None, None)
+    clf, cls_cfg = load_classifier(cls_path, device=device) if cls_path else (None, None)
     calib = calibration_dir(clf is not None)
     q_hat, alpha = load_q_hat(calib / "stage64_summary.json")
     curve = load_coverage_curve(calib / "coverage_curve.csv")
@@ -510,7 +527,8 @@ def build_ui(data_root: Path, checkpoint: str = "", mc_passes: int = MC_PASSES,
             from .explain import overlay_saliency
             title = path.name.replace(".nii.gz", "")
             if verdict.get("window_x") is not None:      # classifier: the deciding window
-                sal_fig = overlay_saliency(verdict["window_x"], verdict["saliency"],
+                sal_fig = overlay_saliency(verdict["window_x"].detach().cpu(),
+                                           verdict["saliency"],
                                            title=title + " (deciding window)", stamp=phantom)
             else:
                 x, _ = load_volume(path)
@@ -552,12 +570,14 @@ def main(argv=None):
     p.add_argument("--mc-passes", type=int, default=MC_PASSES)
     p.add_argument("--port", type=int, default=7860)
     p.add_argument("--share", action="store_true")
+    p.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     args = p.parse_args(argv)
+    set_determinism(SEED)
 
     root = Path(args.data_root)
     if not root.exists():
         raise SystemExit(f"{root} does not exist — run `python -m src.run_demo_pipeline` first")
-    ui = build_ui(root, args.checkpoint, args.mc_passes, args.classifier)
+    ui = build_ui(root, args.checkpoint, args.mc_passes, args.classifier, args.device)
     ui.launch(server_port=args.port, share=args.share)
 
 

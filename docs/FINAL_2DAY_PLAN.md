@@ -116,7 +116,7 @@ It picks up `checkpoints/stage62/best.pt`, `checkpoints/stage63/best.pt`, the re
 
 ## Say this honestly at the review
 - 6.3 is **patch-level**: tumor vs non-tumor *tissue*, because every MSD patient has a tumor. The negatives come from tumor-bearing patients. A healthy-pancreas external test (PanTS) is future work unless time remains.
-- The oracle numbers (ground-truth ROI) and the real numbers (predicted ROI) are reported separately. The gap between them is the cost of segmentation error.
+- The oracle numbers (ground-truth ROI) and the real numbers (predicted ROI) are reported separately. Correction (24 Nov): In both columns the tumor (positive) window is placed from the ground-truth tumor; only the tumor-free windows come from the ground-truth vs the predicted pancreas. So this comparison does not measure whether the system finds the tumor inside a predicted mask - the patient-level Stage 6.6 run (sliding windows over the predicted pancreas, as in the app) is the end-to-end test.
 - Tumor Dice on MSD is low even for state-of-the-art methods. Always report the sub-2 cm bucket separately.
 - 6.2 picks its best epoch on `val`, and 6.4 also tests on `val`. State this as a limitation, since the split has no fourth group.
 - Every figure is either real (`results/final/`) or carries the phantom stamp. Never mix them.

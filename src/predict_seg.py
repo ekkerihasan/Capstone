@@ -31,7 +31,7 @@ from monai.utils import set_determinism
 
 from .checkpoints import load_checkpoint
 from .config import (CHECKPOINT_DIR, MSD_DIR, LABEL_PANCREAS, LABEL_TUMOR, PATCH_SIZE,
-                     RESULTS_DIR, SEED, parse_patch)
+                     RESULTS_DIR, SEED, parse_patch, portable_path)
 from .data import case_id, load_split, rebase_split_to_msd
 from .metrics import by_size_bucket, dice, size_bucket, tumor_stats
 from .models import build_attention_unet
@@ -167,7 +167,7 @@ def main(argv=None):
     with_tumor = per_case[per_case["has_tumor"]]
     summary = {
         "stage": "6.2",
-        "checkpoint": str(args.checkpoint),
+        "checkpoint": portable_path(args.checkpoint),
         "trained_epochs": ckpt["epoch"] + 1,
         "group": args.group,
         "n_cases": len(per_case),

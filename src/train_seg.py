@@ -34,7 +34,7 @@ from monai.utils import set_determinism
 
 from .checkpoints import BEST, LAST, resume_if_possible, save_checkpoint, stage_dir
 from .config import (BATCH_SIZE, CACHE_RATE, CHECKPOINT_DIR, MSD_DIR, NUM_WORKERS,
-                     RESULTS_DIR, SEED, parse_patch)
+                     RESULTS_DIR, SEED, parse_patch, portable_path)
 from .data import (assert_disjoint, load_msd_datalist, load_split, patient_wise_split,
                    rebase_split_to_msd, save_split)
 from .models import N_CLASSES, build_attention_unet, describe
@@ -311,7 +311,7 @@ def main(argv=None):
         "device": str(device),
         "n_train": len(split["train"]),
         "n_val": len(split["val"]),
-        "checkpoints": str(ckpt_dir),
+        "checkpoints": portable_path(ckpt_dir),
     }
     (out / "stage62_summary.json").write_text(json.dumps(summary, indent=1), encoding="utf-8")
     print(f"[6.2] done | best mean Dice = {best} -> {out}")

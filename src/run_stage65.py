@@ -25,7 +25,7 @@ import numpy as np
 import pandas as pd
 import torch
 
-from .config import MSD_DIR, RESULTS_DIR
+from .config import MSD_DIR, RESULTS_DIR, portable_path
 from .data import load_split, rebase_split_to_msd
 from .explain import gradcam_plusplus, overlay_saliency
 from .fidelity import fidelity_test
@@ -53,6 +53,8 @@ def explain_items(model, items, device="cpu", k_fractions=None, n_random=None) -
             "eq_diam_cm": float(it.get("eq_diam_cm", 0.0)), "prob_tumor": prob,
             "pred_class": cls, "base_score": fid["base_score"], "mean_margin": fid["mean_margin"],
             "threshold": fid["threshold"], "fidelity_pass": bool(fid["passed"]),
+            "saliency_valid": bool(fid["valid_saliency"]),
+            "fidelity_failure_reason": fid["failure_reason"] or "",
         })
         cams[it["case"]] = cam
     return pd.DataFrame(rows), cams
@@ -66,6 +68,7 @@ def summarize(df: pd.DataFrame) -> dict:
     buckets = df["eq_diam_cm"].map(size_bucket)
     return {
         "overall": rate(df),
+        "invalid_saliency": int((~df["saliency_valid"]).sum()),
         "tumor_patches": rate(df[df["y_true"] == 1]),
         "tissue_patches": rate(df[df["y_true"] == 0]),
         "sub2cm_tumor_patches": rate(df[buckets == "sub2cm"]),
@@ -104,12 +107,13 @@ def main(argv=None):
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     df.to_csv(out / "stage65_fidelity.csv", index=False)
-    summary = {"stage": "6.5", "group": args.group, "checkpoint": str(args.ckpt),
+    summary = {"stage": "6.5", "group": args.group, "checkpoint": portable_path(args.ckpt),
                "masks": "predicted" if mask_fn else "ground truth", **summarize(df)}
     (out / "stage65_summary.json").write_text(json.dumps(summary, indent=1), encoding="utf-8")
 
     by_case = {it["case"]: it for it in items}
-    top = df[df["y_true"] == 1].sort_values("prob_tumor", ascending=False).head(args.max_figures)
+    top = df[(df["y_true"] == 1) & df["saliency_valid"] & df["fidelity_pass"]].sort_values(
+        "prob_tumor", ascending=False).head(args.max_figures)
     for name in top["case"]:
         safe = name.replace("#", "_")
         overlay_saliency(by_case[name]["x"][None], cams[name], path=out / f"fig_saliency_{safe}.png",

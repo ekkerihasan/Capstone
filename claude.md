@@ -15,11 +15,13 @@ Detect small (sub-2 cm) pancreatic tumors on CT and return, for each case: a pre
 | Stage | What | Status | Notebook |
 |---|---|---|---|
 | 6.1 | Preprocessing: resample (1.5,1.5,2.0 mm), RAS, HU window −100…240 → [0,1], patient-wise split, aug (flip, rot90, elastic) | done (Review 1) | `01_preprocessing_and_baseline.ipynb` |
-| 6.2 | ROI segmentation: pancreas + duct. Baseline = MONAI `pancreas_ct_dints_segmentation` bundle; target = `monai.networks.nets.AttentionUnet` | baseline done; training = Week 1–2 | `02_segmentation_attention_unet.ipynb` |
-| 6.3 | ROI crop → 3D ResNet/DenseNet classifier, tumor present/absent, multi-depth feature fusion | Week 3–4 | `03_classifier_resnet_densenet.ipynb` |
-| 6.4 | MC Dropout (T=20) + split-conformal prediction; report ECE, coverage, reliability diagram | Week 5–6 (Review 2) | `04_uncertainty_mc_conformal.ipynb` |
-| 6.5 | Grad-CAM++ on classifier + F-Fidelity masking test (top-k mask vs random mask, measure output drop) | Week 7–8 | `05_explainability_gradcam_ffidelity.ipynb` |
-| 6.6 | Selective prediction: abstain on low confidence / large conformal set / failed fidelity; Gradio UI | Week 9–10 | `06_selective_prediction_ui.ipynb` |
+| 6.2 | ROI segmentation: pancreas/tumor Attention U-Net; MSD has no duct labels | trained 200 epochs; val whole-pancreas Dice 0.736, sub-2 cm tumor Dice 0.202 (below 0.75 target) | `02_segmentation_attention_unet.ipynb` |
+| 6.3 | 3D DenseNet121 patch classifier; tumor vs non-tumor pancreas tissue | checkpoint saved at epoch 39; best val patch AUROC 0.833 at epoch 37; oracle and predicted-mask inference complete | `03_classifier_resnet_densenet.ipynb` |
+| 6.4 | MC Dropout (T=20) + split-conformal prediction; ECE and coverage | real patch-level results generated; predicted-mask val AUROC 0.846, 0.929 patch coverage; not a patient-level guarantee | `04_uncertainty_mc_conformal.ipynb` |
+| 6.5 | Grad-CAM++ + F-Fidelity masking test | evaluated on 168 val patches; pass rate 47.0% overall, 54.5% for 11 sub-2 cm patches | `05_explainability_gradcam_ffidelity.ipynb` |
+| 6.6 | Selective prediction and Gradio UI | CUDA demo verified; val evaluation: 18/42 accepted, 57.1% abstained; 100% accuracy among accepted, on tumor-only MSD patients | `06_selective_prediction_ui.ipynb` |
+
+Stage 6.3 is **patch-level**, not a patient-level tumor-presence detector: every MSD patient has a tumor, and negative patches are tumor-free tissue from those same patients. Stage 6.4 calibrates on patches and applies the threshold to the app's maximum-scoring window, so its app-level coverage is approximate.
 
 ## Datasets — roles are fixed, do not reassign
 - **MSD Task07 Pancreas** — PRIMARY training/dev set. 281 labelled portal-venous CTs, labels 0/1/2 = bg/pancreas/tumor. ~12 GB. Path on lab PC: `data/Task07_Pancreas/`. Cases are patients → case-level split = patient-wise split.
@@ -56,8 +58,8 @@ docs/        plan, decks, logbook scans
 - Final (100%): TBC (~late Nov 2026) — all six stages, Gradio demo, final report, viva.
 - Logbook entry every 10 days. When a milestone is reached, add a bullet to `docs/logbook_notes.md`.
 
-## Current task (3–4 Sept 2026)
-**Review 1 is tomorrow.** Read `docs/REVIEW1_GAMEPLAN.md` before doing anything — section 10 defines exactly what is in and out of scope tonight. In short: get notebooks `00` and `01` running end-to-end, save every figure and table to `results/review1/`, commit the executed notebooks. Do not start Attention U-Net training or stages 6.3–6.6.
+## Current task (24 Nov 2026)
+**Final review is 25 Nov.** Real-MSD compute for stages 6.1–6.6 is complete. The Phase-II report addendum, 12-slide deck (PDF/PPTX), rehearsal run sheet, results handoff, and 222-test report are prepared; the offline bundle is on Wasih's USB at `D:\capstone\FINAL_REVIEW_2026-11-25\repo\`. The app returned HTTP 200 locally with CUDA. Still perform a human timed rehearsal and review the exports on the presentation computer, send the handoff to Mustafa, and complete PR review/merge. Preserve the patch-level and validation-reuse limitations; do not claim PanTS external validation or clinical readiness. Current evidence and remaining human/external actions are tracked in `docs/REMAINING_WORK.md`.
 
 ## When asked to "continue the project"
 1. Read `docs/Phase-II_Project_Plan.md` and the latest `results/` folder.

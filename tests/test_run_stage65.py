@@ -21,7 +21,10 @@ def test_stage65_batch_writes_rows_summary_and_figures(msd_phantom, tmp_path):
     assert len(df) == summary["overall"]["n"] > 0
     assert set(df["y_true"]) == {0, 1}
     assert df["fidelity_pass"].isin([True, False]).all()
+    assert df["saliency_valid"].isin([True, False]).all()
     assert summary["tumor_patches"]["n"] + summary["tissue_patches"]["n"] == len(df)
     on_disk = json.loads((out / "s65" / "stage65_summary.json").read_text())
     assert on_disk["masks"] == "ground truth"
-    assert len(list((out / "s65").glob("fig_saliency_*.png"))) == 1
+    figure_count = len(list((out / "s65").glob("fig_saliency_*.png")))
+    assert figure_count <= 1
+    assert figure_count == int((df["y_true"].eq(1) & df["saliency_valid"] & df["fidelity_pass"]).any())

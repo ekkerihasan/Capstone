@@ -150,7 +150,9 @@ def test_training_run_produces_all_artifacts(trained):
     assert summary["epochs_completed"] == 2
     assert (out / "metrics_stage62.csv").exists()
     assert (out / "fig_stage62_training.png").exists()
-    assert json.loads((out / "stage62_summary.json").read_text())["model"] == "AttentionUnet"
+    saved = json.loads((out / "stage62_summary.json").read_text())
+    assert saved["model"] == "AttentionUnet"
+    assert saved["checkpoints"] == "stage62"
     assert (ckpt / "stage62" / LAST).exists() and (ckpt / "stage62" / BEST).exists()
 
 

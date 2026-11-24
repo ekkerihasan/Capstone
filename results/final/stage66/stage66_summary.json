@@ -1,0 +1,38 @@
+{
+  "stage": "6.6",
+  "unit": "patient/case",
+  "group": "val",
+  "n_cases": 42,
+  "checkpoint": "checkpoints/stage62/best.pt",
+  "classifier": "checkpoints/stage63/best.pt",
+  "calibration": "results/final/real/stage64_summary.json",
+  "alpha": 0.1,
+  "q_hat": 0.7378,
+  "mc_passes": 20,
+  "device": "cuda",
+  "stamped_phantom": false,
+  "overall": {
+    "n_cases": 42,
+    "accepted": 18,
+    "abstention_rate": 0.5714,
+    "accepted_accuracy": 1.0
+  },
+  "sub2cm": {
+    "n_cases": 11,
+    "accepted": 4,
+    "abstention_rate": 0.6364,
+    "accepted_accuracy": 1.0
+  },
+  "ge2cm": {
+    "n_cases": 31,
+    "accepted": 14,
+    "abstention_rate": 0.5484,
+    "accepted_accuracy": 1.0
+  },
+  "no_tumor": {
+    "n_cases": 0,
+    "accepted": 0,
+    "abstention_rate": null,
+    "accepted_accuracy": null
+  }
+}

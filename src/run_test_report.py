@@ -114,9 +114,9 @@ def write_report(modules, rows, totals, out_dir: Path) -> Path:
         f"({totals['failed']} failed, {totals['skipped']} skipped) "
         f"in {totals['time']:.1f} s.",
         "",
-        "The whole suite runs on CPU against the synthetic phantom in `src/phantom.py`, so it",
-        "needs neither the 12 GB MSD download nor a GPU. That is the point: every stage stays",
-        "verifiable on a laptop while the lab RTX 4060 is unavailable.",
+        "The suite uses synthetic phantoms in `src/phantom.py`, so it needs no MSD download.",
+        "Most tests run on CPU; the app test also exercises its CUDA path when a GPU is available.",
+        "This verifies code behaviour, not model performance on real CT.",
         "",
         "| Module | Stage | Covers | Tests | Passed | Failed | Time (s) |",
         "|---|---|---|---|---|---|---|",

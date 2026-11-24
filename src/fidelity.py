@@ -89,6 +89,36 @@ def fidelity_test(model, x, saliency, class_idx: int | None = None,
             class_idx = int(logits[0].argmax())
         base = float(torch.softmax(logits, dim=1)[0, class_idx])
 
+    k_fractions = tuple(k_fractions)
+    sal = np.asarray(saliency, dtype=float)
+    expected_size = int(np.prod(torch.as_tensor(x).shape[2:]))
+    if not sal.size:
+        reason = "saliency map is empty"
+    elif not np.isfinite(sal).all():
+        reason = "saliency map contains non-finite values"
+    elif sal.size != expected_size:
+        reason = "saliency map shape does not match the input"
+    elif float(np.ptp(sal)) <= 1e-12:
+        reason = "saliency map is constant"
+    else:
+        reason = None
+    if reason is not None:
+        return {
+            "class_idx": int(class_idx),
+            "base_score": base,
+            "curve": [],
+            "mean_margin": 0.0,
+            "threshold": float(min_margin),
+            "passed": False,
+            "n_k": len(k_fractions),
+            "n_k_passed": 0,
+            "z": float(z),
+            "min_margin": float(min_margin),
+            "valid_saliency": False,
+            "failure_reason": reason,
+        }
+
+    k_fractions = tuple(k_fractions)
     rows = []
     for k in k_fractions:
         top = base - _score(model, mask_top_k(x, saliency, k, baseline), class_idx)
@@ -118,6 +148,8 @@ def fidelity_test(model, x, saliency, class_idx: int | None = None,
         "n_k_passed": int(sum(r["passed"] for r in rows)),
         "z": float(z),
         "min_margin": float(min_margin),
+        "valid_saliency": True,
+        "failure_reason": None,
     }
 
 

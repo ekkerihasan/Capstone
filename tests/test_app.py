@@ -152,9 +152,9 @@ def test_explainer_adds_the_fidelity_signal_to_the_verdict(phantom_root, model):
         phantom_root / "imagesTr" / "pancreas_000.nii.gz", m, trained,
         q_hat=0.5, alpha=0.1, mc_passes=1, patch=(32, 32, 32),
         explainer=ScoreHead(m))
-    assert verdict["saliency"] is not None
     assert verdict["fidelity"] is not None
     assert verdict["fidelity_pass"] is verdict["fidelity"]["passed"]
+    assert (verdict["saliency"] is not None) is verdict["fidelity"]["passed"]
 
 
 def test_without_an_explainer_the_fidelity_signal_stays_absent(phantom_root, model):
@@ -211,7 +211,8 @@ def test_classifier_route_gives_a_verdict_with_all_three_signals(phantom_root, m
     from src.app import load_classifier
 
     m, trained = model
-    clf, cfg = load_classifier(classifier_ckpt)
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    clf, cfg = load_classifier(classifier_ckpt, device=device)
     assert cfg["roi_size"] == (16, 16, 16) and cfg["dropout"] == 0.2
 
     # random seg weights find no pancreas reliably, so feed the oracle mask route
@@ -221,6 +222,7 @@ def test_classifier_route_gives_a_verdict_with_all_three_signals(phantom_root, m
     res = classify_volume(clf, cfg, np.asarray(x)[0, 0], gt, mc_passes=3)
     assert 0 <= res["prob"] <= 1 and res["mc_std"] is not None and res["n_windows"] >= 1
     assert res["x"].shape == (1, 1, 16, 16, 16)
+    assert res["x"].device.type == device
 
     _, verdict, _, _, _ = analyse(
         phantom_root / "imagesTr" / "pancreas_000.nii.gz", m, trained, q_hat=0.5, alpha=0.1,
@@ -276,4 +278,7 @@ def test_full_classifier_route_with_a_working_mask(phantom_root, model, classifi
     assert verdict["fidelity"] is not None
     assert verdict["fidelity_pass"] is verdict["fidelity"]["passed"]
     assert verdict["mc_std"] is not None and verdict["conformal_set"] is not None
-    assert verdict["saliency"].shape[-3:] == (16, 16, 16)
+    if verdict["fidelity"]["passed"]:
+        assert verdict["saliency"].shape[-3:] == (16, 16, 16)
+    else:
+        assert verdict["saliency"] is None

@@ -5,6 +5,53 @@ Each entry: dates covered, stage worked on, what exists as evidence, what is blo
 
 ---
 
+## Entry #7 — 23–24 Nov 2026 · Real-data evaluation and final review preparation
+
+**Stages:** 6.3–6.6 evaluation, result verification, and final-review documentation.
+
+**Evidence recorded**
+- Stage 6.3 best checkpoint: DenseNet121, 32×32×32 ROI, 3 tumor-free tissue windows per case, dropout 0.2; best validation patch AUROC 0.833 at epoch 37. The checkpoint metadata records the final saved epoch as 39.
+- Stage 6.4 patch-level validation: oracle ROI AUROC 0.823 and predicted-mask AUROC 0.846. ECE was 0.2556 and 0.2412 respectively. Observed conformal coverage was 0.899 and 0.929 against a nominal 0.90 target.
+- Stage 6.5 F-Fidelity passed for 47.0% of 168 patches overall and 54.5% of 11 sub-2 cm tumor patches.
+- Stage 6.6 evaluated 42 tumor-bearing MSD validation cases: 18 accepted, 24 abstained; accepted accuracy was 100%. For the 11 sub-2 cm cases, 4 were accepted and 7 abstained.
+- Tables, summaries, figures, and demo screenshots are stored under `results/final/`. The final test report is generated from the current full suite.
+
+**Limitations stated**
+- 6.3 is a patch classifier for tumor-containing versus tumor-free pancreatic tissue, not patient-level tumor-presence detection.
+- MSD contains tumor-bearing cases only; patient-level specificity is not measured.
+- Conformal calibration is patch-level but the UI uses the maximum-scoring window. The UI coverage is approximate.
+- The same `val` group was used for 6.2 model selection and 6.4 evaluation; there is no fourth split.
+- PanTS external validation was not completed; no clinical-readiness claim is made.
+
+**Still requiring people/external systems**
+- Send the results handoff to Mustafa.
+- Review the report and deck, verify the PDF/PPTX in the USB bundle, and run a timed rehearsal on the demo computer.
+- Push the branch, open a PR, and merge after review.
+
+---
+
+## Entry #6 — 18–22 Nov 2026 · Real-MSD segmentation and integration
+
+**Stages:** 6.2 training/evaluation and real-data integration for 6.3–6.6.
+
+- Wasih trained the Attention U-Net on the lab RTX 4060 for 200 epochs; the selected checkpoint is epoch 125. Evaluation on val and calibration groups produced val whole-pancreas Dice 0.736 and tumor Dice 0.415; sub-2 cm tumor Dice was 0.202 (n=11). The whole-pancreas score is below the 0.75 target.
+- A predicted-mask handoff was added for 6.3 inference. The lab launcher supports resumable training and checkpoint backup.
+- The stage 6.3 classifier checkpoint was supplied from the Colab training run; real-MSD oracle and predicted-mask prediction files were generated.
+- Stage 6.5 batch evaluation and stage 6.6 case-level evaluation ran using real checkpoints. See `results/final/` for evidence.
+
+**Limitations/blockers**
+- The selected 6.2 checkpoint does not meet the pancreas Dice target, and small-lesion segmentation remains weak.
+- PanTS external validation was not run.
+- Do not describe the 6.3 patch results or conformal coverage as patient-level guarantees.
+
+---
+
+## Entry #5 — 8 Oct–16 Nov 2026 · Documentation gap
+
+The repository history contains no commits after 7 Oct until 17 Nov, and no dated run logs or result artifacts were found for this interval. This entry records the gap rather than reconstructing undocumented activity. The final review plan resumed on 17 Nov.
+
+---
+
 ## Entry #4 — 7 Oct 2026 · Stages 6.4 and 6.6 built against the phantom
 
 **Period covered:** 6–7 Oct 2026.

@@ -23,10 +23,11 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import torch
+from monai.utils import set_determinism
 
 from .checkpoints import BEST, load_checkpoint
 from .classifier import build_classifier, tumor_probability
-from .config import CHECKPOINT_DIR, MSD_DIR, RESULTS_DIR
+from .config import CHECKPOINT_DIR, MSD_DIR, RESULTS_DIR, SEED
 from .data import case_id, load_split, rebase_split_to_msd
 from .metrics import auroc, by_size_bucket, sensitivity_specificity
 from .train_cls import STAGE, load_items, stack
@@ -110,6 +111,7 @@ def load_cls_checkpoint(path, device="cpu"):
 
 def main(argv=None):
     args = build_argparser().parse_args(argv)
+    set_determinism(SEED)
     device = torch.device(args.device)
 
     ckpt = load_checkpoint(args.ckpt, map_location=device)

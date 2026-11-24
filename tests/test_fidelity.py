@@ -89,6 +89,17 @@ def test_zero_margin_cannot_pass_on_zero_variance(corner_case):
                         k_fractions=(0.001,), n_random=3)
     assert res["threshold"] >= MIN_MARGIN
     assert res["passed"] is False
+    assert res["valid_saliency"] is False
+    assert res["failure_reason"] == "saliency map is constant"
+
+
+def test_nonfinite_saliency_fails_closed(corner_case):
+    model, x = corner_case
+    sal = np.zeros((16, 16, 16))
+    sal[0, 0, 0] = np.nan
+    res = fidelity_test(model, x, sal, class_idx=1)
+    assert res["passed"] is False
+    assert res["failure_reason"] == "saliency map contains non-finite values"
 
 
 def test_result_reports_the_whole_curve(corner_case):
